@@ -1,0 +1,52 @@
+{% extends "web_hiring/base.html" %}
+{% block content %}
+
+  <h1 class="posttitle">{{post.title}}</h1>
+  {% if post.publish_date %}
+    <div class="date postdate">
+      {{ post.publish_date }}
+    </div>
+  {% endif %}
+
+
+    <b>Флот: </b>{{ post.fleet }}<br>
+    <b>Тип судна: </b>{{ post.vessel }}<br>
+    <b>Зарплата: </b>{{ post.salary }}<br>
+    <b>Дата посадки: </b>{{ post.joining_date }}<br>
+    <b>Уровень английского: </b>{{ post.english }}<br>
+    <b>Крюинг: </b>{{ post.crewer }}<br>
+    {% if post.voyage_duration != '' %}
+      <b>Длительность рейса: </b>{{ post.voyage_duration }}<br>
+    {% endif %}
+    {% if post.sailing_area != '' %}
+      <b>Регион работы: </b>{{ post.sailing_area }}<br>
+    {% endif %}
+    {% if post.dwt != '' %}
+      <b>DWT: </b>{{ post.dwt }}<br>
+    {% endif %}
+    {% if post.years_constructed is not None %}
+      <b>Год постройки судна: </b>{{ post.years_constructed }}<br>
+    {% endif %}
+    {% if post.crew != '' %}
+      <b>Экипаж: </b>{{ post.crew }}<br>
+    {% endif %}
+
+
+  {% if user.is_authenticated and user == post.author %}
+      <a class='btn btn-warning' href="{% url 'web_hiring:post_edit' pk=post.pk %}">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+      </a>
+      <a class='btn btn-danger' href="{% url 'web_hiring:post_delete' pk=post.pk %}">
+        <i class="fa fa-trash-o" aria-hidden="true"></i>
+      </a>
+      {% if not post.publish_date %}
+        <a class="btn btn-success" href="{% url 'web_hiring:post_publish' pk=post.pk%}">Опубликовать
+          <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+        </a>
+    {% endif %}
+  {% endif %}
+  <hr>
+  {% if post.text != '' %}
+    <b>Дополнительная информация: </b>{{ post.text|linebreaks }}<br>
+  {% endif %}
+{% endblock %}

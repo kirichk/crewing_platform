@@ -1,0 +1,61 @@
+{% extends "web_hiring/base.html" %}
+{% load pagination_tags %}
+{% block content %}
+
+<div class="centerstage">
+  <form action="{% url 'web_hiring:post_search' %}" method="get">
+    <input name="q" type="text" placeholder="Поиск...">
+  </form>
+  <table width="100%">
+  <col style="width:60%">
+  {% for post in post_list %}
+    <div class="post">
+        <tr>
+            <th>
+              <div align=left>
+              <h1>
+                <a href="{% url 'web_hiring:post_detail' pk=post.pk %}">{{ post.title }}</a>
+              </h1>
+                <b>Хуй: </b>{{post.publish_date}}<br>
+                <b>Дата посадки: </b>{{ post.joining_date }}
+              </div>
+              </th>
+            <th>
+              <div align=left>
+              <h1>&nbsp</h1><b>Зарплата: </b>{{ post.salary }}<br>
+                <b>Тип судна: </b>{{ post.vessel }}
+              </div>
+            </th>
+        </tr>
+        <tr>
+          <th colspan="2"><hr></th>
+        </tr>
+    </div>
+  {% endfor %}
+</table>
+</div>
+
+<div class="centerstage">
+    {% if is_paginated %}
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li><a href="?{% param_replace page=page_obj.previous_page_number %}">&laquo;&nbsp</a></li>
+        {% else %}
+          <li class="disabled"><span>&laquo;&nbsp</span></li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+          {% if page_obj.number == i %}
+            <li class="active"><span>{{ i }}&nbsp<span class="sr-only">(current)</span></span></li>
+          {% else %}
+            <li><a href="?{% param_replace page=i %}">{{ i }}&nbsp</a></li>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li><a href="?{% param_replace page=page_obj.next_page_number %}">&raquo;&nbsp</a></li>
+        {% else %}
+          <li class="disabled"><span>&raquo;&nbsp</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+</div>
+{% endblock %}

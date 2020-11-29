@@ -1,0 +1,30 @@
+{% extends "web_hiring/base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+  <h1>Новая вакансия</h1>
+  {% load widget_tweaks %}
+  <form method="post" action="{% url 'web_hiring:post_new' %}"  class="" novalidate>
+    {% csrf_token %}
+      {% for field in form %}
+        {% if field.id_for_label == "id_title" %}
+          <div class="form-group{% if field.errors %} has-error{% endif %}">
+              {{ field|as_crispy_field }}
+              <div class="mt-1 titlespecify" style="display:none">
+                  <input class="form-control form-control-sm" type='text' name='titlespecify' placeholder="Укажите должность" />
+              </div>
+              {% for error in form.title.errors %}
+                  <p class="help-block">{{ error }}</p>
+              {% endfor %}
+          </div>
+        {% else %}
+          <div class="form-group{% if field.errors %} has-error{% endif %}">
+            {{ field|as_crispy_field }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Сохранить</button>
+    </div>
+  </form>
+{% endblock %}
