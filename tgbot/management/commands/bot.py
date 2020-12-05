@@ -23,7 +23,7 @@ from loguru import logger
 
 CALENDAR, CALENDAR_SELECTOR, EDIT, FILTER, EMAIL_CONFIRM = range(5)
 logger.add('info.log', format='{time} {level} {message}',
-            level='DEBUG', rotation="1 MB", compression='zip')
+            level='INFO', rotation="1 MB", compression='zip')
 
 
 class Command(BaseCommand):

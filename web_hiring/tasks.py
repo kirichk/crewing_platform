@@ -33,9 +33,7 @@ def find_new_posts():
     new_vacancies = []
     if vacancies_list is not None:
         for vacancy in vacancies_list:
-            if Post.objects.filter(link=vacancy['link']).exists():
-                print(vacancy)
-            else:
+            if not Post.objects.filter(link=vacancy['link']).exists():
                 new_vacancies.append(vacancy)
     if new_vacancies == []:
         print('No updates detected')

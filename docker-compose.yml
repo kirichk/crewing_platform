@@ -13,16 +13,16 @@ services:
     build: .
     restart: always
     container_name: 'demo_app_django'
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn crewing.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/code
-    ports:
-      - '8000:8000'
+    expose:
+      - 8000
   celery:
     build: .
     restart: always
     container_name: 'demo_app_celery'
-    command: celery -A crewing worker --beat --scheduler django --loglevel=debug
+    command: celery -A crewing worker --beat --scheduler django --loglevel=info
     volumes:
       - .:/code
     depends_on:
@@ -35,5 +35,11 @@ services:
     command: python manage.py bot
     volumes:
       - .:/code
+    depends_on:
+      - web
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
     depends_on:
       - web

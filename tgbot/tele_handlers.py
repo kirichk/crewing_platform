@@ -17,7 +17,7 @@ from loguru import logger
 
 
 logger.add('info.log', format='{time} {level} {message}',
-            level='DEBUG', rotation="1 MB", compression='zip')
+            level='INFO', rotation="1 MB", compression='zip')
 # PHONE, SALARY_RANGE = range(2)
 PAGE_SPLIT = 8
 CURRENT_PAGE = 0
@@ -204,6 +204,7 @@ def vacancy_paginator(vacancies: list, pattern: str,
 
 @logger.catch
 def start_buttons_handler(update: Update, context: CallbackContext):
+    logger.info(f'user_data: {context.user_data}')
     try:
         request = update.callback_query
         user_id = request.from_user.id
@@ -268,6 +269,7 @@ def start_buttons_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def detail_handler(update: Update, context: CallbackContext):
+    logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
     post = Post.objects.get(id=callback[-1])
     text = model_text_details(post)
@@ -284,6 +286,7 @@ def detail_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def searchfilter_handler(update: Update, context: CallbackContext):
+    logger.info(f'user_data: {context.user_data}')
     all_entries = Post.objects.all()
     if context.user_data['FILTER_TITLE'] != 'Пропустить' and context.user_data['FILTER_TITLE'] != '':
         all_entries = all_entries.filter(
@@ -297,7 +300,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
     post_list = model_transcriptor(all_entries)
     if post_list == []:
         update.callback_query.edit_message_text(
-            text='По Вашему профилю вакансий не найдено. /menu'
+            text='По Вашему фильтру вакансий не найдено. /menu'
         )
         return ConversationHandler.END
     else:
@@ -313,7 +316,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
             else:
                 cleaned_sub_contract = int(re.findall(r'[0-9]+', context.user_data['FILTER_CONTRACT'])[0])
             cleaned_salary = int(re.findall(r'[0-9]+', post['salary'])[0])
-            if post['voyage_duration'] is not None:
+            if post['voyage_duration'] is None:
                 cleaned_contract = 6
             else:
                 cleaned_contract = int(re.findall(r'[0-9]+', post['voyage_duration'])[0])
@@ -331,6 +334,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def searchsubscription_handler(update: Update, context: CallbackContext):
+    logger.info(f'user_data: {context.user_data}')
     p = Profile.objects.get(external_id=update.callback_query.from_user.id)
     all_entries = Post.objects.all()
     if p.title_subscriptions != 'Пропустить' and p.title_subscriptions != '':
@@ -379,6 +383,7 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def new_handler(update: Update, context: CallbackContext):
+    logger.info(f'user_data: {context.user_data}')
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -397,6 +402,7 @@ def new_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def newday_handler(update: Update, context: CallbackContext):
+    logger.info(f'user_data: {context.user_data}')
     post_list = model_transcriptor(Post.objects.filter(
                                     publish_date__gte=date.today()))
     if post_list == []:
@@ -416,6 +422,7 @@ def newday_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def newweek_handler(update: Update, context: CallbackContext):
+    logger.info(f'user_data: {context.user_data}')
     week_ago_date = date.today() - timedelta(days=7)
     post_list = model_transcriptor(Post.objects.filter(
                                     publish_date__gte=week_ago_date))
@@ -436,7 +443,7 @@ def newweek_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def newsletter_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
     inline_keyboard = [
         [
@@ -480,7 +487,7 @@ def newsletter_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def filter_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
     text = ''
     message = ''
@@ -560,7 +567,7 @@ def filter_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def profile_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     inline_keyboard = [
         [InlineKeyboardButton(text='Главное меню', callback_data='start')],
     ]
@@ -592,7 +599,7 @@ def profile_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def profile_edit_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     p = Profile.objects.get(external_id=update.callback_query.from_user.id)
     callback = update.callback_query.data.split('_')
     text = ''
@@ -650,7 +657,7 @@ def profile_edit_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def profile_delete_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     p = Profile.objects.get(external_id=update.callback_query.from_user.id)
     p.delete()
     inline_buttons = InlineKeyboardMarkup(
@@ -672,6 +679,7 @@ def profile_delete_handler(update: Update, context: CallbackContext):
 def title_handler(update: Update, context: CallbackContext):
     """ Начало взаимодействия по клику на inline-кнопку
     """
+    logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
     show_item_list(update, settings.TITLE_CHOICES, callback[0], callback[1])
     p = Profile.objects.get_or_create(
@@ -684,7 +692,7 @@ def title_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def title_choose_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     if context.user_data['NEXT_STAGE_CALLBACK'] == 'filter_':
         updated_subs = item_selection_handler(
                             update=update,
@@ -710,7 +718,7 @@ def title_choose_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def salary_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     text = ''
     if update.callback_query.data.split('_')[1] == 'reg':
         callback = 'fleet_add_'
@@ -756,6 +764,7 @@ def salary_handler(update: Update, context: CallbackContext):
 def fleet_handler(update: Update, context: CallbackContext):
     """ Начало взаимодействия по клику на inline-кнопку
     """
+    logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
     if callback[2] != '':
         p = Profile.objects.get(external_id=update.callback_query.from_user.id)
@@ -767,7 +776,7 @@ def fleet_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def fleet_choose_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     if context.user_data['NEXT_STAGE_CALLBACK'] == 'filter_':
         updated_subs = item_selection_handler(
                             update=update,
@@ -793,7 +802,7 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def contract_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     callback_data = update.callback_query.data.split('_')
     text = ''
     if callback_data[1] == 'reg':
@@ -831,7 +840,7 @@ def contract_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def crew_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     callback_data = update.callback_query.data.split('_')
     text = ''
     if callback_data[1] == 'reg':
@@ -872,7 +881,7 @@ def crew_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def date_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     callback_data = update.callback_query.data.split('_')
     update.callback_query.edit_message_text("Выберите дату Вашей готовности",
                         reply_markup=telegramcalendar.create_calendar())
@@ -889,7 +898,7 @@ def date_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def email_question_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     selected,date = telegramcalendar.process_calendar_selection(update, context)
     context.user_data['NEXT_STAGE_CALLBACK'] = 'reg'
     if selected:
@@ -919,7 +928,7 @@ def email_question_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def email_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     update.callback_query.edit_message_text(
         text='Введите Ваш email пожалуйста.'
     )
@@ -928,7 +937,7 @@ def email_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def email_confirmer_handler(update: Update, context: CallbackContext):
-    logger.info('user_data: %s', context.user_data)
+    logger.info(f'user_data: {context.user_data}')
     p = Profile.objects.get(external_id=update.message.from_user.id)
     p.email = update.message.text
     p.save()
