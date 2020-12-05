@@ -32,6 +32,7 @@ python-crontab==2.5.1
 python-dateutil==2.8.1
 python-decouple==3.3
 python-telegram-bot==13.0
+python-telegram-bot-pagination==0.0.2
 pytz==2020.4
 redis==3.5.3
 requests==2.25.0

@@ -13,12 +13,24 @@ class ProfileForm(forms.ModelForm):
             'phone',
             'full_name',
             'title_subscriptions',
-            'salary_range'
+            'fleet_subscriptions',
+            'salary_subscription',
+            'contract_subscription',
+            'crew_subscription',
+            'date_ready',
+            'email',
+            'subscription'
         )
         widgets = {
             'name': forms.TextInput,
             'phone': forms.TextInput,
             'full_name': forms.TextInput,
             'title_subscriptions': forms.TextInput,
-            'salary_range': forms.TextInput,
+            'fleet_subscriptions': forms.TextInput,
+            'salary_subscription': forms.TextInput,
+            'contract_subscription': forms.TextInput,
+            'crew_subscription': forms.TextInput,
+            'date_ready': forms.DateInput,
+            'email': forms.TextInput,
+            'subscription': forms.CheckboxInput
         }

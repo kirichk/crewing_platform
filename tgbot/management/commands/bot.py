@@ -6,36 +6,24 @@ from telegram.ext import (CallbackContext, CallbackQueryHandler, Updater,
                         Filters)
 from telegram.utils.request import Request
 from tgbot.models import Profile
-from tgbot.tele_handlers import (start_buttons_handler,phone_handler,
-                                title_handler, clear_title_handler,
-                                min_salary_handler, range_salary_handler,
-                                reg_end, menu_handler, title_edit,
-                                add_title_handler, remove_title_handler)
+from tgbot.tele_handlers import (start_buttons_handler,new_handler,
+                                newday_handler, newweek_handler,
+                                profile_handler,  profile_edit_handler,
+                                profile_delete_handler,
+                                title_handler, title_choose_handler,
+                                salary_handler, fleet_handler,
+                                fleet_choose_handler, contract_handler,
+                                crew_handler, date_handler, newsletter_handler,
+                                email_question_handler, email_confirmer_handler,
+                                email_handler, success_handler, filter_handler,
+                                detail_handler, searchfilter_handler,
+                                searchsubscription_handler)
 from loguru import logger
 
 
-PHONE, SALARY_RANGE = range(2)
+CALENDAR, CALENDAR_SELECTOR, EDIT, FILTER, EMAIL_CONFIRM = range(5)
 logger.add('info.log', format='{time} {level} {message}',
             level='DEBUG', rotation="1 MB", compression='zip')
-
-
-@logger.catch
-def do_echo(update: Update, context: CallbackContext):
-    chat_id = update.message.chat_id
-    text = update.message.text
-
-    p, _ = Profile.objects.get_or_create(
-        external_id=chat_id,
-        defaults={
-            'name': update.message.from_user.username,
-        }
-    )
-    p.save()
-
-    reply_text = f'Ваш ID = {chat_id}\n{text}'
-    update.message.reply_text(
-        text=reply_text,
-    )
 
 
 class Command(BaseCommand):
@@ -45,7 +33,7 @@ class Command(BaseCommand):
         # 1 -- правильное подключение
         req = Request(
             connect_timeout=30.0,
-            read_timeout=1.0,
+            read_timeout=15.0,
             con_pool_size=8,
         )
         bot = Bot(
@@ -60,47 +48,92 @@ class Command(BaseCommand):
         conv_handler = ConversationHandler(
             entry_points=[
                 CommandHandler('start', start_buttons_handler),
-                CommandHandler('menu', menu_handler),
+                CommandHandler('menu', start_buttons_handler),
+                CallbackQueryHandler(start_buttons_handler,
+                                        pattern=r'^start$',
+                                        pass_user_data=True),
+                CallbackQueryHandler(searchfilter_handler,
+                                        pattern=r'^searchfilter',
+                                        pass_user_data=True),
+                CallbackQueryHandler(searchsubscription_handler,
+                                        pattern=r'^searchsubscription',
+                                        pass_user_data=True),
+                CallbackQueryHandler(detail_handler,
+                                        pattern=r'^detail',
+                                        pass_user_data=True),
+                CallbackQueryHandler(new_handler,
+                                        pattern=r'^new$',
+                                        pass_user_data=True),
+                CallbackQueryHandler(newsletter_handler,
+                                        pattern=r'^newsletter',
+                                        pass_user_data=True),
+                CallbackQueryHandler(filter_handler,
+                                        pattern=r'^filter',
+                                        pass_user_data=True),
+                CallbackQueryHandler(profile_handler,
+                                        pattern=r'^profile$',
+                                        pass_user_data=True),
+                CallbackQueryHandler(profile_edit_handler,
+                                        pattern=r'^profileedit',
+                                        pass_user_data=True),
+                CallbackQueryHandler(profile_delete_handler,
+                                        pattern=r'^profiledelete$',
+                                        pass_user_data=True),
+                CallbackQueryHandler(newweek_handler,
+                                        pattern=r'^newweek',
+                                        pass_user_data=True),
+                CallbackQueryHandler(newday_handler,
+                                        pattern=r'^newday',
+                                        pass_user_data=True),
                 CallbackQueryHandler(title_handler,
-                                        pattern=r'(title)',
+                                        pattern=r'^title',
                                         pass_user_data=True),
-                CallbackQueryHandler(phone_handler,
-                                        pattern=r'(tconfirm-add)',
+                CallbackQueryHandler(title_choose_handler,
+                                        pattern=r'^choicetitle',
                                         pass_user_data=True),
-                CallbackQueryHandler(clear_title_handler,
-                                        pattern=r'(tconfirm-rmv)',
+                CallbackQueryHandler(salary_handler,
+                                        pattern=r'^salary',
                                         pass_user_data=True),
-                CallbackQueryHandler(min_salary_handler,
-                                        pattern=r'(tconfirm-next)',
+                CallbackQueryHandler(fleet_handler,
+                                        pattern=r'^fleet',
                                         pass_user_data=True),
-                CallbackQueryHandler(min_salary_handler,
-                                        pattern=r'(srconfirm-edit)',
+                CallbackQueryHandler(fleet_choose_handler,
+                                        pattern=r'^choicefleet',
                                         pass_user_data=True),
-                CallbackQueryHandler(reg_end,
-                                        pattern=r'(srconfirm-next)',
+                CallbackQueryHandler(contract_handler,
+                                        pattern=r'^contract',
                                         pass_user_data=True),
-                CallbackQueryHandler(title_edit,
-                                        pattern=r'(editt)',
+                CallbackQueryHandler(crew_handler,
+                                        pattern=r'^crew',
                                         pass_user_data=True),
-                CallbackQueryHandler(add_title_handler,
-                                        pattern=r'(addt)',
+                CallbackQueryHandler(date_handler,
+                                        pattern=r'^date',
                                         pass_user_data=True),
-                CallbackQueryHandler(remove_title_handler,
-                                        pattern=r'(rmvt)',
+                CallbackQueryHandler(email_handler,
+                                        pattern=r'^email$',
+                                        pass_user_data=True),
+                CallbackQueryHandler(success_handler,
+                                        pattern=r'^success_registration$',
                                         pass_user_data=True),
             ],
             states={
-                PHONE: [MessageHandler(Filters.all, phone_handler,
+                CALENDAR_SELECTOR: [CallbackQueryHandler(date_handler,
+                                        pass_user_data=True)],
+                CALENDAR: [CallbackQueryHandler(email_question_handler,
+                                        pass_user_data=True)],
+                EDIT: [CallbackQueryHandler(profile_edit_handler,
+                                        pass_user_data=True)],
+                EMAIL_CONFIRM: [MessageHandler(Filters.all, email_confirmer_handler,
                                         pass_user_data=True),],
-                SALARY_RANGE: [MessageHandler(Filters.all, range_salary_handler,
-                                        pass_user_data=True),],
+                FILTER: [CallbackQueryHandler(filter_handler,
+                                        pass_user_data=True)],
             },
             fallbacks=[
-                CommandHandler('cancel', phone_handler),
+                CommandHandler('cancel', start_buttons_handler),
             ],
         )
         updater.dispatcher.add_handler(conv_handler)
-        updater.dispatcher.add_handler(MessageHandler(Filters.all, do_echo))
+        updater.dispatcher.add_handler(MessageHandler(Filters.all, start_buttons_handler))
 
         # 3 -- запустить бесконечную обработку входящих сообщений
         updater.start_polling()
