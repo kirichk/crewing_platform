@@ -703,7 +703,7 @@ def title_choose_handler(update: Update, context: CallbackContext):
                                 'следующие должности в фильтре')
         context.user_data['FILTER_TITLE'] = updated_subs
     else:
-        p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)
+        p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
         updated_subs = item_selection_handler(
                             update=update,
                             data=p.title_subscriptions,
