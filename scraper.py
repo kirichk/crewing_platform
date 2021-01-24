@@ -9,11 +9,11 @@ from django.conf import settings
 from django.utils import timezone
 from loguru import logger
 
-from web_hiring.models import Post
-from web_hiring.notificators import vacancy_notification
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crewing.settings")
 django.setup()
+
+from web_hiring.models import Post
+from web_hiring.notificators import vacancy_notification
 
 logger.add(
     "info.log",
