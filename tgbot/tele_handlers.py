@@ -310,10 +310,10 @@ def searchfilter_handler(update: Update, context: CallbackContext):
                 cleaned_sub_salary_start = 0
                 cleaned_sub_salary_end = 1000000
             else:
-                cleaned_sub_salary = int(re.findall(r'[0-9]+',
-                                            context.user_data['FILTER_SALARY'].split('-')[0]))
-                cleaned_sub_salary_start = cleaned_sub_salary[0]
-                cleaned_sub_salary_end = cleaned_sub_salary[1]
+                cleaned_sub_salary = re.findall(r'[0-9]+',
+                                            context.user_data['FILTER_SALARY'].split('-')[0])
+                cleaned_sub_salary_start = int(cleaned_sub_salary[0])
+                cleaned_sub_salary_end = int(cleaned_sub_salary[1])
             if context.user_data['FILTER_CONTRACT'] == '' or context.user_data['FILTER_CONTRACT'] == 'Не важно':
                 cleaned_sub_contract = 0
             else:
@@ -359,10 +359,13 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
         result = []
         for post in post_list:
             if p.salary_subscription == '' or p.salary_subscription == 'Не важно' or p.salary_subscription is None:
-                cleaned_sub_salary = 0
+                cleaned_sub_salary_start = 0
+                cleaned_sub_salary_end = 1000000
             else:
-                cleaned_sub_salary = int(re.findall(r'[0-9]+',
-                                            p.salary_subscription.split('-')[0])[0])
+                cleaned_sub_salary = re.findall(r'[0-9]+',
+                                            p.salary_subscription.split('-')[0])
+                cleaned_sub_salary_start = int(cleaned_sub_salary[0])
+                cleaned_sub_salary_end = int(cleaned_sub_salary[1])
             if p.contract_subscription == '' or p.contract_subscription == 'Не важно' or p.contract_subscription is None:
                 cleaned_sub_contract = 0
             else:
@@ -372,7 +375,7 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
                 cleaned_contract = 6
             else:
                 cleaned_contract = int(re.findall(r'[0-9]+', post['voyage_duration'])[0])
-            if cleaned_sub_salary != '' and cleaned_salary >= cleaned_sub_salary:
+            if cleaned_sub_salary != '' and cleaned_sub_salary_start <= cleaned_salary >= cleaned_sub_salary_end:
                 if cleaned_contract >= cleaned_sub_contract:
                     result.append(post)
         page = int(update.callback_query.data.split('#')[1])
