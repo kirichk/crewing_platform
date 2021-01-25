@@ -311,7 +311,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
                 cleaned_sub_salary_end = 1000000
             else:
                 cleaned_sub_salary = re.findall(r'[0-9]+',
-                                            context.user_data['FILTER_SALARY'].split('-')[0])
+                                            context.user_data['FILTER_SALARY'].split('-'))
                 cleaned_sub_salary_start = int(cleaned_sub_salary[0])
                 cleaned_sub_salary_end = int(cleaned_sub_salary[1])
             if context.user_data['FILTER_CONTRACT'] == '' or context.user_data['FILTER_CONTRACT'] == 'Не важно':
@@ -363,7 +363,7 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
                 cleaned_sub_salary_end = 1000000
             else:
                 cleaned_sub_salary = re.findall(r'[0-9]+',
-                                            p.salary_subscription.split('-')[0])
+                                            p.salary_subscription.split('-'))
                 cleaned_sub_salary_start = int(cleaned_sub_salary[0])
                 cleaned_sub_salary_end = int(cleaned_sub_salary[1])
             if p.contract_subscription == '' or p.contract_subscription == 'Не важно' or p.contract_subscription is None:
