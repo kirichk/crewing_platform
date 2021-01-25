@@ -324,6 +324,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
                 cleaned_contract = int(re.findall(r'[0-9]+', post['voyage_duration'])[0])
             print(cleaned_sub_salary_start)
             print(cleaned_sub_salary_end)
+            print(cleaned_salary)
             if cleaned_sub_salary != '' and cleaned_sub_salary_start <= cleaned_salary >= cleaned_sub_salary_end:
                 if cleaned_contract >= cleaned_sub_contract:
                         result.append(post)
