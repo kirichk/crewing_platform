@@ -213,33 +213,33 @@ def start_buttons_handler(update: Update, context: CallbackContext):
         user_id = request.from_user.id
     inline_keyboard = [
         [
-            InlineKeyboardButton(text='Новые вакансии',
+            InlineKeyboardButton(text='Все новые вакансии ' + u'\U0001F50E',
                                 callback_data='new')
         ],[
-            InlineKeyboardButton(text='Фильтр вакансий',
+            InlineKeyboardButton(text='Настроить фильтр вакансий ' + u'\U0001F504',
                                 callback_data='filter_'),
         ],[
-            InlineKeyboardButton(text='Мой профиль',
+            InlineKeyboardButton(text='Заполнить апликейшн ' + u'\U0001F6E5',
                                 callback_data='profile'),
         ],
     ]
 
     if not Profile.objects.filter(external_id=user_id).exists():
         inline_keyboard.insert(2,
-            [InlineKeyboardButton(text='Вакансии согласно заполненному профилю',
+            [InlineKeyboardButton(text='Вакансии согласно вашему апликейшн ' + u'\U0001F477',
                 callback_data='profile')]
         )
         inline_keyboard.insert(3,
-            [InlineKeyboardButton(text='Подписаться на рассылку Вакансий',
+            [InlineKeyboardButton(text='Получать уведомления о новых вакансиях ' + u'\U0001F514',
                 callback_data='newsletter_all')]
         )
     else:
         inline_keyboard.insert(2,
-            [InlineKeyboardButton(text='Вакансии согласно заполненному профилю',
+            [InlineKeyboardButton(text='Вакансии согласно вашему апликейшн ' + u'\U0001F477',
                 callback_data='searchsubscription#1')]
         )
         inline_keyboard.insert(3,
-            [InlineKeyboardButton(text='Подписаться на рассылку Вакансий',
+            [InlineKeyboardButton(text='Получать уведомления о новых вакансиях ' + u'\U0001F514',
                 callback_data='newsletter_')]
         )
     inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
