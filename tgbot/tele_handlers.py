@@ -155,7 +155,7 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
             data += callback[2]
         elif callback[2] not in data:
             data += ', ' + callback[2]
-        if subscriptions == '':
+        elif subscriptions == '':
             text_entry = callback[2]
         else:
             text_entry = subscriptions + ", " + callback[2]
@@ -307,10 +307,13 @@ def searchfilter_handler(update: Update, context: CallbackContext):
         result = []
         for post in post_list:
             if context.user_data['FILTER_SALARY'] == '' or context.user_data['FILTER_SALARY'] == 'Не важно':
-                cleaned_sub_salary = 0
+                cleaned_sub_salary_start = 0
+                cleaned_sub_salary_end = 1000000
             else:
                 cleaned_sub_salary = int(re.findall(r'[0-9]+',
-                                            context.user_data['FILTER_SALARY'].split('-')[0])[0])
+                                            context.user_data['FILTER_SALARY'].split('-')[0]))
+                cleaned_sub_salary_start = cleaned_sub_salary[0]
+                cleaned_sub_salary_end = cleaned_sub_salary[1]
             if context.user_data['FILTER_CONTRACT'] == '' or context.user_data['FILTER_CONTRACT'] == 'Не важно':
                 cleaned_sub_contract = 0
             else:
@@ -320,7 +323,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
                 cleaned_contract = 6
             else:
                 cleaned_contract = int(re.findall(r'[0-9]+', post['voyage_duration'])[0])
-            if cleaned_sub_salary != '' and cleaned_salary >= cleaned_sub_salary:
+            if cleaned_sub_salary != '' and cleaned_sub_salary_start <= cleaned_salary >= cleaned_sub_salary_end:
                 if cleaned_contract >= cleaned_sub_contract:
                         result.append(post)
         page = int(update.callback_query.data.split('#')[1])
@@ -738,7 +741,7 @@ def salary_handler(update: Update, context: CallbackContext):
         inline_keyboard=[
             [
             InlineKeyboardButton(text='до 1000$',
-                                callback_data=callback+'до 1000$'),
+                                callback_data=callback+'0-1000$'),
             InlineKeyboardButton(text='1000-3000$',
                                 callback_data=callback+'1000-3000$')
             ],[
@@ -748,7 +751,7 @@ def salary_handler(update: Update, context: CallbackContext):
                                 callback_data=callback+'5000-10000$')
             ],[
             InlineKeyboardButton(text='10000$+',
-                                callback_data=callback+'10000$+'),
+                                callback_data=callback+'10000-1000000$'),
             InlineKeyboardButton(text='Не важно',
                                 callback_data=callback+'Не важно')
             ],
