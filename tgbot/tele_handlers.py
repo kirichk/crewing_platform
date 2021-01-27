@@ -151,13 +151,14 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
         )
     else:
         subscriptions = data
-        text_entry = data
         if data == '' or data is None:
             data = callback[2]
+            text_entry = callback[2]
         elif subscriptions == '' or subscriptions is None:
             text_entry = callback[2]
         elif callback[2] not in data:
             data += ', ' + callback[2]
+            text_entry = data
         else:
             text_entry = subscriptions + ", " + callback[2]
         update.callback_query.edit_message_text(
