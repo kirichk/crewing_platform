@@ -150,10 +150,10 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
             reply_markup=inline_buttons,
         )
     else:
-        if data == '' or data is None:
-            data = callback[2]
-        elif callback[2] in data:
+        if callback[2] in data:
             continue
+        elif data == '' or data is None:
+            data = callback[2]
         else:
             data += ', ' + callback[2]
         update.callback_query.edit_message_text(
