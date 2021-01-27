@@ -720,7 +720,7 @@ def title_choose_handler(update: Update, context: CallbackContext):
         try:
             titles = p.title_subscription
         except AttributeError:
-            p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+            p = Profile.objects.get(external_id=update.callback_query.from_user.id)[0]
             titles = p.title_subscription
         finally:
             updated_subs = item_selection_handler(
@@ -810,7 +810,7 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
         try:
             fleets = p.fleet_subscriptions
         except AttributeError:
-            p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+            p = Profile.objects.get(external_id=update.callback_query.from_user.id)[0]
             fleets = p.fleet_subscriptions
         finally:
             updated_subs = item_selection_handler(
