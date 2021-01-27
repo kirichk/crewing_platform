@@ -10,6 +10,7 @@ from telegram.utils.request import Request
 from telegram_bot_pagination import InlineKeyboardPaginator
 from django.conf import settings
 from django.forms.models import model_to_dict
+from crewing.settings import SALARY_MATCHES
 from .models import Profile
 from web_hiring.models import Post
 from tgbot.tools.calendar import telegramcalendar
@@ -524,7 +525,7 @@ def filter_handler(update: Update, context: CallbackContext):
         date_choise = context.user_data['FILTER_DATE'].strftime("%d/%m/%Y")
         text += f'\nНачальная дата старта: {date_choise}'
     if context.user_data['FILTER_SALARY'] != '':
-        text += f'\nЗарплата: {context.user_data["FILTER_SALARY"]}'
+        text += f'\nЗарплата: {SALARY_MATCHES[context.user_data["FILTER_SALARY"]]}'
     if context.user_data['FILTER_CONTRACT'] != '':
         text += f'\nДлительность контракта: {context.user_data["FILTER_CONTRACT"]}'
     if context.user_data['FILTER_CREW'] != '':
