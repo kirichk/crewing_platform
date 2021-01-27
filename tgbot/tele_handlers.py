@@ -715,6 +715,7 @@ def title_choose_handler(update: Update, context: CallbackContext):
                                 'следующие должности в фильтре')
         context.user_data['FILTER_TITLE'] = updated_subs
     else:
+        titles = ''
         p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
         try:
             titles = p.title_subscription
