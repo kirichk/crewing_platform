@@ -718,10 +718,10 @@ def title_choose_handler(update: Update, context: CallbackContext):
         titles = ''
         p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
         try:
-            titles = p.title_subscription
+            titles = p.title_subscriptions
         except AttributeError:
             p = Profile.objects.get(external_id=update.callback_query.from_user.id)
-            titles = p.title_subscription
+            titles = p.title_subscriptions
         finally:
             updated_subs = item_selection_handler(
                                 update=update,
