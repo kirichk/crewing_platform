@@ -73,7 +73,7 @@ def subsription_cleaner(text):
     '''
     Checking if subscription start correctly
     '''
-    if text.startswith(','):
+    if text.startswith(',') or text.endswith(', '):
         text = text.replace(', ', '')
     else:
         text = text.replace(', ,', ',')
