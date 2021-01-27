@@ -151,12 +151,13 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
         )
     else:
         subscriptions = data
-        if data == '':
+        text_entry = data
+        if data == '' or data is None:
             data += callback[2]
+        elif subscriptions == '' or subscriptions is None:
+            text_entry = callback[2]
         elif callback[2] not in data:
             data += ', ' + callback[2]
-        elif subscriptions == '':
-            text_entry = callback[2]
         else:
             text_entry = subscriptions + ", " + callback[2]
         update.callback_query.edit_message_text(
@@ -506,6 +507,7 @@ def filter_handler(update: Update, context: CallbackContext):
         if selected:
             context.user_data['FILTER_DATE'] = date
         else:
+            context.user_data['FILTER_DATE'] = ''
             return FILTER
     else:
         if callback[1] == 'clear':
@@ -714,15 +716,21 @@ def title_choose_handler(update: Update, context: CallbackContext):
         context.user_data['FILTER_TITLE'] = updated_subs
     else:
         p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
-        updated_subs = item_selection_handler(
-                            update=update,
-                            data=p.title_subscriptions,
-                            callback_data='title',
-                            callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
-                            text='Сейчас Вы подписаны на '\
-                                'следующие должности')
-        p.title_subscriptions = updated_subs
-        p.save()
+        try:
+            titles = p.title_subscription
+        except AttributeError:
+            p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+            titles = p.title_subscription
+        finally:
+            updated_subs = item_selection_handler(
+                                update=update,
+                                data=titles,
+                                callback_data='title',
+                                callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
+                                text='Сейчас Вы подписаны на '\
+                                    'следующие должности')
+            p.title_subscriptions = updated_subs
+            p.save()
     return ConversationHandler.END
 
 
@@ -797,16 +805,22 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
                                 'следующий флот в фильтре.')
         context.user_data['FILTER_FLEET'] = updated_subs
     else:
-        p = Profile.objects.get(external_id=update.callback_query.from_user.id)
-        updated_subs = item_selection_handler(
-                        update=update,
-                        data=p.fleet_subscriptions,
-                        callback_data='fleet',
-                        callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
-                        text='Сейчас Вы подписаны на '\
-                            'следующие флоты')
-        p.fleet_subscriptions = updated_subs
-        p.save()
+        p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
+        try:
+            fleets = p.fleet_subscriptions
+        except AttributeError:
+            p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+            fleets = p.fleet_subscriptions
+        finally:
+            updated_subs = item_selection_handler(
+                            update=update,
+                            data=fleets,
+                            callback_data='fleet',
+                            callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
+                            text='Сейчас Вы подписаны на '\
+                                'следующие флоты')
+            p.fleet_subscriptions = updated_subs
+            p.save()
     return ConversationHandler.END
 
 

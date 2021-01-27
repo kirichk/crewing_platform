@@ -88,30 +88,34 @@ def check_new(url):
     soup = BeautifulSoup(page.text, "lxml")
     table = soup.find("table", class_="nwrap")
     page_dict = []
-    for rows in table.find_all("tr")[1:]:
-        columns = [
-            "Position",
-            "Fleet",
-            "Vessel type",
-            "Salary",
-            "Joining date",
-            "Vacancy posted",
-        ]
-        info = []
-        for column in rows.find_all("td"):
-            if link_match_check(column):
-                result.extend(page_dict)
-                return result
-            try:
-                info.append(column.a["href"])
-                info.append(column.text)
-            except TypeError:
-                info.append(column.text)
-        final = {"link": "https://ukrcrewing.com.ua" + info[0]}
-        final.update(dict(zip(columns, info[1:])))
-        page_dict.append(final)
-    result.extend(page_dict)
-    return result
+    try:
+        for rows in table.find_all("tr")[1:]:
+            columns = [
+                "Position",
+                "Fleet",
+                "Vessel type",
+                "Salary",
+                "Joining date",
+                "Vacancy posted",
+            ]
+            info = []
+            for column in rows.find_all("td"):
+                if link_match_check(column):
+                    result.extend(page_dict)
+                    return result
+                try:
+                    info.append(column.a["href"])
+                    info.append(column.text)
+                except TypeError:
+                    info.append(column.text)
+            final = {"link": "https://ukrcrewing.com.ua" + info[0]}
+            final.update(dict(zip(columns, info[1:])))
+            page_dict.append(final)
+        result.extend(page_dict)
+    except AttributeError:
+        print('Error occured')
+    finally:
+        return result
 
 
 @logger.catch
@@ -140,82 +144,84 @@ def info_search(vacancies: dict, mode: str):
         sleep(0.5)
         soup = BeautifulSoup(requests.get(vacancy["link"]).text, "lxml")
         details = soup.find("div", class_="vacancy-full-content")
-        for row in details.find_all("div", class_="colmn"):
-            row_content = row.text.split(":")
-            if row_content[0] == "Длительность рейса":
-                voyage_duration = row_content[1]
-            if row_content[0] == "Регион работы":
-                sailing_area = row_content[1]
-            if row_content[0] == "DWT":
-                dwt = row_content[1]
-            if row_content[0] == "Год постройки судна":
-                years_constructed = int(row_content[1])
-            if row_content[0] == "Экипаж":
-                crew = row_content[1]
-            if row_content[0] == "Уровень английского":
-                english = row_content[1]
-            if row_content[0] == "Крюинг":
-                crewer = row_content[1]
-        for div in details.find_all("div"):
-            div.decompose()
-        for header in details.find_all("h1"):
-            header.decompose()
-        for whitespace in details.find_all("br"):
-            whitespace.replace_with("\n")
-        other_info = re.sub(r"\n+", "\n", details.text).strip()
-        additional_info = other_info.replace(
-                                "Дополнительная информация:\n", ""
-                                )
-        updated_date = (
-            "20"
-            + vacancy["Joining date"][6:]
-            + "-"
-            + vacancy["Joining date"][3:5]
-            + "-"
-            + vacancy["Joining date"][:2]
-        )
-        new_post = Post.objects.get_or_create(
-            title=vacancy["Position"],
-            fleet=vacancy["Fleet"],
-            vessel=vacancy["Vessel type"],
-            salary=vacancy["Salary"],
-            joining_date=updated_date,
-            voyage_duration=voyage_duration,
-            sailing_area=sailing_area,
-            dwt=dwt,
-            years_constructed=years_constructed,
-            crew=crew,
-            crewer=crewer,
-            english=english,
-            link=vacancy["link"],
-            text=additional_info,
-            publish_date=timezone.now(),
-        )[0]
-        new_post.save()
-        if mode == "update":
-            vacancy_form = {
-                "title": vacancy["Position"],
-                "fleet": vacancy["Fleet"],
-                "vessel": vacancy["Vessel type"],
-                "salary": vacancy["Salary"],
-                "joining_date": updated_date,
-                "voyage_duration": voyage_duration,
-                "sailing_area": sailing_area,
-                "dwt": dwt,
-                "years_constructed": years_constructed,
-                "crew": crew,
-                "crewer": crewer,
-                "english": english,
-                "text": additional_info,
-            }
-            vacancy_notification(vacancy_form)
-        voyage_duration = ""
-        sailing_area = ""
-        dwt = ""
-        years_constructed = None
-        crew = ""
-        english = ""
-
+        try:
+            for row in details.find_all("div", class_="colmn"):
+                row_content = row.text.split(":")
+                if row_content[0] == "Длительность рейса":
+                    voyage_duration = row_content[1]
+                if row_content[0] == "Регион работы":
+                    sailing_area = row_content[1]
+                if row_content[0] == "DWT":
+                    dwt = row_content[1]
+                if row_content[0] == "Год постройки судна":
+                    years_constructed = int(row_content[1])
+                if row_content[0] == "Экипаж":
+                    crew = row_content[1]
+                if row_content[0] == "Уровень английского":
+                    english = row_content[1]
+                if row_content[0] == "Крюинг":
+                    crewer = row_content[1]
+            for div in details.find_all("div"):
+                div.decompose()
+            for header in details.find_all("h1"):
+                header.decompose()
+            for whitespace in details.find_all("br"):
+                whitespace.replace_with("\n")
+            other_info = re.sub(r"\n+", "\n", details.text).strip()
+            additional_info = other_info.replace(
+                                    "Дополнительная информация:\n", ""
+                                    )
+            updated_date = (
+                "20"
+                + vacancy["Joining date"][6:]
+                + "-"
+                + vacancy["Joining date"][3:5]
+                + "-"
+                + vacancy["Joining date"][:2]
+            )
+            new_post = Post.objects.get_or_create(
+                title=vacancy["Position"],
+                fleet=vacancy["Fleet"],
+                vessel=vacancy["Vessel type"],
+                salary=vacancy["Salary"],
+                joining_date=updated_date,
+                voyage_duration=voyage_duration,
+                sailing_area=sailing_area,
+                dwt=dwt,
+                years_constructed=years_constructed,
+                crew=crew,
+                crewer=crewer,
+                english=english,
+                link=vacancy["link"],
+                text=additional_info,
+                publish_date=timezone.now(),
+            )[0]
+            new_post.save()
+            if mode == "update":
+                vacancy_form = {
+                    "title": vacancy["Position"],
+                    "fleet": vacancy["Fleet"],
+                    "vessel": vacancy["Vessel type"],
+                    "salary": vacancy["Salary"],
+                    "joining_date": updated_date,
+                    "voyage_duration": voyage_duration,
+                    "sailing_area": sailing_area,
+                    "dwt": dwt,
+                    "years_constructed": years_constructed,
+                    "crew": crew,
+                    "crewer": crewer,
+                    "english": english,
+                    "text": additional_info,
+                }
+                vacancy_notification(vacancy_form)
+            voyage_duration = ""
+            sailing_area = ""
+            dwt = ""
+            years_constructed = None
+            crew = ""
+            english = ""
+        except AttributeError:
+            continue
 
 if __name__ == "__main__":
     print("Started pagination extraction")
