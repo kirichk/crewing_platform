@@ -153,7 +153,7 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
         subscriptions = data
         text_entry = data
         if data == '' or data is None:
-            data += callback[2]
+            data = callback[2]
         elif subscriptions == '' or subscriptions is None:
             text_entry = callback[2]
         elif callback[2] not in data:
