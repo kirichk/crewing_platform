@@ -156,6 +156,7 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
             pass
         else:
             data += ', ' + callback[2]
+            data = subsription_cleaner(data)
         update.callback_query.edit_message_text(
             text=f'{text}:\n\n'\
                     f'{data}\n\nХотите добавить еще, '\
