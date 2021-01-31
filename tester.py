@@ -30,7 +30,6 @@ def vacancy_extractor():
     for object in all_objects.iterator():
         sleep(0.5)
         soup = BeautifulSoup(requests.get(object.link).text, "lxml")
-        print(soup)
         details = soup.find("div", class_="vacancy-full-content")
         try:
             for row in details.find_all("div", class_="colmn"):
