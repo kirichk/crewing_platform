@@ -18,7 +18,7 @@ class PostForm(forms.ModelForm):
             "salary":"Зарплата($)",
             "joining_date":"Дата посадки",
             "crewer":"Крюинг",
-            "contact":"Контактная информация"
+            "contact":"Контактная информация",
             "voyage_duration":"Длительность рейса",
             "sailing_area":"Регион работы",
             "dwt":"DWT",
