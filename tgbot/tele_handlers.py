@@ -909,7 +909,6 @@ def date_handler(update: Update, context: CallbackContext):
     if not hasattr(update, 'callback_query'):
         context.user_data['NEXT_STAGE_CALLBACK'] = ''
         start_buttons_handler(update, context)
-        return ConversationHandler.END
     else:
         callback_data = update.callback_query.data.split('_')
         update.callback_query.edit_message_text("Выберите дату Вашей готовности",
