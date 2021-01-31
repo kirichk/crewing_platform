@@ -64,6 +64,8 @@ def model_text_details(post):
         main_text += f'Экипаж: {str(post.crew)}\n'
     if post.crewer is not None and post.crewer != '':
         main_text += f'Крюинг: {str(post.crewer)}\n'
+    if post.contact is not None and post.contact != '':
+        main_text += f'Контактная информация: {str(post.contact)}\n'
     if post.text != '':
         main_text += f'Дополнительная информация: {str(post.text)}\n'
     return main_text

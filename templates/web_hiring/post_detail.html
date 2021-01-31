@@ -14,6 +14,9 @@
     <b>Дата посадки: </b>{{ post.joining_date }}<br>
     <b>Уровень английского: </b>{{ post.english }}<br>
     <b>Крюинг: </b>{{ post.crewer }}<br>
+    {% if post.contact != '' %}
+      <b>Контактная информация: </b>{{ post.contact }}<br>
+    {% endif %}
     {% if post.voyage_duration != '' %}
       <b>Длительность рейса: </b>{{ post.voyage_duration }}<br>
     {% endif %}

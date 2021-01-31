@@ -153,6 +153,7 @@ LOGOUT_REDIRECT_URL = '/'
 #############################
 
 TELE_TOKEN = config('TELE_TOKEN')
+CHANNEL_ID = config('CHANNEL_ID')
 
 #####  SCRAPER config  ######
 
