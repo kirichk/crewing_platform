@@ -8,7 +8,7 @@ class PostForm(forms.ModelForm):
     class Meta():
         model = Post
         fields = ('title','fleet','vessel','salary','joining_date','english',
-                'crewer','voyage_duration','sailing_area','dwt',
+                'crewer','contact','voyage_duration','sailing_area','dwt',
                 'years_constructed','crew','text')
 
         labels = {
@@ -18,6 +18,7 @@ class PostForm(forms.ModelForm):
             "salary":"Зарплата($)",
             "joining_date":"Дата посадки",
             "crewer":"Крюинг",
+            "contact":"Контактная информация"
             "voyage_duration":"Длительность рейса",
             "sailing_area":"Регион работы",
             "dwt":"DWT",
