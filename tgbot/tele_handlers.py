@@ -906,6 +906,9 @@ def crew_handler(update: Update, context: CallbackContext):
 @logger.catch
 def date_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
+    if 'message' in update:
+        start_buttons_handler(update, context)
+        return ConversationHandler.END
     callback_data = update.callback_query.data.split('_')
     update.callback_query.edit_message_text("Выберите дату Вашей готовности",
                         reply_markup=telegramcalendar.create_calendar())
