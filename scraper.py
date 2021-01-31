@@ -28,6 +28,17 @@ START_PAGE = requests.get(START_URL)
 
 
 @logger.catch
+def contact_extractor(url):
+    soup = BeautifulSoup(requests.get(url).text, "lxml")
+    details = soup.find("div", class_="page-content agency-page-content")
+    for row in details.find_all("div", class_="colmn"):
+        row_content = row.text.split(":")
+        if row_content[0] == "Телефон" and len(row_content) > 1:
+            return row_content[1]
+    return "Информация отсутсвует"
+
+
+@logger.catch
 def pagination(page):
     """
     Searching for urls of all paginators
@@ -137,7 +148,7 @@ def info_search(vacancies: dict, mode: str):
     """
     Scraping all the information from collected vacancies pages
     """
-    sailing_area = dwt = crew = english = crewer = ""
+    sailing_area = dwt = crew = english = crewer = contact = ""
     years_constructed = None
 
     for vacancy in vacancies:
@@ -159,6 +170,9 @@ def info_search(vacancies: dict, mode: str):
                     english = row_content[1]
                 if row_content[0] == "Крюинг":
                     crewer = row_content[1]
+                    link = row.find("a")
+                    contact = contact_extractor("https://ukrcrewing.com.ua"
+                                                + link['href'])
             for div in details.find_all("div"):
                 div.decompose()
             for header in details.find_all("h1"):
@@ -189,6 +203,7 @@ def info_search(vacancies: dict, mode: str):
                 years_constructed=years_constructed,
                 crew=crew,
                 crewer=crewer,
+                contact=contact,
                 english=english,
                 link=vacancy["link"],
                 text=additional_info,
@@ -208,6 +223,7 @@ def info_search(vacancies: dict, mode: str):
                     "years_constructed": years_constructed,
                     "crew": crew,
                     "crewer": crewer,
+                    "contact": contact,
                     "english": english,
                     "text": additional_info,
                 }
@@ -217,6 +233,7 @@ def info_search(vacancies: dict, mode: str):
             years_constructed = None
             crew = ""
             english = ""
+            contact = ""
         except AttributeError:
             continue
 
