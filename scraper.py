@@ -58,8 +58,8 @@ def vacancies_search(pages: list):
         for rows in table.find_all("tr")[1:]:
             columns = [
                 "Position",
-                "Fleet",
                 "Vessel type",
+                "Voyage duration",
                 "Salary",
                 "Joining date",
                 "Vacancy posted",
@@ -92,8 +92,8 @@ def check_new(url):
         for rows in table.find_all("tr")[1:]:
             columns = [
                 "Position",
-                "Fleet",
                 "Vessel type",
+                "Voyage duration",
                 "Salary",
                 "Joining date",
                 "Vacancy posted",
@@ -137,7 +137,7 @@ def info_search(vacancies: dict, mode: str):
     """
     Scraping all the information from collected vacancies pages
     """
-    voyage_duration = sailing_area = dwt = crew = english = crewer = ""
+    sailing_area = dwt = crew = english = crewer = ""
     years_constructed = None
 
     for vacancy in vacancies:
@@ -147,8 +147,6 @@ def info_search(vacancies: dict, mode: str):
         try:
             for row in details.find_all("div", class_="colmn"):
                 row_content = row.text.split(":")
-                if row_content[0] == "Длительность рейса":
-                    voyage_duration = row_content[1]
                 if row_content[0] == "Регион работы":
                     sailing_area = row_content[1]
                 if row_content[0] == "DWT":
@@ -181,11 +179,11 @@ def info_search(vacancies: dict, mode: str):
             )
             new_post = Post.objects.get_or_create(
                 title=vacancy["Position"],
-                fleet=vacancy["Fleet"],
+                fleet="",
                 vessel=vacancy["Vessel type"],
                 salary=vacancy["Salary"],
                 joining_date=updated_date,
-                voyage_duration=voyage_duration,
+                voyage_duration=vacancy["Voyage duration"],
                 sailing_area=sailing_area,
                 dwt=dwt,
                 years_constructed=years_constructed,
@@ -200,11 +198,11 @@ def info_search(vacancies: dict, mode: str):
             if mode == "update":
                 vacancy_form = {
                     "title": vacancy["Position"],
-                    "fleet": vacancy["Fleet"],
+                    "fleet": "",
                     "vessel": vacancy["Vessel type"],
                     "salary": vacancy["Salary"],
                     "joining_date": updated_date,
-                    "voyage_duration": voyage_duration,
+                    "voyage_duration": vacancy["Voyage duration"],
                     "sailing_area": sailing_area,
                     "dwt": dwt,
                     "years_constructed": years_constructed,
@@ -214,7 +212,6 @@ def info_search(vacancies: dict, mode: str):
                     "text": additional_info,
                 }
                 vacancy_notification(vacancy_form)
-            voyage_duration = ""
             sailing_area = ""
             dwt = ""
             years_constructed = None
@@ -222,6 +219,7 @@ def info_search(vacancies: dict, mode: str):
             english = ""
         except AttributeError:
             continue
+
 
 if __name__ == "__main__":
     print("Started pagination extraction")
@@ -232,4 +230,3 @@ if __name__ == "__main__":
     print("Finished")
     print("Started information extraction")
     vacancies_information = info_search(vacancies_list, "base")
-    print("Succesfully saved to csv")
