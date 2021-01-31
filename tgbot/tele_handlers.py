@@ -906,7 +906,7 @@ def crew_handler(update: Update, context: CallbackContext):
 @logger.catch
 def date_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
-    if 'message' in update:
+    if hasattr(update, 'message'):
         start_buttons_handler(update, context)
         return ConversationHandler.END
     callback_data = update.callback_query.data.split('_')
