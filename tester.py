@@ -27,8 +27,13 @@ def contact_extractor(url):
 
 def vacancy_extractor():
     all_objects = Post.objects.all()
+    counter = 0
+    print(f"Количество вакансий - {len(all_objects)}")
     for object in all_objects.iterator():
         sleep(0.5)
+        counter += 1
+        if counter % 10 == 0:
+            print(f"Пройдено {counter} вакансий")
         soup = BeautifulSoup(requests.get(object.link).text, "lxml")
         details = soup.find("div", class_="vacancy-full-content")
         try:
