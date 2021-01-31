@@ -909,18 +909,19 @@ def date_handler(update: Update, context: CallbackContext):
     if not hasattr(update, 'callback_query'):
         start_buttons_handler(update, context)
         return ConversationHandler.END
-    callback_data = update.callback_query.data.split('_')
-    update.callback_query.edit_message_text("Выберите дату Вашей готовности",
-                        reply_markup=telegramcalendar.create_calendar())
-    if callback_data[1] == 'reg':
-        p = Profile.objects.get(external_id=update.callback_query.from_user.id)
-        p.crew_subscription = callback_data[2]
-        p.save()
-        return CALENDAR
-    elif callback_data[1] == 'edit':
-        return EDIT
     else:
-        return FILTER
+        callback_data = update.callback_query.data.split('_')
+        update.callback_query.edit_message_text("Выберите дату Вашей готовности",
+                            reply_markup=telegramcalendar.create_calendar())
+        if callback_data[1] == 'reg':
+            p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+            p.crew_subscription = callback_data[2]
+            p.save()
+            return CALENDAR
+        elif callback_data[1] == 'edit':
+            return EDIT
+        else:
+            return FILTER
 
 
 @logger.catch
