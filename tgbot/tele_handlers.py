@@ -48,7 +48,6 @@ def model_transcriptor(model):
 
 def model_text_details(post):
     main_text = f'{post.title}\n'\
-                f'Флот: {post.fleet}\n'\
                 f'Тип судна: {post.vessel}\n'\
                 f'Зарплата: {post.salary}\n'\
                 f'Уровень английского: {post.english}\n'\
