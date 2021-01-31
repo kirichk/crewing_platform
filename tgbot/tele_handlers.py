@@ -499,6 +499,8 @@ def newsletter_handler(update: Update, context: CallbackContext):
 def filter_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
+    if callback[0] == 'profile':
+        profile_handler(update, context)
     text = ''
     message = ''
     if ';' in update.callback_query.data:
