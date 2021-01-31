@@ -30,15 +30,19 @@ def vacancy_extractor():
     for object in all_objects.iterator():
         sleep(0.5)
         soup = BeautifulSoup(requests.get(object.link).text, "lxml")
+        print(soup)
         details = soup.find("div", class_="vacancy-full-content")
-        for row in details.find_all("div", class_="colmn"):
-            row_content = row.text.split(":")
-            if row_content[0] == "Крюинг":
-                link = row.find("a")
-                contact = contact_extractor(URL + link['href'])
-                object.contact = contact
-                print(f"{object.title} - {object.crewer}: {object.contact}")
-        object.save()
+        try:
+            for row in details.find_all("div", class_="colmn"):
+                row_content = row.text.split(":")
+                if row_content[0] == "Крюинг":
+                    link = row.find("a")
+                    contact = contact_extractor(URL + link['href'])
+                    object.contact = contact
+                    print(f"{object.title} - {object.crewer}: {object.contact}")
+            object.save()
+        except AttributeError:
+            continue
 
 
 vacancy_extractor()
