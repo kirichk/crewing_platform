@@ -501,6 +501,7 @@ def filter_handler(update: Update, context: CallbackContext):
     callback = update.callback_query.data.split('_')
     if callback[0] == 'profile':
         profile_handler(update, context)
+        return ConversationHandler.END
     text = ''
     message = ''
     if ';' in update.callback_query.data:
