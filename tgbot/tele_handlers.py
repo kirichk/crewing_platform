@@ -478,15 +478,15 @@ def newsletter_handler(update: Update, context: CallbackContext):
         ]
         inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
         text = 'Вы подписаны на следующее:\n\n'
-        if 'title_subscriptions' in p.__dict__:
+        if p.__dict__['title_subscriptions'] is not None:
             text += f'Должности: {p.title_subscriptions}\n'
-        if 'fleet_subscriptions' in p.__dict__:
+        if p.__dict__['fleet_subscriptions'] is not None:
             text += f'Типы судна: {p.fleet_subscriptions}\n'
-        if 'salary_subscription' in p.__dict__:
+        if p.__dict__['salary_subscription'] is not None:
             text += f'Зарплата: {p.salary_subscription}\n'
-        if 'crew_subscription' in p.__dict__:
-            text += f'Экипаж: {p.salary_subscription}\n'
-        if 'contract_subscription' in p.__dict__:
+        if p.__dict__['crew_subscription'] is not None:
+            text += f'Экипаж: {p.crew_subscription}\n'
+        if p.__dict__['contract_subscription'] is not None:
             text += f'Длительнесть контракта: {p.contract_subscription}\n'
     else:
         inline_keyboard = [
@@ -510,7 +510,17 @@ def newsletter_handler(update: Update, context: CallbackContext):
                                     callback_data='start'),
             ]
         ]
-        text = 'Вы подписаны на рассылку вакансий'
+        text = 'Вы подписались на рассылку:\n\n'
+        if p.__dict__['title_subscriptions'] is not None:
+            text += f'Должности: {p.title_subscriptions}\n'
+        if p.__dict__['fleet_subscriptions'] is not None:
+            text += f'Типы судна: {p.fleet_subscriptions}\n'
+        if p.__dict__['salary_subscription'] is not None:
+            text += f'Зарплата: {p.salary_subscription}\n'
+        if p.__dict__['crew_subscription'] is not None:
+            text += f'Экипаж: {p.crew_subscription}\n'
+        if p.__dict__['contract_subscription'] is not None:
+            text += f'Длительнесть контракта: {p.contract_subscription}\n'
     elif callback[1] == 'unsub':
         p.subscription = False
         p.save()
