@@ -14,7 +14,7 @@ def vacancy_notification(form):
     Receiving a dictionary with data of new posted vacancy
     Applying filtering to send notification to relevant users
     """
-    title = '#' + form["title"].replace(' ', '_')
+    title = '#' + form["title"].replace(' ', '_').replace(',', '').replace('.', '',).replace('(','').replace(')', '').replace('-', '_')
     main_text = f'{title}\n'\
                 f'Тип судна: {form["vessel"]}\n'\
                 f'Зарплата: {form["salary"]}\n'\
