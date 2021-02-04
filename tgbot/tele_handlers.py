@@ -478,15 +478,15 @@ def newsletter_handler(update: Update, context: CallbackContext):
         ]
         inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
         text = 'Вы подписаны на следующее:\n\n'
-        if p.__dict__['title_subscriptions'] is not None:
+        if p.__dict__['title_subscriptions'] != '':
             text += f'Должности: {p.title_subscriptions}\n'
-        if p.__dict__['fleet_subscriptions'] is not None:
+        if p.__dict__['fleet_subscriptions'] != '':
             text += f'Типы судна: {p.fleet_subscriptions}\n'
-        if p.__dict__['salary_subscription'] is not None:
+        if p.__dict__['salary_subscription'] != '':
             text += f'Зарплата: {p.salary_subscription}\n'
-        if p.__dict__['crew_subscription'] is not None:
+        if p.__dict__['crew_subscription'] != '':
             text += f'Экипаж: {p.crew_subscription}\n'
-        if p.__dict__['contract_subscription'] is not None:
+        if p.__dict__['contract_subscription'] != '':
             text += f'Длительнесть контракта: {p.contract_subscription}\n'
     else:
         inline_keyboard = [
@@ -511,15 +511,15 @@ def newsletter_handler(update: Update, context: CallbackContext):
             ]
         ]
         text = 'Вы подписались на рассылку:\n\n'
-        if p.__dict__['title_subscriptions'] is not None:
+        if p.__dict__['title_subscriptions'] != '':
             text += f'Должности: {p.title_subscriptions}\n'
-        if p.__dict__['fleet_subscriptions'] is not None:
+        if p.__dict__['fleet_subscriptions'] != '':
             text += f'Типы судна: {p.fleet_subscriptions}\n'
-        if p.__dict__['salary_subscription'] is not None:
+        if p.__dict__['salary_subscription'] != '':
             text += f'Зарплата: {p.salary_subscription}\n'
-        if p.__dict__['crew_subscription'] is not None:
+        if p.__dict__['crew_subscription'] != '':
             text += f'Экипаж: {p.crew_subscription}\n'
-        if p.__dict__['contract_subscription'] is not None:
+        if p.__dict__['contract_subscription'] != '':
             text += f'Длительнесть контракта: {p.contract_subscription}\n'
     elif callback[1] == 'unsub':
         p.subscription = False
