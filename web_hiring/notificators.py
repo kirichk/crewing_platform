@@ -15,7 +15,7 @@ def vacancy_notification(form):
     Applying filtering to send notification to relevant users
     """
     title = '#' + form["title"].replace(' ', '_').replace(',', '').replace('.', '',).replace('(','').replace(')', '').replace('-', '_')
-    main_text = f'{title}\n'\
+    main_text = f'{form["title"]}\n'\
                 f'Тип судна: {form["vessel"]}\n'\
                 f'Зарплата: {form["salary"]}\n'\
                 f'Уровень английского: {form["english"]}\n'\
@@ -62,4 +62,5 @@ def vacancy_notification(form):
                 if cleaned_salary >= cleaned_sub_salary:
                     if cleaned_contract >= cleaned_sub_contract:
                         bot.send_message(p.external_id,main_text)
+    main_text = main_text.replace(form['title'], title)
     bot.send_message(CHANNEL_ID, main_text)
