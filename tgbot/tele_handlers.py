@@ -488,6 +488,8 @@ def newsletter_handler(update: Update, context: CallbackContext):
             text += f'Экипаж: {p.crew_subscription}\n'
         if p.__dict__['contract_subscription'] != '':
             text += f'Длительнесть контракта: {p.contract_subscription}\n'
+        if text == 'Вы подписались на рассылку:\n\n':
+            text += 'Все вакансии'
     else:
         inline_keyboard = [
             [
@@ -521,6 +523,8 @@ def newsletter_handler(update: Update, context: CallbackContext):
             text += f'Экипаж: {p.crew_subscription}\n'
         if p.__dict__['contract_subscription'] != '':
             text += f'Длительнесть контракта: {p.contract_subscription}\n'
+        if text == 'Вы подписались на рассылку:\n\n':
+            text += 'Все вакансии'
     elif callback[1] == 'unsub':
         p.subscription = False
         p.save()
