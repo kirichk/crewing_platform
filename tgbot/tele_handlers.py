@@ -897,16 +897,17 @@ def contract_handler(update: Update, context: CallbackContext):
         inline_keyboard=[
             [
             InlineKeyboardButton(text='до 2',
-                                callback_data=callback+'до 2'),
+                                 callback_data=callback+'до 2'),
             InlineKeyboardButton(text='до 4',
-                                callback_data=callback+'до 4')
+                                 callback_data=callback+'до 4')
+            ],[
             InlineKeyboardButton(text='до 6',
-                                callback_data=callback+'до 6'),
+                                 callback_data=callback+'до 6'),
             InlineKeyboardButton(text='до 8',
-                                callback_data=callback+'до 8')
+                                 callback_data=callback+'до 8')
             ],[
             InlineKeyboardButton(text='Не важно',
-                                callback_data=callback+'Не важно')
+                                 callback_data=callback+'Не важно')
             ]
         ],
     )
