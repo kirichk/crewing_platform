@@ -488,7 +488,7 @@ def newsletter_handler(update: Update, context: CallbackContext):
             text += f'Экипаж: {p.crew_subscription}\n'
         if p.__dict__['contract_subscription'] != '':
             text += f'Длительнесть контракта: {p.contract_subscription}\n'
-        if text == 'Вы подписаны на следующее:\n\n'
+        if text == 'Вы подписаны на следующее:\n\n':
             text += 'Все вакансии'
     else:
         inline_keyboard = [
