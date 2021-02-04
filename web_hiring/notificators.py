@@ -15,7 +15,7 @@ def vacancy_notification(form):
     Applying filtering to send notification to relevant users
     """
     title = '#' + form["title"].replace(' ', '_')
-    main_text = f'{form["title"]}\n'\
+    main_text = f'{title}\n'\
                 f'Тип судна: {form["vessel"]}\n'\
                 f'Зарплата: {form["salary"]}\n'\
                 f'Уровень английского: {form["english"]}\n'\
