@@ -178,7 +178,7 @@ def vacancy_paginator(vacancies: list, pattern: str,
         inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
         update.callback_query.edit_message_text(
             text='Не найдено. Попробуйте изменить фильтр',
-            reply_markup=inline_keyboard
+            reply_markup=inline_buttons
         )
     else:
         page_num = page_definer(vacancies)
