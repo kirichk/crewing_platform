@@ -1,5 +1,6 @@
 import os
 import re
+import locale
 from datetime import date, datetime, timedelta
 from telegram import (InlineKeyboardButton, InlineKeyboardMarkup, Update,
                         ReplyKeyboardMarkup, KeyboardButton)
@@ -17,6 +18,7 @@ from tgbot.tools.calendar import telegramcalendar
 from loguru import logger
 
 
+locale.setlocale(locale.LC_TIME, "ru_RU")
 logger.add('info.log', format='{time} {level} {message}',
             level='INFO', rotation="1 MB", compression='zip')
 # PHONE, SALARY_RANGE = range(2)
@@ -47,11 +49,13 @@ def model_transcriptor(model):
 
 
 def model_text_details(post):
+    date = datetime.strptime(post.joining_date, '%Y-%m-%d')
+    date_formatted = date.strftime("%d %B, %Y")
     main_text = f'{post.title}\n'\
                 f'Тип судна: {post.vessel}\n'\
                 f'Зарплата: {post.salary}\n'\
                 f'Уровень английского: {post.english}\n'\
-                f'Дата посадки: {str(post.joining_date)}\n'
+                f'Дата посадки: {date_formatted}\n'
     if post.voyage_duration is not None and post.voyage_duration != '':
         main_text += f'Длительность рейса: {str(post.voyage_duration)}\n'
     if post.sailing_area is not None and post.sailing_area != '':
