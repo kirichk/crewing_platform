@@ -847,13 +847,32 @@ def salary_handler(update: Update, context: CallbackContext):
 def fleet_handler(update: Update, context: CallbackContext):
     """ Начало взаимодействия по клику на inline-кнопку
     """
-    logger.info(f'user_data: {context.user_data}')
-    callback = update.callback_query.data.split('_')
-    if callback[2] != '':
-        p = Profile.objects.get(external_id=update.callback_query.from_user.id)
-        p.salary_subscription = callback[2]
-        p.save()
-    show_item_list(update, settings.FLEET_CHOICES, callback[0], callback[1])
+    callback = update.callback_query.data
+    data = settings.FLEET_CHOICES
+    inline_buttons = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+            InlineKeyboardButton(text=data[1][0],
+                                callback_data='vessel_' + callback + '_' + data[1][0]),
+            InlineKeyboardButton(text=data[2][0],
+                                callback_data='vessel_' + callback + '_' + data[2][0])
+            ],[
+            InlineKeyboardButton(text=data[3][0],
+                                callback_data='vessel_' + callback + '_' + data[3][0]'),
+            InlineKeyboardButton(text=data[4][0],
+                                callback_data='vessel_' + callback + '_' + data[4][0])
+            ],[
+            InlineKeyboardButton(text=data[5][0],
+                                callback_data='vessel_' + callback + '_' + data[5][0]),
+            InlineKeyboardButton(text='Пропустить',
+                                callback_data=callback+'Пропустить')
+            ],
+        ],
+    )
+    update.callback_query.edit_message_text(
+        text='Выберите интересующий Вас вариант.',
+        reply_markup=inline_buttons,
+    )
     return ConversationHandler.END
 
 
@@ -862,8 +881,12 @@ def vessel_handler(update: Update, context: CallbackContext):
     """ Начало взаимодействия по клику на inline-кнопку
     """
     logger.info(f'user_data: {context.user_data}')
-    
-    show_item_list(update, settings.FLEET_CHOICES, callback[0], callback[1])
+    callback = update.callback_query.data.split('_')
+    if callback[2] != '':
+        p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+        p.salary_subscription = callback[2]
+        p.save()
+    show_item_list(update, settings.VESSEL_BASE[callback[3]], callback[0], callback[1])
     return ConversationHandler.END
 
 
@@ -877,7 +900,7 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
                             callback_data='fleet',
                             callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
                             text='Вы выбрали '\
-                                'следующий флот в фильтре.')
+                                'следующие типы судна в фильтре.')
         context.user_data['FILTER_FLEET'] = updated_subs
     else:
         p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
@@ -893,7 +916,7 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
                             callback_data='fleet',
                             callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
                             text='Сейчас Вы подписаны на '\
-                                'следующие флоты')
+                                'следующие типы судна')
             p.fleet_subscriptions = updated_subs
             p.save()
     return ConversationHandler.END
