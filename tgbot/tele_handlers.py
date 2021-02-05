@@ -75,6 +75,8 @@ def subsription_cleaner(text):
     '''
     Checking if subscription start correctly
     '''
+    if 'Пропустить' in text:
+        text = 'Выбраны все варианты'
     if text.startswith(',') or text.endswith(', '):
         text = text.replace(', ', '')
     else:
@@ -152,8 +154,6 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
             reply_markup=inline_buttons,
         )
     else:
-        if 'Пропустить' in data:
-            data = 'Выбраны все варианты'
         if data == '' or data is None:
             data = callback[2]
         elif callback[2] in data:
