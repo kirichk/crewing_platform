@@ -170,35 +170,45 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
 
 @logger.catch
 def vacancy_paginator(vacancies: list, pattern: str,
-                    page: int, text: str, update, context):
-    page_num = page_definer(vacancies)
-    paginator = InlineKeyboardPaginator(
-        page_num,
-        current_page=page,
-        data_pattern=f'{pattern}'+'#{page}'
-    )
-    # Defining a range of vacancies that should be applicable to current page
-    # And adding each vacancy as a new button
-    vacancies_range = vacancies[page*PAGE_SPLIT-PAGE_SPLIT:page*PAGE_SPLIT]
-    for i in vacancies_range:
-        paginator.add_before(InlineKeyboardButton(
-                    text=f'{i["title"]} | {i["salary"]} | {i["joining_date"]}',
-                    callback_data=f'detail_{pattern}'+f'#{page}'+f'_{i["id"]}'))
-    # If user pressed current page twicely, than will add space to button
-    # To change markup and avoid BadRequest error from telegram
-    if context.user_data[CURRENT_PAGE] == page:
-        paginator.add_after(InlineKeyboardButton('Вернуться ',
-                                                callback_data='start'))
+                      page: int, text: str, update, context):
+    vacancies = vacancies[::-1]
+    if len(vacancies) == 0:
+        inline_keyboard = [[InlineKeyboardButton('Вернуться ',
+                                                 callback_data='start')]]
+        inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+        update.callback_query.edit_message_text(
+            text='Не найдено. Попробуйте изменить фильтр',
+            reply_markup=inline_buttons
+        )
     else:
-        paginator.add_after(InlineKeyboardButton('Вернуться',
-                                                callback_data='start'))
-    update.callback_query.edit_message_text(
-        text=text,
-        reply_markup=paginator.markup,
-        parse_mode='Markdown'
-    )
-    # Updating current page to real current page
-    context.user_data[CURRENT_PAGE] = page
+        page_num = page_definer(vacancies)
+        paginator = InlineKeyboardPaginator(
+            page_num,
+            current_page=page,
+            data_pattern=f'{pattern}'+'#{page}'
+        )
+        # Defining a range of vacancies that should be applicable to current page
+        # And adding each vacancy as a new button
+        vacancies_range = vacancies[page*PAGE_SPLIT-PAGE_SPLIT:page*PAGE_SPLIT]
+        for i in vacancies_range:
+            paginator.add_before(InlineKeyboardButton(
+                        text=f'{i["title"]} | {i["salary"]} | {i["joining_date"]}',
+                        callback_data=f'detail_{pattern}'+f'#{page}'+f'_{i["id"]}'))
+        # If user pressed current page twicely, than will add space to button
+        # To change markup and avoid BadRequest error from telegram
+        if context.user_data[CURRENT_PAGE] == page:
+            paginator.add_after(InlineKeyboardButton('Вернуться ',
+                                                    callback_data='start'))
+        else:
+            paginator.add_after(InlineKeyboardButton('Вернуться',
+                                                    callback_data='start'))
+        update.callback_query.edit_message_text(
+            text=text,
+            reply_markup=paginator.markup,
+            parse_mode='Markdown'
+        )
+        # Updating current page to real current page
+        context.user_data[CURRENT_PAGE] = page
     return ConversationHandler.END
 
 
@@ -455,28 +465,80 @@ def newweek_handler(update: Update, context: CallbackContext):
 def newsletter_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
-    inline_keyboard = [
-        [
-            InlineKeyboardButton(text='Подписаться',
-                                callback_data='newsletter_confirm'),
+    p = Profile.objects.get_or_create(
+        external_id=update.callback_query.from_user.id,
+        name=update.callback_query.from_user.username
+    )[0]
+    if p.subscription:
+        inline_keyboard = [
+            [
+                InlineKeyboardButton(text='Отписаться',
+                                    callback_data='newsletter_unsub'),
+            ]
         ]
-    ]
-    inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+        inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+        text = 'Вы подписаны на следующее:\n\n'
+        if p.__dict__['title_subscriptions'] != '':
+            text += f'Должности: {p.title_subscriptions}\n'
+        if p.__dict__['fleet_subscriptions'] != '':
+            text += f'Типы судна: {p.fleet_subscriptions}\n'
+        if p.__dict__['salary_subscription'] != '':
+            text += f'Зарплата: {p.salary_subscription}\n'
+        if p.__dict__['crew_subscription'] != '':
+            text += f'Экипаж: {p.crew_subscription}\n'
+        if p.__dict__['contract_subscription'] != '':
+            text += f'Длительнесть контракта: {p.contract_subscription}\n'
+        if text == 'Вы подписаны на следующее:\n\n':
+            text += 'Все вакансии'
+    else:
+        inline_keyboard = [
+            [
+                InlineKeyboardButton(text='Подписаться',
+                                    callback_data='newsletter_confirm'),
+            ]
+        ]
+        inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+        text = 'Вы хотите подтвердить подписку на вакансии по Вашему профилю?'
     if callback[1] == 'confirm':
-        p = Profile.objects.get_or_create(
-            external_id=update.callback_query.from_user.id,
-            name=update.callback_query.from_user.username
-        )[0]
-        # p = Profile.objects.get(external_id=update.callback_query.from_user.id)
         p.subscription = True
         p.save()
         inline_keyboard=[
+            [
+                InlineKeyboardButton(text='Отписаться',
+                                    callback_data='newsletter_unsub'),
+            ],
             [
                 InlineKeyboardButton(text='Вернуться в меню',
                                     callback_data='start'),
             ]
         ]
-        text = 'Вы подписаны на рассылку вакансий'
+        text = 'Вы подписались на рассылку:\n\n'
+        if p.__dict__['title_subscriptions'] != '':
+            text += f'Должности: {p.title_subscriptions}\n'
+        if p.__dict__['fleet_subscriptions'] != '':
+            text += f'Типы судна: {p.fleet_subscriptions}\n'
+        if p.__dict__['salary_subscription'] != '':
+            text += f'Зарплата: {p.salary_subscription}\n'
+        if p.__dict__['crew_subscription'] != '':
+            text += f'Экипаж: {p.crew_subscription}\n'
+        if p.__dict__['contract_subscription'] != '':
+            text += f'Длительнесть контракта: {p.contract_subscription}\n'
+        if text == 'Вы подписались на рассылку:\n\n':
+            text += 'Все вакансии'
+    elif callback[1] == 'unsub':
+        p.subscription = False
+        p.save()
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text='Подписаться',
+                                    callback_data='newsletter_confirm'),
+            ],
+            [
+                InlineKeyboardButton(text='Вернуться в меню',
+                                    callback_data='start'),
+            ]
+        ]
+        text = 'Вы отписались от рассылки.'
     elif callback[1] == 'all':
         text = 'У Вас не заполнен профиль, поэтому при подписке Вам будет '\
                 'приходить все вакансии. Хотите подтвердить или перейти к '\
@@ -486,7 +548,7 @@ def newsletter_handler(update: Update, context: CallbackContext):
                 callback_data='profile')]
         )
     else:
-        text = 'Вы хотите подтвердить подписку на вакансии по Вашему профилю?'
+        p.save()
     inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
     update.callback_query.edit_message_text(
         text=text,
@@ -858,13 +920,18 @@ def contract_handler(update: Update, context: CallbackContext):
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-            InlineKeyboardButton(text='2-4',
-                                callback_data=callback+'2-4'),
-            InlineKeyboardButton(text='4-6',
-                                callback_data=callback+'4-6')
+            InlineKeyboardButton(text='до 2',
+                                 callback_data=callback+'до 2'),
+            InlineKeyboardButton(text='до 4',
+                                 callback_data=callback+'до 4')
+            ],[
+            InlineKeyboardButton(text='до 6',
+                                 callback_data=callback+'до 6'),
+            InlineKeyboardButton(text='до 8',
+                                 callback_data=callback+'до 8')
             ],[
             InlineKeyboardButton(text='Не важно',
-                                callback_data=callback+'Не важно')
+                                 callback_data=callback+'Не важно')
             ]
         ],
     )
@@ -901,7 +968,7 @@ def crew_handler(update: Update, context: CallbackContext):
             [
             InlineKeyboardButton(text='Микс',
                                 callback_data=callback+'Микс'),
-            InlineKeyboardButton(text='Без знаия англ',
+            InlineKeyboardButton(text='Без знания англ.',
                                 callback_data=callback+'Без знания англ')
             ],[
             InlineKeyboardButton(text='Не важно',
