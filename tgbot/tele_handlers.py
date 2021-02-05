@@ -858,7 +858,7 @@ def fleet_handler(update: Update, context: CallbackContext):
                                 callback_data='vessel_' + callback + '_' + data[2][0])
             ],[
             InlineKeyboardButton(text=data[3][0],
-                                callback_data='vessel_' + callback + '_' + data[3][0]'),
+                                callback_data='vessel_' + callback + '_' + data[3][0]),
             InlineKeyboardButton(text=data[4][0],
                                 callback_data='vessel_' + callback + '_' + data[4][0])
             ],[
