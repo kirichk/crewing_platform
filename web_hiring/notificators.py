@@ -57,7 +57,7 @@ def vacancy_notification(form):
                                                 p.salary_subscription.split('-')[0])[0])
                 cleaned_salary = int(re.findall(r'[0-9]+', form['salary'])[0])
                 if p.contract_subscription == '' or p.contract_subscription == 'Не важно' or p.contract_subscription is None:
-                    cleaned_sub_contract = 0
+                    cleaned_sub_contract = 12
                 else:
                     cleaned_sub_contract = int(re.findall(r'[0-9]+', p.contract_subscription)[0])
                 if form['voyage_duration'] is None or form['voyage_duration'] == '':
