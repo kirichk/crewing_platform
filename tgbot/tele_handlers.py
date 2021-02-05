@@ -303,7 +303,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
                                     title__in=context.user_data['FILTER_TITLE'].split(', '))
     if context.user_data['FILTER_FLEET'] != 'Пропустить' and context.user_data['FILTER_FLEET'] != '':
         all_entries = all_entries.filter(
-                                    fleet__in=context.user_data['FILTER_FLEET'].split(', '))
+                                    vessel__in=context.user_data['FILTER_FLEET'].split(', '))
     if context.user_data['FILTER_DATE'] != '' and context.user_data['FILTER_DATE'] is not None:
         all_entries = all_entries.filter(
                                     joining_date__gte=context.user_data['FILTER_DATE'])
@@ -357,7 +357,7 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
                                     title__in=p.title_subscriptions.split(', '))
     if p.fleet_subscriptions != 'Пропустить' and p.fleet_subscriptions != '':
         all_entries = all_entries.filter(
-                                    fleet__in=p.fleet_subscriptions.split(', '))
+                                    vessel__in=p.fleet_subscriptions.split(', '))
     if p.date_ready != '' and p.date_ready is not None:
         all_entries = all_entries.filter(
                                     joining_date__gte=datetime.strptime(p.date_ready, '%Y-%m-%d'))
@@ -848,6 +848,7 @@ def fleet_handler(update: Update, context: CallbackContext):
     """ Начало взаимодействия по клику на inline-кнопку
     """
     callback = update.callback_query.data
+    callback_spl = callback.split('_')
     data = settings.FLEET_CHOICES
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
@@ -865,7 +866,7 @@ def fleet_handler(update: Update, context: CallbackContext):
             InlineKeyboardButton(text=data[5][0],
                                 callback_data='vessel_' + callback + '_' + data[5][0]),
             InlineKeyboardButton(text='Пропустить',
-                                callback_data=callback+'Пропустить')
+                                callback_data='choice' + callback_spl[1] + callback_spl[2] + 'Пропустить')
             ],
         ],
     )

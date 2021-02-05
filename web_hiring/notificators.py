@@ -39,7 +39,7 @@ def vacancy_notification(form):
     for p in Profile.objects.filter(subscription=True):
         if (form['title'] in p.title_subscriptions
             or 'Пропустить' in p.title_subscriptions
-            or '' == p.title_subscriptions):
+            or '' == p.title_subscriptions or p.title_subscriptions is None):
             if p.date_ready is not None and p.date_ready != '':
                 d = datetime.strptime(p.date_ready, '%Y-%m-%d')
             else:
