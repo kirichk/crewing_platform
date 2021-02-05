@@ -15,11 +15,13 @@ def vacancy_notification(form):
     Applying filtering to send notification to relevant users
     """
     title = '#' + form["title"].replace(' ', '_').replace(',', '').replace('.', '',).replace('(','').replace(')', '').replace('-', '_')
+    date = datetime.strptime(form["joining_date"], '%Y-%m-%d')
+    date_formatted = date.strftime("%d %B, %Y")
     main_text = f'{form["title"]}\n'\
                 f'Тип судна: {form["vessel"]}\n'\
                 f'Зарплата: {form["salary"]}\n'\
                 f'Уровень английского: {form["english"]}\n'\
-                f'Дата посадки: {str(form["joining_date"])}\n'
+                f'Дата посадки: {date_formatted}\n'
     if form['voyage_duration'] is not None and form['voyage_duration'] != '':
         main_text += f'Длительность рейса: {str(form["voyage_duration"])}\n'
     if form['sailing_area'] is not None and form['sailing_area'] != '':

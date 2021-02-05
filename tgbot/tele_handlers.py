@@ -1,6 +1,5 @@
 import os
 import re
-import locale
 from datetime import date, datetime, timedelta
 from telegram import (InlineKeyboardButton, InlineKeyboardMarkup, Update,
                         ReplyKeyboardMarkup, KeyboardButton)
@@ -18,7 +17,6 @@ from tgbot.tools.calendar import telegramcalendar
 from loguru import logger
 
 
-locale.setlocale(locale.LC_ALL, 'ru_RU')
 logger.add('info.log', format='{time} {level} {message}',
             level='INFO', rotation="1 MB", compression='zip')
 # PHONE, SALARY_RANGE = range(2)
