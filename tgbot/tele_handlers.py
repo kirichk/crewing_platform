@@ -882,11 +882,11 @@ def vessel_handler(update: Update, context: CallbackContext):
     """
     logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
-    if callback[2] != '':
+    if callback[3] != '':
         p = Profile.objects.get(external_id=update.callback_query.from_user.id)
         p.salary_subscription = callback[2]
         p.save()
-    show_item_list(update, settings.VESSEL_BASE[callback[3]], callback[0], callback[1])
+    show_item_list(update, settings.VESSEL_BASE[callback[4]], callback[1], callback[2])
     return ConversationHandler.END
 
 
