@@ -327,6 +327,7 @@ def detail_handler(update: Update, context: CallbackContext):
 def searchfilter_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     all_entries = Post.objects.all()
+    print(all_entries)
     if context.user_data['FILTER_TITLE'] != 'Пропустить' and context.user_data['FILTER_TITLE'] != '' and context.user_data['FILTER_TITLE'] != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     title__in=context.user_data['FILTER_TITLE'].split(', '))
@@ -337,6 +338,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
         all_entries = all_entries.filter(
                                     joining_date__gte=context.user_data['FILTER_DATE'])
     post_list = model_transcriptor(all_entries)
+    print(post_list)
     if post_list == []:
         update.callback_query.edit_message_text(
             text='По Вашему фильтру вакансий не найдено. /menu'
