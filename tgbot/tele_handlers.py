@@ -146,6 +146,8 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
     if callback[1] == 'remove':
         subscriptions = data.replace(callback[2],'')
         data = subsription_cleaner(subscriptions)
+        if 'Выбраны все варианты' in data:
+            data = 'Выбраны все варианты'
         update.callback_query.edit_message_text(
             text=f'Вы удалили {callback[2]}\n{text}:\n\n'\
                     f'{data}\n\nХотите добавить еще, удалить выбранные или продолжить?',
@@ -159,6 +161,8 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
         else:
             data += ', ' + callback[2]
             data = subsription_cleaner(data)
+        if 'Выбраны все варианты' in data:
+            data = 'Выбраны все варианты'
         update.callback_query.edit_message_text(
             text=f'{text}:\n\n'\
                     f'{data}\n\nХотите добавить еще, '\
