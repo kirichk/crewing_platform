@@ -116,13 +116,12 @@ def show_item_list(update, data, callback, callback_specific):
                     text=list_non_even[list_even.index(i)][0],
                     callback_data=f'choice{callback}_{callback_specific}_' \
                                     + list_non_even[list_even.index(i)][1])
-                ] for i in list_even,
+                ] for i in list_even],
                 [
                  InlineKeyboardButton(
                      text='Вернуться',
                      callback_data=f'{callback}_{callback_specific}_'),
                 ]
-            ],
         )
     else:
         list_non_even.append(('Пропустить','Выбраны все варианты'))
