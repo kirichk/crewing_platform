@@ -65,7 +65,7 @@ def vacancy_notification(form):
                 else:
                     cleaned_contract = int(re.findall(r'[0-9]+', form['voyage_duration'])[0])
                 if cleaned_salary >= cleaned_sub_salary:
-                    if cleaned_contract >= cleaned_sub_contract:
+                    if cleaned_contract <= cleaned_sub_contract:
                         bot.send_message(p.external_id,main_text)
     main_text = main_text.replace(form['title'], title)
     bot.send_message(CHANNEL_ID, main_text)

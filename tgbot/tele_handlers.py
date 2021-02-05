@@ -365,7 +365,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
                and cleaned_sub_salary_end != '' \
                and cleaned_sub_salary_start <= cleaned_salary \
                and cleaned_salary <= cleaned_sub_salary_end:
-                if cleaned_contract >= cleaned_sub_contract:
+                if cleaned_contract <= cleaned_sub_contract:
                         result.append(post)
         page = int(update.callback_query.data.split('#')[1])
         vacancy_paginator(vacancies=result,
@@ -419,7 +419,7 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
                and cleaned_sub_salary_end != '' \
                and cleaned_sub_salary_start <= cleaned_salary \
                and cleaned_salary <= cleaned_sub_salary_end:
-                if cleaned_contract >= cleaned_sub_contract:
+                if cleaned_contract <= cleaned_sub_contract:
                     result.append(post)
         page = int(update.callback_query.data.split('#')[1])
         vacancy_paginator(vacancies=result,
