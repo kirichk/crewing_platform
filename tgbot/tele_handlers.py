@@ -47,8 +47,11 @@ def model_transcriptor(model):
 
 
 def model_text_details(post):
-    date = datetime.strptime(post.joining_date, '%Y-%m-%d')
-    date_formatted = date.strftime("%d %B, %Y")
+    try:
+        date = datetime.strptime(post.joining_date, '%Y-%m-%d')
+        date_formatted = date.strftime("%d %B, %Y")
+    except:
+        date_formatted = post.joining_date.strftime("%d %B, %Y")
     main_text = f'{post.title}\n'\
                 f'Тип судна: {post.vessel}\n'\
                 f'Зарплата: {post.salary}\n'\

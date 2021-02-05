@@ -15,8 +15,11 @@ def vacancy_notification(form):
     Applying filtering to send notification to relevant users
     """
     title = '#' + form["title"].replace(' ', '_').replace(',', '').replace('.', '',).replace('(','').replace(')', '').replace('-', '_')
-    date = datetime.strptime(form["joining_date"], '%Y-%m-%d')
-    date_formatted = date.strftime("%d %B, %Y")
+    try:
+        date = datetime.strptime(form["joining_date"], '%Y-%m-%d')
+        date_formatted = date.strftime("%d %B, %Y")
+    except:
+        date_formatted =form["joining_date"].strftime("%d %B, %Y")
     main_text = f'{form["title"]}\n'\
                 f'Тип судна: {form["vessel"]}\n'\
                 f'Зарплата: {form["salary"]}\n'\
