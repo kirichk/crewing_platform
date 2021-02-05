@@ -261,6 +261,7 @@ SALARY_MATCHES = {'0-1000$':'0-1000$',
 VESSEL_BASE = {
     'Merchant fleet' : [
         ('Bulk Carrier', 'Bulk Carrier'),
+        ('Bulk Carrier', 'Bulk Carrier'),
         ('Car Carrier', 'Car Carrier'),
         ('Cement Carrier', 'Cement Carrier'),
         ('Coaster', 'Coaster'),
@@ -276,6 +277,7 @@ VESSEL_BASE = {
     ],
     'Offshore fleet' : [
         ('Accommodation Barge', 'Accommodation Barge'),
+        ('Accommodation Barge', 'Accommodation Barge'),
         ('Anchor Handling Tug', 'Anchor Handling Tug'),
         ('Anchor Handling Tug Supply', 'Anchor Handling Tug Supply'),
         ('Barge self-propelled', 'Barge self-propelled'),
@@ -289,8 +291,10 @@ VESSEL_BASE = {
     ],
     'Fishing fleet' : [
         ('Fishing Vessel', 'Fishing Vessel'),
+        ('Fishing Vessel', 'Fishing Vessel'),
     ],
     'Passenger fleet' : [
+        ('Cruise Vessel', 'Cruise Vessel'),
         ('Cruise Vessel', 'Cruise Vessel'),
         ('Ferry', 'Ferry'),
         ('Motor Yacht', 'Motor Yacht'),
