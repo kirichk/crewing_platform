@@ -298,10 +298,10 @@ def detail_handler(update: Update, context: CallbackContext):
 def searchfilter_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     all_entries = Post.objects.all()
-    if context.user_data['FILTER_TITLE'] != 'Пропустить' and context.user_data['FILTER_TITLE'] != '':
+    if context.user_data['FILTER_TITLE'] != 'Выбраны все должности' and context.user_data['FILTER_TITLE'] != '':
         all_entries = all_entries.filter(
                                     title__in=context.user_data['FILTER_TITLE'].split(', '))
-    if context.user_data['FILTER_FLEET'] != 'Пропустить' and context.user_data['FILTER_FLEET'] != '':
+    if context.user_data['FILTER_FLEET'] != 'Выбраны все типы флота' and context.user_data['FILTER_FLEET'] != '':
         all_entries = all_entries.filter(
                                     vessel__in=context.user_data['FILTER_FLEET'].split(', '))
     if context.user_data['FILTER_DATE'] != '' and context.user_data['FILTER_DATE'] is not None:
@@ -352,10 +352,10 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     p = Profile.objects.get(external_id=update.callback_query.from_user.id)
     all_entries = Post.objects.all()
-    if p.title_subscriptions != 'Пропустить' and p.title_subscriptions != '':
+    if p.title_subscriptions != 'Выбраны все должности' and p.title_subscriptions != '':
         all_entries = all_entries.filter(
                                     title__in=p.title_subscriptions.split(', '))
-    if p.fleet_subscriptions != 'Пропустить' and p.fleet_subscriptions != '':
+    if p.fleet_subscriptions != 'Выбраны все типы флота' and p.fleet_subscriptions != '':
         all_entries = all_entries.filter(
                                     vessel__in=p.fleet_subscriptions.split(', '))
     if p.date_ready != '' and p.date_ready is not None:
@@ -769,6 +769,8 @@ def title_handler(update: Update, context: CallbackContext):
 @logger.catch
 def title_choose_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
+    if 'Пропустить' in context.user_data['FILTER_TITLE']:
+        context.user_data['FILTER_FLEET'] = 'Выбраны все должности'
     if context.user_data['NEXT_STAGE_CALLBACK'] == 'filter_':
         updated_subs = item_selection_handler(
                             update=update,
@@ -859,7 +861,7 @@ def fleet_handler(update: Update, context: CallbackContext):
                                 callback_data='vessel_' + callback + '_' + data[2][0])
             ],[
             InlineKeyboardButton(text=data[3][0],
-                                callback_data='vessel_' + callback + '_' + data[3][0]),
+                                callback_data='choice' + callback_spl[0] + '_' +callback_spl[1] + '_Fishing Vessel'),
             InlineKeyboardButton(text=data[4][0],
                                 callback_data='vessel_' + callback + '_' + data[4][0])
             ],[
@@ -894,6 +896,8 @@ def vessel_handler(update: Update, context: CallbackContext):
 @logger.catch
 def fleet_choose_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
+    if 'Пропустить' in context.user_data['FILTER_FLEET']:
+        context.user_data['FILTER_FLEET'] = 'Выбраны все типы флота'
     if context.user_data['NEXT_STAGE_CALLBACK'] == 'filter_':
         updated_subs = item_selection_handler(
                             update=update,
