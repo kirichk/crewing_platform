@@ -298,10 +298,10 @@ def detail_handler(update: Update, context: CallbackContext):
 def searchfilter_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     all_entries = Post.objects.all()
-    if context.user_data['FILTER_TITLE'] != 'Пропустить' and context.user_data['FILTER_TITLE'] != '':
+    if context.user_data['FILTER_TITLE'] != 'Пропустить' and context.user_data['FILTER_TITLE'] != '' and context.user_data['FILTER_TITLE'] != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     title__in=context.user_data['FILTER_TITLE'].split(', '))
-    if context.user_data['FILTER_FLEET'] != 'Пропустить' and context.user_data['FILTER_FLEET'] != '':
+    if context.user_data['FILTER_FLEET'] != 'Пропустить' and context.user_data['FILTER_FLEET'] != '' and context.user_data['FILTER_FLEET'] != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     vessel__in=context.user_data['FILTER_FLEET'].split(', '))
     if context.user_data['FILTER_DATE'] != '' and context.user_data['FILTER_DATE'] is not None:
