@@ -105,6 +105,7 @@ def show_item_list(update, data, callback, callback_specific):
     else:
         list_even = data[1::2]
         list_non_even = data[2:-1:2]
+    list_non_even.append(('Пропустить','Выбраны все варианты'))
     if callback == 'fleet':
         inline_keyboard=[
                 [
@@ -124,7 +125,6 @@ def show_item_list(update, data, callback, callback_specific):
                 ])
         inline_buttons = InlineKeyboardMarkup(inline_keyboard)
     else:
-        list_non_even.append(('Пропустить','Выбраны все варианты'))
         inline_buttons = InlineKeyboardMarkup(
                 inline_keyboard=[
                 [
