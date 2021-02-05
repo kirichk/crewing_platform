@@ -506,7 +506,11 @@ def newsletter_handler(update: Update, context: CallbackContext):
         if p.__dict__['fleet_subscriptions'] != '':
             text += f'Типы судна: {p.fleet_subscriptions}\n'
         if p.__dict__['salary_subscription'] != '':
-            text += f'Зарплата: {p.salary_subscription}\n'
+            if p.salary_subscription == '10000-1000000$':
+                salary = '10000$+'
+            else:
+                salary = p.salary_subscription
+            text += f'Зарплата: {salary}\n'
         if p.__dict__['crew_subscription'] != '':
             text += f'Экипаж: {p.crew_subscription}\n'
         if p.__dict__['contract_subscription'] != '':
@@ -541,7 +545,11 @@ def newsletter_handler(update: Update, context: CallbackContext):
         if p.__dict__['fleet_subscriptions'] != '':
             text += f'Типы судна: {p.fleet_subscriptions}\n'
         if p.__dict__['salary_subscription'] != '':
-            text += f'Зарплата: {p.salary_subscription}\n'
+            if p.salary_subscription == '10000-1000000$':
+                salary = '10000$+'
+            else:
+                salary = p.salary_subscription
+            text += f'Зарплата: {salary}\n'
         if p.__dict__['crew_subscription'] != '':
             text += f'Экипаж: {p.crew_subscription}\n'
         if p.__dict__['contract_subscription'] != '':
