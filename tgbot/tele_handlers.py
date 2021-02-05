@@ -866,7 +866,7 @@ def fleet_handler(update: Update, context: CallbackContext):
             InlineKeyboardButton(text=data[5][0],
                                 callback_data='vessel_' + callback + '_' + data[5][0]),
             InlineKeyboardButton(text='Пропустить',
-                                callback_data='choice' + callback_spl[0] + '_' +callback_spl[1] + 'Выбраны все варианты')
+                                callback_data='choice' + callback_spl[0] + '_' +callback_spl[1] + '_Выбраны все варианты')
             ],
         ],
     )
