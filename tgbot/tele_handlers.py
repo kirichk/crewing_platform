@@ -18,7 +18,7 @@ from tgbot.tools.calendar import telegramcalendar
 from loguru import logger
 
 
-locale.setlocale(locale.LC_TIME, "ru_RU")
+locale.setlocale(locale.LC_TIME, 'ru_RU.utf8')
 logger.add('info.log', format='{time} {level} {message}',
             level='INFO', rotation="1 MB", compression='zip')
 # PHONE, SALARY_RANGE = range(2)
@@ -73,6 +73,7 @@ def model_text_details(post):
     if post.text != '':
         main_text += f'Дополнительная информация: {str(post.text)}\n'
     return main_text
+
 
 @logger.catch
 def subsription_cleaner(text):
