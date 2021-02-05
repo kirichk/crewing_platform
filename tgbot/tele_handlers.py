@@ -18,7 +18,7 @@ from tgbot.tools.calendar import telegramcalendar
 from loguru import logger
 
 
-locale.setlocale(locale.LC_ALL, 'ru_RU.utf8')
+locale.setlocale(locale.LC_ALL, 'ru_RU')
 logger.add('info.log', format='{time} {level} {message}',
             level='INFO', rotation="1 MB", compression='zip')
 # PHONE, SALARY_RANGE = range(2)
