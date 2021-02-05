@@ -75,8 +75,6 @@ def subsription_cleaner(text):
     '''
     Checking if subscription start correctly
     '''
-    if 'Пропустить' in text:
-        text = 'Выбраны все варианты'
     if text.startswith(',') or text.endswith(', '):
         text = text.replace(', ', '')
     else:
@@ -107,17 +105,17 @@ def show_item_list(update, data, callback, callback_specific):
     else:
         list_even = data[1::2]
         list_non_even = data[2:-1:2]
-    list_non_even.append(('Пропустить','Пропустить'))
+    list_non_even.append(('Пропустить','Выбраны все варианты'))
     inline_buttons = InlineKeyboardMarkup(
             inline_keyboard=[
             [
             InlineKeyboardButton(
                 text=i[0],
-                callback_data=f'choice{callback}_{callback_specific}_' + i[0]),
+                callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
             InlineKeyboardButton(
                 text=list_non_even[list_even.index(i)][0],
                 callback_data=f'choice{callback}_{callback_specific}_' \
-                                + list_non_even[list_even.index(i)][0])
+                                + list_non_even[list_even.index(i)][1])
             ] for i in list_even
         ],
     )
@@ -868,7 +866,7 @@ def fleet_handler(update: Update, context: CallbackContext):
             InlineKeyboardButton(text=data[5][0],
                                 callback_data='vessel_' + callback + '_' + data[5][0]),
             InlineKeyboardButton(text='Пропустить',
-                                callback_data='choice' + callback_spl[0] + '_' +callback_spl[1] + '_Пропустить')
+                                callback_data='choice' + callback_spl[0] + '_' +callback_spl[1] + 'Выбраны все варианты')
             ],
         ],
     )
