@@ -497,6 +497,10 @@ def newsletter_handler(update: Update, context: CallbackContext):
             [
                 InlineKeyboardButton(text='Отписаться',
                                     callback_data='newsletter_unsub'),
+            ],
+            [
+                InlineKeyboardButton(text='Вернуться в меню',
+                                    callback_data='start'),
             ]
         ]
         inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
@@ -522,6 +526,10 @@ def newsletter_handler(update: Update, context: CallbackContext):
             [
                 InlineKeyboardButton(text='Подписаться',
                                     callback_data='newsletter_confirm'),
+            ],
+            [
+                InlineKeyboardButton(text='Вернуться в меню',
+                                    callback_data='start'),
             ]
         ]
         inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
