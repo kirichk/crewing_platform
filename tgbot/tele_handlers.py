@@ -796,6 +796,16 @@ def fleet_handler(update: Update, context: CallbackContext):
 
 
 @logger.catch
+def vessel_handler(update: Update, context: CallbackContext):
+    """ Начало взаимодействия по клику на inline-кнопку
+    """
+    logger.info(f'user_data: {context.user_data}')
+    
+    show_item_list(update, settings.FLEET_CHOICES, callback[0], callback[1])
+    return ConversationHandler.END
+
+
+@logger.catch
 def fleet_choose_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     if context.user_data['NEXT_STAGE_CALLBACK'] == 'filter_':
