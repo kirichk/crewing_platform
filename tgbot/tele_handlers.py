@@ -105,20 +105,40 @@ def show_item_list(update, data, callback, callback_specific):
     else:
         list_even = data[1::2]
         list_non_even = data[2:-1:2]
-    list_non_even.append(('Пропустить','Выбраны все варианты'))
-    inline_buttons = InlineKeyboardMarkup(
-            inline_keyboard=[
-            [
-            InlineKeyboardButton(
-                text=i[0],
-                callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
-            InlineKeyboardButton(
-                text=list_non_even[list_even.index(i)][0],
-                callback_data=f'choice{callback}_{callback_specific}_' \
-                                + list_non_even[list_even.index(i)][1])
-            ] for i in list_even
-        ],
-    )
+    if callback == 'fleet':
+        inline_buttons = InlineKeyboardMarkup(
+                inline_keyboard=[
+                [
+                InlineKeyboardButton(
+                    text=i[0],
+                    callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
+                InlineKeyboardButton(
+                    text=list_non_even[list_even.index(i)][0],
+                    callback_data=f'choice{callback}_{callback_specific}_' \
+                                    + list_non_even[list_even.index(i)][1])
+                ] for i in list_even,
+                [
+                 InlineKeyboardButton(
+                     text='Вернуться',
+                     callback_data=f'{callback}_{callback_specific}_'),
+                ]
+            ],
+        )
+    else:
+        list_non_even.append(('Пропустить','Выбраны все варианты'))
+        inline_buttons = InlineKeyboardMarkup(
+                inline_keyboard=[
+                [
+                InlineKeyboardButton(
+                    text=i[0],
+                    callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
+                InlineKeyboardButton(
+                    text=list_non_even[list_even.index(i)][0],
+                    callback_data=f'choice{callback}_{callback_specific}_' \
+                                    + list_non_even[list_even.index(i)][1])
+                ] for i in list_even
+            ],
+        )
     update.callback_query.edit_message_text(
         text='Выберите интересующий Вас вариант.',
         reply_markup=inline_buttons,
@@ -853,6 +873,10 @@ def fleet_handler(update: Update, context: CallbackContext):
     """
     callback = update.callback_query.data
     callback_spl = callback.split('_')
+    if callback_spl[2] != '':
+        p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+        p.salary_subscription = callback_spl[2]
+        p.save()
     data = settings.FLEET_CHOICES
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
@@ -887,10 +911,6 @@ def vessel_handler(update: Update, context: CallbackContext):
     """
     logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
-    if callback[3] != '':
-        p = Profile.objects.get(external_id=update.callback_query.from_user.id)
-        p.salary_subscription = callback[2]
-        p.save()
     show_item_list(update, settings.VESSEL_BASE[callback[4]], callback[1], callback[2])
     return ConversationHandler.END
 
