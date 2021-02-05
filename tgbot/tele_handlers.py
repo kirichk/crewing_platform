@@ -599,7 +599,7 @@ def filter_handler(update: Update, context: CallbackContext):
     if context.user_data['FILTER_TITLE'] != '':
         text += f'\nДолжность: {context.user_data["FILTER_TITLE"]}'
     if context.user_data['FILTER_FLEET'] != '':
-        text += f'\nФлот: {context.user_data["FILTER_FLEET"]}'
+        text += f'\nТипы судна: {context.user_data["FILTER_FLEET"]}'
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -608,7 +608,7 @@ def filter_handler(update: Update, context: CallbackContext):
                 InlineKeyboardButton(text='Зарплата',
                                     callback_data='salary_filter'),
             ],[
-                InlineKeyboardButton(text='Флот',
+                InlineKeyboardButton(text='Типы судна',
                                     callback_data='fleet_add_'),
                 InlineKeyboardButton(text='Длительность контракта',
                                     callback_data='contract_filter'),
@@ -705,7 +705,7 @@ def profile_edit_handler(update: Update, context: CallbackContext):
             ],[
                 InlineKeyboardButton(text='Зарплата',
                                     callback_data='salary_edit'),
-                InlineKeyboardButton(text='Флот',
+                InlineKeyboardButton(text='Типы судна',
                                     callback_data='choicefleet_add_')
             ],[
                 InlineKeyboardButton(text='Длительность контракта',
@@ -901,7 +901,7 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
                             callback_data='fleet',
                             callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
                             text='Вы выбрали '\
-                                'следующие типы судна в фильтре.')
+                                'следующие типы судна в фильтре')
         context.user_data['FILTER_FLEET'] = updated_subs
     else:
         p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
