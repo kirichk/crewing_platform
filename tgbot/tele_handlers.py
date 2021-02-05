@@ -122,7 +122,6 @@ def show_item_list(update, data, callback, callback_specific):
                      text='Вернуться',
                      callback_data=f'{callback}_{callback_specific}_'),
                 ])
-        )
         inline_buttons = InlineKeyboardMarkup(inline_keyboard)
     else:
         list_non_even.append(('Пропустить','Выбраны все варианты'))
