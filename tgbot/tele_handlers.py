@@ -356,10 +356,10 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     p = Profile.objects.get(external_id=update.callback_query.from_user.id)
     all_entries = Post.objects.all()
-    if p.title_subscriptions != 'Пропустить' and p.title_subscriptions != '':
+    if p.title_subscriptions != 'Пропустить' and p.title_subscriptions != '' and  p.title_subscriptions != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     title__in=p.title_subscriptions.split(', '))
-    if p.fleet_subscriptions != 'Пропустить' and p.fleet_subscriptions != '':
+    if p.fleet_subscriptions != 'Пропустить' and p.fleet_subscriptions != '' and  p.fleet_subscriptions != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     vessel__in=p.fleet_subscriptions.split(', '))
     if p.date_ready != '' and p.date_ready is not None:
