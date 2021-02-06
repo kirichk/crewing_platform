@@ -47,11 +47,16 @@ def model_transcriptor(model):
 
 
 def model_text_details(post):
+    try:
+        date = datetime.strptime(post.joining_date, '%Y-%m-%d')
+        date_formatted = date.strftime("%d %B, %Y")
+    except:
+        date_formatted = post.joining_date.strftime("%d %B, %Y")
     main_text = f'{post.title}\n'\
                 f'Тип судна: {post.vessel}\n'\
                 f'Зарплата: {post.salary}\n'\
                 f'Уровень английского: {post.english}\n'\
-                f'Дата посадки: {str(post.joining_date)}\n'
+                f'Дата посадки: {date_formatted}\n'
     if post.voyage_duration is not None and post.voyage_duration != '':
         main_text += f'Длительность рейса: {str(post.voyage_duration)}\n'
     if post.sailing_area is not None and post.sailing_area != '':
@@ -69,6 +74,7 @@ def model_text_details(post):
     if post.text != '':
         main_text += f'Дополнительная информация: {str(post.text)}\n'
     return main_text
+
 
 @logger.catch
 def subsription_cleaner(text):
@@ -105,20 +111,39 @@ def show_item_list(update, data, callback, callback_specific):
     else:
         list_even = data[1::2]
         list_non_even = data[2:-1:2]
-    list_non_even.append(('Пропустить','Пропустить'))
-    inline_buttons = InlineKeyboardMarkup(
-            inline_keyboard=[
-            [
-            InlineKeyboardButton(
-                text=i[0],
-                callback_data=f'choice{callback}_{callback_specific}_' + i[0]),
-            InlineKeyboardButton(
-                text=list_non_even[list_even.index(i)][0],
-                callback_data=f'choice{callback}_{callback_specific}_' \
-                                + list_non_even[list_even.index(i)][0])
-            ] for i in list_even
-        ],
-    )
+    list_non_even.append(('Пропустить','Выбраны все варианты'))
+    if callback == 'fleet':
+        inline_keyboard=[
+                [
+                InlineKeyboardButton(
+                    text=i[0],
+                    callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
+                InlineKeyboardButton(
+                    text=list_non_even[list_even.index(i)][0],
+                    callback_data=f'choice{callback}_{callback_specific}_' \
+                                    + list_non_even[list_even.index(i)][1])
+                ] for i in list_even]
+        inline_keyboard.append(
+                [
+                 InlineKeyboardButton(
+                     text='Вернуться',
+                     callback_data=f'{callback}_{callback_specific}_'),
+                ])
+        inline_buttons = InlineKeyboardMarkup(inline_keyboard)
+    else:
+        inline_buttons = InlineKeyboardMarkup(
+                inline_keyboard=[
+                [
+                InlineKeyboardButton(
+                    text=i[0],
+                    callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
+                InlineKeyboardButton(
+                    text=list_non_even[list_even.index(i)][0],
+                    callback_data=f'choice{callback}_{callback_specific}_' \
+                                    + list_non_even[list_even.index(i)][1])
+                ] for i in list_even
+            ],
+        )
     update.callback_query.edit_message_text(
         text='Выберите интересующий Вас вариант.',
         reply_markup=inline_buttons,
@@ -146,6 +171,8 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
     if callback[1] == 'remove':
         subscriptions = data.replace(callback[2],'')
         data = subsription_cleaner(subscriptions)
+        if 'Выбраны все варианты' in data:
+            data = 'Выбраны все варианты'
         update.callback_query.edit_message_text(
             text=f'Вы удалили {callback[2]}\n{text}:\n\n'\
                     f'{data}\n\nХотите добавить еще, удалить выбранные или продолжить?',
@@ -159,6 +186,8 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
         else:
             data += ', ' + callback[2]
             data = subsription_cleaner(data)
+        if 'Выбраны все варианты' in data:
+            data = 'Выбраны все варианты'
         update.callback_query.edit_message_text(
             text=f'{text}:\n\n'\
                     f'{data}\n\nХотите добавить еще, '\
@@ -298,12 +327,12 @@ def detail_handler(update: Update, context: CallbackContext):
 def searchfilter_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     all_entries = Post.objects.all()
-    if context.user_data['FILTER_TITLE'] != 'Пропустить' and context.user_data['FILTER_TITLE'] != '':
+    if context.user_data['FILTER_TITLE'] != 'Пропустить' and context.user_data['FILTER_TITLE'] != '' and context.user_data['FILTER_TITLE'] != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     title__in=context.user_data['FILTER_TITLE'].split(', '))
-    if context.user_data['FILTER_FLEET'] != 'Пропустить' and context.user_data['FILTER_FLEET'] != '':
+    if context.user_data['FILTER_FLEET'] != 'Пропустить' and context.user_data['FILTER_FLEET'] != '' and context.user_data['FILTER_FLEET'] != 'Выбраны все варианты':
         all_entries = all_entries.filter(
-                                    fleet__in=context.user_data['FILTER_FLEET'].split(', '))
+                                    vessel__in=context.user_data['FILTER_FLEET'].split(', '))
     if context.user_data['FILTER_DATE'] != '' and context.user_data['FILTER_DATE'] is not None:
         all_entries = all_entries.filter(
                                     joining_date__gte=context.user_data['FILTER_DATE'])
@@ -324,7 +353,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
                 cleaned_sub_salary_start = int(cleaned_sub_salary[0])
                 cleaned_sub_salary_end = int(cleaned_sub_salary[1])
             if context.user_data['FILTER_CONTRACT'] == '' or context.user_data['FILTER_CONTRACT'] == 'Не важно':
-                cleaned_sub_contract = 0
+                cleaned_sub_contract = 12
             else:
                 cleaned_sub_contract = int(re.findall(r'[0-9]+', context.user_data['FILTER_CONTRACT'])[0])
             cleaned_salary = int(re.findall(r'[0-9]+', post['salary'])[0])
@@ -336,7 +365,7 @@ def searchfilter_handler(update: Update, context: CallbackContext):
                and cleaned_sub_salary_end != '' \
                and cleaned_sub_salary_start <= cleaned_salary \
                and cleaned_salary <= cleaned_sub_salary_end:
-                if cleaned_contract >= cleaned_sub_contract:
+                if cleaned_contract <= cleaned_sub_contract:
                         result.append(post)
         page = int(update.callback_query.data.split('#')[1])
         vacancy_paginator(vacancies=result,
@@ -352,12 +381,12 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     p = Profile.objects.get(external_id=update.callback_query.from_user.id)
     all_entries = Post.objects.all()
-    if p.title_subscriptions != 'Пропустить' and p.title_subscriptions != '':
+    if p.title_subscriptions != 'Пропустить' and p.title_subscriptions != '' and  p.title_subscriptions != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     title__in=p.title_subscriptions.split(', '))
-    if p.fleet_subscriptions != 'Пропустить' and p.fleet_subscriptions != '':
+    if p.fleet_subscriptions != 'Пропустить' and p.fleet_subscriptions != '' and  p.fleet_subscriptions != 'Выбраны все варианты':
         all_entries = all_entries.filter(
-                                    fleet__in=p.fleet_subscriptions.split(', '))
+                                    vessel__in=p.fleet_subscriptions.split(', '))
     if p.date_ready != '' and p.date_ready is not None:
         all_entries = all_entries.filter(
                                     joining_date__gte=datetime.strptime(p.date_ready, '%Y-%m-%d'))
@@ -378,7 +407,7 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
                 cleaned_sub_salary_start = int(cleaned_sub_salary[0])
                 cleaned_sub_salary_end = int(cleaned_sub_salary[1])
             if p.contract_subscription == '' or p.contract_subscription == 'Не важно' or p.contract_subscription is None:
-                cleaned_sub_contract = 0
+                cleaned_sub_contract = 12
             else:
                 cleaned_sub_contract = int(re.findall(r'[0-9]+', p.contract_subscription)[0])
             cleaned_salary = int(re.findall(r'[0-9]+', post['salary'])[0])
@@ -390,7 +419,7 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
                and cleaned_sub_salary_end != '' \
                and cleaned_sub_salary_start <= cleaned_salary \
                and cleaned_salary <= cleaned_sub_salary_end:
-                if cleaned_contract >= cleaned_sub_contract:
+                if cleaned_contract <= cleaned_sub_contract:
                     result.append(post)
         page = int(update.callback_query.data.split('#')[1])
         vacancy_paginator(vacancies=result,
@@ -474,6 +503,10 @@ def newsletter_handler(update: Update, context: CallbackContext):
             [
                 InlineKeyboardButton(text='Отписаться',
                                     callback_data='newsletter_unsub'),
+            ],
+            [
+                InlineKeyboardButton(text='Вернуться в меню',
+                                    callback_data='start'),
             ]
         ]
         inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
@@ -483,7 +516,11 @@ def newsletter_handler(update: Update, context: CallbackContext):
         if p.__dict__['fleet_subscriptions'] != '':
             text += f'Типы судна: {p.fleet_subscriptions}\n'
         if p.__dict__['salary_subscription'] != '':
-            text += f'Зарплата: {p.salary_subscription}\n'
+            if p.salary_subscription == '10000-1000000$':
+                salary = '10000$+'
+            else:
+                salary = p.salary_subscription
+            text += f'Зарплата: {salary}\n'
         if p.__dict__['crew_subscription'] != '':
             text += f'Экипаж: {p.crew_subscription}\n'
         if p.__dict__['contract_subscription'] != '':
@@ -495,6 +532,10 @@ def newsletter_handler(update: Update, context: CallbackContext):
             [
                 InlineKeyboardButton(text='Подписаться',
                                     callback_data='newsletter_confirm'),
+            ],
+            [
+                InlineKeyboardButton(text='Вернуться в меню',
+                                    callback_data='start'),
             ]
         ]
         inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
@@ -518,7 +559,11 @@ def newsletter_handler(update: Update, context: CallbackContext):
         if p.__dict__['fleet_subscriptions'] != '':
             text += f'Типы судна: {p.fleet_subscriptions}\n'
         if p.__dict__['salary_subscription'] != '':
-            text += f'Зарплата: {p.salary_subscription}\n'
+            if p.salary_subscription == '10000-1000000$':
+                salary = '10000$+'
+            else:
+                salary = p.salary_subscription
+            text += f'Зарплата: {salary}\n'
         if p.__dict__['crew_subscription'] != '':
             text += f'Экипаж: {p.crew_subscription}\n'
         if p.__dict__['contract_subscription'] != '':
@@ -599,7 +644,7 @@ def filter_handler(update: Update, context: CallbackContext):
     if context.user_data['FILTER_TITLE'] != '':
         text += f'\nДолжность: {context.user_data["FILTER_TITLE"]}'
     if context.user_data['FILTER_FLEET'] != '':
-        text += f'\nФлот: {context.user_data["FILTER_FLEET"]}'
+        text += f'\nТипы судна: {context.user_data["FILTER_FLEET"]}'
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -608,7 +653,7 @@ def filter_handler(update: Update, context: CallbackContext):
                 InlineKeyboardButton(text='Зарплата',
                                     callback_data='salary_filter'),
             ],[
-                InlineKeyboardButton(text='Флот',
+                InlineKeyboardButton(text='Типы судна',
                                     callback_data='fleet_add_'),
                 InlineKeyboardButton(text='Длительность контракта',
                                     callback_data='contract_filter'),
@@ -705,7 +750,7 @@ def profile_edit_handler(update: Update, context: CallbackContext):
             ],[
                 InlineKeyboardButton(text='Зарплата',
                                     callback_data='salary_edit'),
-                InlineKeyboardButton(text='Флот',
+                InlineKeyboardButton(text='Типы судна',
                                     callback_data='choicefleet_add_')
             ],[
                 InlineKeyboardButton(text='Длительность контракта',
@@ -847,13 +892,47 @@ def salary_handler(update: Update, context: CallbackContext):
 def fleet_handler(update: Update, context: CallbackContext):
     """ Начало взаимодействия по клику на inline-кнопку
     """
+    callback = update.callback_query.data
+    callback_spl = callback.split('_')
+    if callback_spl[2] != '':
+        p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+        p.salary_subscription = callback_spl[2]
+        p.save()
+    data = settings.FLEET_CHOICES
+    inline_buttons = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+            InlineKeyboardButton(text=data[1][0],
+                                callback_data='vessel_' + callback + '_' + data[1][0]),
+            InlineKeyboardButton(text=data[2][0],
+                                callback_data='vessel_' + callback + '_' + data[2][0])
+            ],[
+            InlineKeyboardButton(text=data[3][0],
+                                callback_data='choice' + callback_spl[0] + '_' +callback_spl[1] + '_Fishing Vessel'),
+            InlineKeyboardButton(text=data[4][0],
+                                callback_data='vessel_' + callback + '_' + data[4][0])
+            ],[
+            InlineKeyboardButton(text=data[5][0],
+                                callback_data='vessel_' + callback + '_' + data[5][0]),
+            InlineKeyboardButton(text='Пропустить',
+                                callback_data='choice' + callback_spl[0] + '_' +callback_spl[1] + '_Выбраны все варианты')
+            ],
+        ],
+    )
+    update.callback_query.edit_message_text(
+        text='Выберите интересующий Вас вариант.',
+        reply_markup=inline_buttons,
+    )
+    return ConversationHandler.END
+
+
+@logger.catch
+def vessel_handler(update: Update, context: CallbackContext):
+    """ Начало взаимодействия по клику на inline-кнопку
+    """
     logger.info(f'user_data: {context.user_data}')
     callback = update.callback_query.data.split('_')
-    if callback[2] != '':
-        p = Profile.objects.get(external_id=update.callback_query.from_user.id)
-        p.salary_subscription = callback[2]
-        p.save()
-    show_item_list(update, settings.FLEET_CHOICES, callback[0], callback[1])
+    show_item_list(update, settings.VESSEL_BASE[callback[4]], callback[1], callback[2])
     return ConversationHandler.END
 
 
@@ -867,7 +946,7 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
                             callback_data='fleet',
                             callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
                             text='Вы выбрали '\
-                                'следующий флот в фильтре.')
+                                'следующие типы судна в фильтре')
         context.user_data['FILTER_FLEET'] = updated_subs
     else:
         p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
@@ -883,7 +962,7 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
                             callback_data='fleet',
                             callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
                             text='Сейчас Вы подписаны на '\
-                                'следующие флоты')
+                                'следующие типы судна')
             p.fleet_subscriptions = updated_subs
             p.save()
     return ConversationHandler.END

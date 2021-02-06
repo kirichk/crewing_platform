@@ -14,13 +14,22 @@ def vacancy_notification(form):
     Receiving a dictionary with data of new posted vacancy
     Applying filtering to send notification to relevant users
     """
+<<<<<<< HEAD
     title = '#' + form["title"].replace(' ', '_').replace(',', '').replace(
         '.', '',).replace('(', '').replace(')', '').replace('-', '_')
+=======
+    title = '#' + form["title"].replace(' ', '_').replace(',', '').replace('.', '',).replace('(','').replace(')', '').replace('-', '_')
+    try:
+        date = datetime.strptime(form["joining_date"], '%Y-%m-%d')
+        date_formatted = date.strftime("%d %B, %Y")
+    except:
+        date_formatted =form["joining_date"].strftime("%d %B, %Y")
+>>>>>>> 118367c161aec3424295f08feeba4b23aef7aee5
     main_text = f'{form["title"]}\n'\
                 f'Тип судна: {form["vessel"]}\n'\
                 f'Зарплата: {form["salary"]}\n'\
                 f'Уровень английского: {form["english"]}\n'\
-                f'Дата посадки: {str(form["joining_date"])}\n'
+                f'Дата посадки: {date_formatted}\n'
     if form['voyage_duration'] is not None and form['voyage_duration'] != '':
         main_text += f'Длительность рейса: {str(form["voyage_duration"])}\n'
     if form['sailing_area'] is not None and form['sailing_area'] != '':
@@ -38,7 +47,7 @@ def vacancy_notification(form):
     if form['text'] != '':
         main_text += f'Дополнительная информация: {str(form["text"])}\n'
     for p in Profile.objects.filter(subscription=True):
-        if (form['title'] in p.title_subscriptions
+        if (p.title_subscriptions is None or form['title'] in p.title_subscriptions
             or 'Пропустить' in p.title_subscriptions
                 or '' == p.title_subscriptions):
             if p.date_ready is not None and p.date_ready != '':
@@ -53,7 +62,7 @@ def vacancy_notification(form):
                                                         p.salary_subscription.split('-')[0])[0])
                 cleaned_salary = int(re.findall(r'[0-9]+', form['salary'])[0])
                 if p.contract_subscription == '' or p.contract_subscription == 'Не важно' or p.contract_subscription is None:
-                    cleaned_sub_contract = 0
+                    cleaned_sub_contract = 12
                 else:
                     cleaned_sub_contract = int(re.findall(
                         r'[0-9]+', p.contract_subscription)[0])
@@ -63,7 +72,12 @@ def vacancy_notification(form):
                     cleaned_contract = int(re.findall(
                         r'[0-9]+', form['voyage_duration'])[0])
                 if cleaned_salary >= cleaned_sub_salary:
+<<<<<<< HEAD
                     if cleaned_contract >= cleaned_sub_contract:
                         bot.send_message(p.external_id, main_text)
+=======
+                    if cleaned_contract <= cleaned_sub_contract:
+                        bot.send_message(p.external_id,main_text)
+>>>>>>> 118367c161aec3424295f08feeba4b23aef7aee5
     main_text = main_text.replace(form['title'], title)
     bot.send_message(CHANNEL_ID, main_text)

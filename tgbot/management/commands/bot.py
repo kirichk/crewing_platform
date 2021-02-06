@@ -17,7 +17,7 @@ from tgbot.tele_handlers import (start_buttons_handler,new_handler,
                                 email_question_handler, email_confirmer_handler,
                                 email_handler, success_handler, filter_handler,
                                 detail_handler, searchfilter_handler,
-                                searchsubscription_handler)
+                                searchsubscription_handler, vessel_handler)
 from loguru import logger
 
 
@@ -96,6 +96,9 @@ class Command(BaseCommand):
                                         pass_user_data=True),
                 CallbackQueryHandler(fleet_handler,
                                         pattern=r'^fleet',
+                                        pass_user_data=True),
+                CallbackQueryHandler(vessel_handler,
+                                        pattern=r'^vessel',
                                         pass_user_data=True),
                 CallbackQueryHandler(fleet_choose_handler,
                                         pattern=r'^choicefleet',
