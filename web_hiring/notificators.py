@@ -14,17 +14,13 @@ def vacancy_notification(form):
     Receiving a dictionary with data of new posted vacancy
     Applying filtering to send notification to relevant users
     """
-<<<<<<< HEAD
     title = '#' + form["title"].replace(' ', '_').replace(',', '').replace(
         '.', '',).replace('(', '').replace(')', '').replace('-', '_')
-=======
-    title = '#' + form["title"].replace(' ', '_').replace(',', '').replace('.', '',).replace('(','').replace(')', '').replace('-', '_')
     try:
         date = datetime.strptime(form["joining_date"], '%Y-%m-%d')
         date_formatted = date.strftime("%d %B, %Y")
     except:
-        date_formatted =form["joining_date"].strftime("%d %B, %Y")
->>>>>>> 118367c161aec3424295f08feeba4b23aef7aee5
+        date_formatted = form["joining_date"].strftime("%d %B, %Y")
     main_text = f'{form["title"]}\n'\
                 f'Тип судна: {form["vessel"]}\n'\
                 f'Зарплата: {form["salary"]}\n'\
@@ -72,12 +68,14 @@ def vacancy_notification(form):
                     cleaned_contract = int(re.findall(
                         r'[0-9]+', form['voyage_duration'])[0])
                 if cleaned_salary >= cleaned_sub_salary:
-<<<<<<< HEAD
-                    if cleaned_contract >= cleaned_sub_contract:
-                        bot.send_message(p.external_id, main_text)
-=======
-                    if cleaned_contract <= cleaned_sub_contract:
-                        bot.send_message(p.external_id,main_text)
->>>>>>> 118367c161aec3424295f08feeba4b23aef7aee5
-    main_text = main_text.replace(form['title'], title)
-    bot.send_message(CHANNEL_ID, main_text)
+
+
+<< << << < HEAD
+if cleaned_contract >= cleaned_sub_contract:
+    bot.send_message(p.external_id, main_text)
+== == == =
+if cleaned_contract <= cleaned_sub_contract:
+    bot.send_message(p.external_id, main_text)
+>>>>>> > 118367c161aec3424295f08feeba4b23aef7aee5
+main_text = main_text.replace(form['title'], title)
+bot.send_message(CHANNEL_ID, main_text)
