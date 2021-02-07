@@ -13,11 +13,13 @@ services:
     build: .
     restart: always
     container_name: 'demo_app_django'
-    command: gunicorn crewing.wsgi:application --bind 0.0.0.0:5000
+    command: gunicorn crewing.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/code
+    ports:
+      - "8000:8000"
     expose:
-      - 5000
+      - 8000
   celery:
     build: .
     restart: always
