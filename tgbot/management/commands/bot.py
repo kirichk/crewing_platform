@@ -22,7 +22,7 @@ from loguru import logger
 
 
 CALENDAR, CALENDAR_SELECTOR, EDIT, FILTER, EMAIL_CONFIRM = range(5)
-logger.add('info.log', format='{time} {level} {message}',
+logger.add('logs/info.log', format='{time} {level} {message}',
             level='INFO', rotation="1 MB", compression='zip')
 
 

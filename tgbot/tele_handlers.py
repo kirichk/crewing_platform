@@ -17,7 +17,7 @@ from tgbot.tools.calendar import telegramcalendar
 from loguru import logger
 
 
-logger.add('info.log', format='{time} {level} {message}',
+logger.add('logs/info.log', format='{time} {level} {message}',
             level='INFO', rotation="1 MB", compression='zip')
 # PHONE, SALARY_RANGE = range(2)
 PAGE_SPLIT = 8

@@ -16,7 +16,7 @@ from web_hiring.models import Post
 from web_hiring.notificators import vacancy_notification
 
 logger.add(
-    "info.log",
+    "logs/info.log",
     format="{time} {level} {message}",
     level="INFO",
     rotation="1 MB",

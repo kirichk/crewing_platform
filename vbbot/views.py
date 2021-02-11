@@ -14,7 +14,7 @@ from .resources import keyboards_content as kb
 from loguru import logger
 
 
-logger.add('info.log', format='{time} {level} {message}',
+logger.add('logs/info.log', format='{time} {level} {message}',
             level='INFO', rotation="1 MB", compression='zip')
 
 viber = Api(BotConfiguration(
