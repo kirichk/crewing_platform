@@ -1,0 +1,39 @@
+# docker-compose.yml
+version: '3'
+
+services:
+  redis:
+    image: redis
+    restart: always
+    container_name: 'demo_app_redis'
+    command: redis-server
+    ports:
+      - '6379:6379'
+  web:
+    build: .
+    restart: always
+    container_name: 'demo_app_django'
+    command: gunicorn crewing.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - 8000:8000
+  celery:
+    build: .
+    restart: always
+    container_name: 'demo_app_celery'
+    command: celery -A crewing worker --beat --scheduler django --loglevel=info
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+      - redis
+  telegram:
+    build: .
+    restart: always
+    container_name: 'demo_app_telegram'
+    command: python manage.py bot
+    volumes:
+      - .:/code
+    depends_on:
+      - web

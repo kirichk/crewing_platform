@@ -29,6 +29,90 @@ def user_message_handler(viber, viber_request):
         # Setting the possibility to write a comment
         reply_text = 'Выберите действие чтобы продолжить.'
         reply_keyboard = kb.MENU_KEYBOARD
+        reply_rich_media = {
+          "Type":"rich_media",
+          "ButtonsGroupColumns":6,
+          "ButtonsGroupRows":7,
+          "BgColor":"#FFFFFF",
+          "Buttons":[
+             {
+                "Columns":6,
+                "Rows":3,
+                "ActionType":"open-url",
+                "ActionBody":"https://www.google.com",
+                "Image":"http://html-test:8080/myweb/guy/assets/imageRMsmall2.png"
+             },
+             {
+                "Columns":6,
+                "Rows":2,
+                "Text":"<font color=#323232><b>Headphones with Microphone, On-ear Wired earphones</b></font><font color=#777777><br>Sound Intone </font><font color=#6fc133>$17.99</font>",
+                "ActionType":"open-url",
+                "ActionBody":"https://www.google.com",
+                "TextSize":"medium",
+                "TextVAlign":"middle",
+                "TextHAlign":"left"
+             },
+             {
+                "Columns":6,
+                "Rows":1,
+                "ActionType":"reply",
+                "ActionBody":"https://www.google.com",
+                "Text":"<font color=#ffffff>Buy</font>",
+                "TextSize":"large",
+                "TextVAlign":"middle",
+                "TextHAlign":"middle",
+                "Image":"https://s14.postimg.org/4mmt4rw1t/Button.png"
+             },
+             {
+                "Columns":6,
+                "Rows":1,
+                "ActionType":"reply",
+                "ActionBody":"https://www.google.com",
+                "Text":"<font color=#8367db>MORE DETAILS</font>",
+                "TextSize":"small",
+                "TextVAlign":"middle",
+                "TextHAlign":"middle"
+             },
+             {
+                "Columns":6,
+                "Rows":3,
+                "ActionType":"open-url",
+                "ActionBody":"https://www.google.com",
+                "Image":"https://s16.postimg.org/wi8jx20wl/image_RMsmall2.png"
+             },
+             {
+                "Columns":6,
+                "Rows":2,
+                "Text":"<font color=#323232><b>Hanes Men's Humor Graphic T-Shirt</b></font><font color=#777777><br>Hanes</font><font color=#6fc133>$10.99</font>",
+                "ActionType":"open-url",
+                "ActionBody":"https://www.google.com",
+                "TextSize":"medium",
+                "TextVAlign":"middle",
+                "TextHAlign":"left"
+             },
+             {
+                "Columns":6,
+                "Rows":1,
+                "ActionType":"reply",
+                "ActionBody":"https://www.google.com",
+                "Text":"<font color=#ffffff>Buy</font>",
+                "TextSize":"large",
+                "TextVAlign":"middle",
+                "TextHAlign":"middle",
+                "Image":"https://s14.postimg.org/4mmt4rw1t/Button.png"
+             },
+             {
+                "Columns":6,
+                "Rows":1,
+                "ActionType":"reply",
+                "ActionBody":"https://www.google.com",
+                "Text":"<font color=#8367db>MORE DETAILS</font>",
+                "TextSize":"small",
+                "TextVAlign":"middle",
+                "TextHAlign":"middle"
+             }
+          ]
+       }
     # elif text[:5] == 'order':
     #     # Handling user selection of product, and dislpaying his choice
     #     ordered_item = text.split('-')[1]
@@ -63,9 +147,15 @@ def user_message_handler(viber, viber_request):
         reply_keyboard = {}
 
     tracking_data = json.dumps(tracking_data)
+    if reply_rich_media:
 
-    reply = [TextMessage(text=reply_text,
-                         keyboard=reply_keyboard,
+        reply = [RichMediaMessage(rich_media=reply_rich_media,
+                         alt_text=reply_text,
                          tracking_data=tracking_data,
-                         min_api_version=3)]
+                         min_api_version=7)]
+    else:
+        reply = [TextMessage(text=reply_text,
+                             keyboard=reply_keyboard,
+                             tracking_data=tracking_data,
+                             min_api_version=3)]
     viber.send_messages(viber_request.sender.id, reply)
