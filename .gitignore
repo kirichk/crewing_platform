@@ -6,5 +6,5 @@ db.sqlite3
 *.log
 *.save
 *.zip
-info.*.log.zip
+info.[!a].log.zip
 info.*
