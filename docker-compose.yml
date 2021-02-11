@@ -13,11 +13,11 @@ services:
     build: .
     restart: always
     container_name: 'demo_app_django'
-    command: gunicorn crewing.wsgi:application --bind 0.0.0.0:5000
+    command: gunicorn crewing.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/code
     expose:
-      - 5000
+      - 8000
   celery:
     build: .
     restart: always
@@ -42,5 +42,10 @@ services:
     ports:
       - 80:80
       - 443:443
+    volumes:
+      - static_volume:/home/debian/crewing_platform/static
     depends_on:
       - web
+
+volumes:
+  static_volume:

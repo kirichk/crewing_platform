@@ -1,11 +1,11 @@
+from crewing.celery import app
+import scraper
 import requests
 import sys
 from django.conf import settings
 from django.utils import timezone
 from web_hiring.models import Post
 sys.path.append('..')
-import scraper
-from crewing.celery import app
 
 
 START_URL = settings.START_URL

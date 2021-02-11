@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '145.239.95.67', 'vps-c42a2a0e.vps.ovh.net', 'topcrew.net']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '145.239.95.67', 'vps-c42a2a0e.vps.ovh.net', 'topcrew.net', 'ffb8d9c05e69.ngrok.io']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'accounts',
     'web_hiring',
     'tgbot',
+    'vbbot',
     'bootstrap4',
     'crispy_forms',
     'widget_tweaks',
@@ -153,6 +154,11 @@ LOGOUT_REDIRECT_URL = '/'
 #############################
 
 TELE_TOKEN = config('TELE_TOKEN')
+CHANNEL_ID = config('CHANNEL_ID')
+
+#############################
+
+VIBER_TOKEN = config('VIBER_TOKEN')
 
 #####  SCRAPER config  ######
 
@@ -170,7 +176,10 @@ TITLE_CHOICES = [
         ('Wiper', 'Wiper'),
         ('Fitter', 'Fitter'),
         ('Messman', 'Messman'),
-        ('Cadet', 'Cadet'),
+        ('Deck Cadet', 'Deck Cadet'),
+        ('Engine Cadet', 'Engine Cadet'),
+        ('Electric Cadet', 'Electric Cadet'),
+        ('Ref. Cadet', 'Ref. Cadet'),
         ('Master', 'Master'),
         ('Chief Officer', 'Chief Officer'),
         ('2nd Officer', '2nd Officer'),
@@ -192,8 +201,10 @@ FLEET_CHOICES = [
 VESSEL_CHOICES = [
         ('','Выберите тип судна'),
         ('Accommodation Barge', 'Accommodation Barge'),
+        ('Anchor Handling Tug', 'Anchor Handling Tug'),
         ('Anchor Handling Tug Supply', 'Anchor Handling Tug Supply'),
         ('ASD Tug (Azimuth Stern Drive Tug)', 'ASD Tug (Azimuth Stern Drive Tug)'),
+        ('Barge self-propelled', 'Barge self-propelled'),
         ('Bulk Carrier', 'Bulk Carrier'),
         ('Bunkering Vessel', 'Bunkering Vessel'),
         ('Cable Laying Vessel', 'Cable Laying Vessel'),
@@ -208,18 +219,23 @@ VESSEL_CHOICES = [
         ('Dredger', 'Dredger'),
         ('Dry Cargo', 'Dry Cargo'),
         ('DSV - Diving Support Vessel', 'DSV - Diving Support Vessel'),
+        ('Ferry', 'Ferry'),
         ('Fishing Vessel', 'Fishing Vessel'),
         ('FPSO (Floating Production Storage and Offloading)', 'FPSO (Floating Production Storage and Offloading)'),
+        ('Gas Tanker', 'Gas Tanker'),
         ('General Cargo', 'General Cargo'),
         ('Heavy Lift Vessel', 'Heavy Lift Vessel'),
         ('LNG Tanker', 'LNG Tanker'),
+        ('Livestock', 'Livestock'),
         ('LPG Tanker', 'LPG Tanker'),
+        ('Motor Yacht', 'Motor Yacht'),
         ('Multi-Purpose Vessel', 'Multi-Purpose Vessel'),
         ('OBO (Oil/Bulk/Ore Carrier)', 'OBO (Oil/Bulk/Ore Carrier)'),
         ('Oil Chemical Tanker', 'Oil Chemical Tanker'),
         ('Oil Product Tanker', 'Oil Product Tanker'),
         ('Oil Tanker', 'Oil Tanker'),
         ('OSV (Offshore Supply Vessel)', 'OSV (Offshore Supply Vessel)'),
+        ('Passenger / Ro-Ro Vessel', 'Passenger / Ro-Ro Vessel'),
         ('Passenger Vessel', 'Passenger Vessel'),
         ('Pollution Control Vessel', 'Pollution Control Vessel'),
         ('PSV (Platform Supply/Support Vessel)', 'PSV (Platform Supply/Support Vessel)'),
@@ -228,6 +244,7 @@ VESSEL_CHOICES = [
         ('Ro-Ro', 'Ro-Ro'),
         ('Self Unloading Bulk Carrier', 'Self Unloading Bulk Carrier'),
         ('Supply Vessel', 'Supply Vessel'),
+        ('Tanker Crude', 'Tanker Crude'),
         ('Tug Boat', 'Tug Boat'),
         ('Utility Boat', 'Utility Boat'),
         ('VLCC (Very Large Crude Oil Carrier)', 'VLCC (Very Large Crude Oil Carrier)'),
@@ -240,3 +257,66 @@ ENGLISH_CHOICES = [
         ('Хороший', 'Хороший'),
         ('Продвинутый', 'Продвинутый')
         ]
+SALARY_MATCHES = {'0-1000$':'0-1000$',
+                  '1000-3000$':'1000-3000$',
+                  '3000-5000$':'3000-5000$',
+                  '5000-10000$':'5000-10000$',
+                  '10000-1000000$':'10000$+',
+                  'Не важно':'Не важно'}
+VESSEL_BASE = {
+    'Merchant fleet' : [
+        ('Bulk Carrier', 'Bulk Carrier'),
+        ('Bulk Carrier', 'Bulk Carrier'),
+        ('Car Carrier', 'Car Carrier'),
+        ('Cement Carrier', 'Cement Carrier'),
+        ('Coaster', 'Coaster'),
+        ('Container', 'Container'),
+        ('Dry Cargo', 'Dry Cargo'),
+        ('General Cargo', 'General Cargo'),
+        ('Heavy Lift Vessel', 'Heavy Lift Vessel'),
+        ('Livestock', 'Livestock'),
+        ('Multi-Purpose Vessel', 'Multi-Purpose Vessel'),
+        ('Reefer', 'Reefer'),
+        ('Ro-Ro', 'Ro-Ro'),
+        ('Self Unloading Bulk Carrier', 'Self Unloading Bulk Carrier')
+    ],
+    'Offshore fleet' : [
+        ('Accommodation Barge', 'Accommodation Barge'),
+        ('Accommodation Barge', 'Accommodation Barge'),
+        ('Anchor Handling Tug', 'Anchor Handling Tug'),
+        ('Anchor Handling Tug Supply', 'Anchor Handling Tug Supply'),
+        ('Barge self-propelled', 'Barge self-propelled'),
+        ('Crew Boat', 'Crew Boat'),
+        ('Dredger', 'Dredger'),
+        ('OSV (Offshore Supply Vessel)', 'OSV (Offshore Supply Vessel)'),
+        ('PSV (Platform Supply/Support Vessel)', 'PSV (Platform Supply/Support Vessel)'),
+        ('Research vessel', 'Research vessel'),
+        ('Supply Vessel', 'Supply Vessel'),
+        ('Tug Boat', 'Tug Boat'),
+    ],
+    'Fishing fleet' : [
+        ('Fishing Vessel', 'Fishing Vessel'),
+        ('Fishing Vessel', 'Fishing Vessel'),
+    ],
+    'Passenger fleet' : [
+        ('Cruise Vessel', 'Cruise Vessel'),
+        ('Cruise Vessel', 'Cruise Vessel'),
+        ('Ferry', 'Ferry'),
+        ('Motor Yacht', 'Motor Yacht'),
+        ('Passenger / Ro-Ro Vessel', 'Passenger / Ro-Ro Vessel'),
+        ('Passenger Vessel', 'Passenger Vessel'),
+    ],
+    'Tanker fleet' : [
+        ('Bunkering Vessel', 'Bunkering Vessel'),
+        ('Chemical Tanker', 'Chemical Tanker'),
+        ('Crude Oil Tanker', 'Crude Oil Tanker'),
+        ('Gas Tanker', 'Gas Tanker'),
+        ('LNG Tanker', 'LNG Tanker'),
+        ('LPG Tanker', 'LPG Tanker'),
+        ('Oil Chemical Tanker', 'Oil Chemical Tanker'),
+        ('Oil Product Tanker', 'Oil Product Tanker'),
+        ('Oil Tanker', 'Oil Tanker'),
+        ('Tanker Crude', 'Tanker Crude'),
+        ('VLCC (Very Large Crude Oil Carrier)', 'VLCC (Very Large Crude Oil Carrier)'),
+    ]
+}
