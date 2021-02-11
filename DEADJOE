@@ -1,0 +1,89 @@
+
+*** These modified files were found in JOE when it aborted on Thu Feb 11 13:36:09 2021
+*** JOE was aborted because the terminal closed
+
+*** File '/home/debian/crewing_platform/.git/COMMIT_EDITMSG'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fixedclear
+ nginx
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# HEAD detached from origin/main
+# Changes to be committed:
+#	modified:   docker-compose.yml
+#	new file:   info.2021-01-20_09-01-57_423028.log.zip
+#	new file:   info.2021-01-20_09-01-57_465429.log.zip
+#	new file:   info.2021-01-20_09-01-57_472090.log.zip
+#	new file:   info.2021-01-25_17-55-54_353346.log.zip
+#	new file:   info.2021-01-25_17-55-54_449898.log.zip
+#	new file:   info.2021-01-26_11-22-07_698054.log.zip
+#	new file:   info.2021-01-26_11-22-13_555727.log.zip
+
+
+
+
+q
+:q
+
+#	new file:   info.2021-02-03_14-01-06_041043.log.zip
+#	new file:   info.2021-02-03_14-25-50_905591.log.zip
+#	new file:   info.2021-02-03_14-25-50_907807.log.zip
+#	new file:   info.2021-02-05_11-39-05_320600.log.zip
+#	new file:   info.2021-02-10_10-33-53_010691.log.zip
+#	new file:   info.2021-02-10_10-33-53_019890.log.zip
+#	new file:   info.2021-02-10_10-33-54_258863.log.zip
+#	deleted:    nginx/.Dockerfile.swp
+#	modified:   nginx/nginx.conf
+#
+
+*** File '(Unnamed)'
+/root/.gitconfig
+/home/debian/crewing_platform/.git/COMMIT_EDITMSG
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
