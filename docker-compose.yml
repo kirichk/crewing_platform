@@ -16,8 +16,6 @@ services:
     command: gunicorn crewing.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/code
-    ports:
-      - "8000:8000"
     expose:
       - 8000
   celery:
@@ -44,5 +42,10 @@ services:
     ports:
       - 80:80
       - 443:443
+    volumes:
+      - static_volume:/home/debian/crewing_platform/static
     depends_on:
       - web
+
+volumes:
+  static_volume:
