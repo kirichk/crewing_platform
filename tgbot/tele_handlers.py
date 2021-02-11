@@ -258,14 +258,14 @@ def start_buttons_handler(update: Update, context: CallbackContext):
             InlineKeyboardButton(text='Настроить фильтр вакансий ' + u'\U0001F504',
                                 callback_data='filter_'),
         ],[
-            InlineKeyboardButton(text='Заполнить апликейшн ' + u'\U0001F6E5',
+            InlineKeyboardButton(text='Заполнить анкету ' + u'\U0001F6E5',
                                 callback_data='profile'),
         ],
     ]
 
     if not Profile.objects.filter(external_id=user_id).exists():
         inline_keyboard.insert(2,
-            [InlineKeyboardButton(text='Вакансии согласно вашему апликейшн ' + u'\U0001F477',
+            [InlineKeyboardButton(text='Вакансии согласно вашей анкете ' + u'\U0001F477',
                 callback_data='profile')]
         )
         inline_keyboard.insert(3,
@@ -274,7 +274,7 @@ def start_buttons_handler(update: Update, context: CallbackContext):
         )
     else:
         inline_keyboard.insert(2,
-            [InlineKeyboardButton(text='Вакансии согласно вашему апликейшн ' + u'\U0001F477',
+            [InlineKeyboardButton(text='Вакансии согласно вашей анкете ' + u'\U0001F477',
                 callback_data='searchsubscription#1')]
         )
         inline_keyboard.insert(3,

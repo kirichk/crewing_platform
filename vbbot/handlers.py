@@ -1,10 +1,18 @@
 import os
 import json
+from django.conf import settings
+from django.forms.models import model_to_dict
 from viberbot.api.messages.text_message import TextMessage
 from viberbot.api.messages.contact_message import ContactMessage
 from viberbot.api.messages.location_message import LocationMessage
 from viberbot.api.messages.rich_media_message import RichMediaMessage
+from loguru import logger
+from web_hiring.models import Post
 from .resources import keyboards_content as kb
+
+
+logger.add('logs/info.log', format='{time} {level} {message}',
+            level='INFO', rotation="1 MB", compression='zip')
 
 
 def user_message_handler(viber, viber_request):
@@ -46,44 +54,6 @@ def user_message_handler(viber, viber_request):
                 "Columns":6,
                 "Rows":2,
                 "Text":"<font color=#323232><b>Headphones with Microphone, On-ear Wired earphones</b></font><font color=#777777><br>Sound Intone </font><font color=#6fc133>$17.99</font>",
-                "ActionType":"open-url",
-                "ActionBody":"https://www.google.com",
-                "TextSize":"medium",
-                "TextVAlign":"middle",
-                "TextHAlign":"left"
-             },
-             {
-                "Columns":6,
-                "Rows":1,
-                "ActionType":"reply",
-                "ActionBody":"https://www.google.com",
-                "Text":"<font color=#ffffff>Buy</font>",
-                "TextSize":"large",
-                "TextVAlign":"middle",
-                "TextHAlign":"middle",
-                "Image":"https://s14.postimg.org/4mmt4rw1t/Button.png"
-             },
-             {
-                "Columns":6,
-                "Rows":1,
-                "ActionType":"reply",
-                "ActionBody":"https://www.google.com",
-                "Text":"<font color=#8367db>MORE DETAILS</font>",
-                "TextSize":"small",
-                "TextVAlign":"middle",
-                "TextHAlign":"middle"
-             },
-             {
-                "Columns":6,
-                "Rows":3,
-                "ActionType":"open-url",
-                "ActionBody":"https://www.google.com",
-                "Image":"https://s16.postimg.org/wi8jx20wl/image_RMsmall2.png"
-             },
-             {
-                "Columns":6,
-                "Rows":2,
-                "Text":"<font color=#323232><b>Hanes Men's Humor Graphic T-Shirt</b></font><font color=#777777><br>Hanes</font><font color=#6fc133>$10.99</font>",
                 "ActionType":"open-url",
                 "ActionBody":"https://www.google.com",
                 "TextSize":"medium",
