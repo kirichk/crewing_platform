@@ -31,7 +31,7 @@ MENU_KEYBOARD = {
             "BgColor": "#e6f5ff",
             "BgLoop": True,
             "ActionType": "reply",
-            "ActionBody": "menu",
+            "ActionBody": "newday-menu",
             "ReplyType": "message",
             "Text": "Вакансии за день"
         },
@@ -44,6 +44,161 @@ MENU_KEYBOARD = {
             "ActionBody": "menu",
             "ReplyType": "message",
             "Text": "Фильтр вакансий"
+        }
+    ]
+}
+
+
+CONTROL_KEYBOARD_MENU_MORE = {
+    "DefaultHeight": False,
+    "BgColor": "#FFFFFF",
+    "Type": "keyboard",
+    "Buttons": [
+        {
+            "Columns": 3,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "menu",
+            "ReplyType": "message",
+            "Text": "Меню"
+        },
+        {
+            "Columns": 3,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "newday-more",
+            "ReplyType": "message",
+            "Text": "Еще"
+        }
+    ]
+}
+
+
+CONTROL_KEYBOARD_MENU_BACK = {
+    "DefaultHeight": False,
+    "BgColor": "#FFFFFF",
+    "Type": "keyboard",
+    "Buttons": [
+        {
+            "Columns": 3,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "menu",
+            "ReplyType": "message",
+            "Text": "Меню"
+        },
+        {
+            "Columns": 3,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "newday-back",
+            "ReplyType": "message",
+            "Text": "Назад"
+        }
+    ]
+}
+
+
+CONTROL_KEYBOARD_ALL = {
+    "DefaultHeight": False,
+    "BgColor": "#FFFFFF",
+    "Type": "keyboard",
+    "Buttons": [
+        {
+            "Columns": 2,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "menu",
+            "ReplyType": "message",
+            "Text": "Меню"
+        },
+        {
+            "Columns": 2,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "newday-back",
+            "ReplyType": "message",
+            "Text": "Назад"
+        },
+        {
+            "Columns": 2,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "newday-more",
+            "ReplyType": "message",
+            "Text": "Еще"
+        }
+    ]
+}
+
+
+BACK_KEYBOARD = {
+    "DefaultHeight": False,
+    "BgColor": "#FFFFFF",
+    "Type": "keyboard",
+    "Buttons": [
+        {
+            "Columns": 3,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "menu",
+            "ReplyType": "message",
+            "Text": "Меню"
+        },
+        {
+            "Columns": 3,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "newday-back",
+            "ReplyType": "message",
+            "Text": "Назад"
+        }
+    ]
+}
+
+
+RETURN_KEYBOARD = {
+    "DefaultHeight": False,
+    "BgColor": "#FFFFFF",
+    "Type": "keyboard",
+    "Buttons": [
+        {
+            "Columns": 3,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "menu",
+            "ReplyType": "message",
+            "Text": "Меню"
+        },
+        {
+            "Columns": 3,
+            "Rows": 1,
+            "BgColor": "#e6f5ff",
+            "BgLoop": True,
+            "ActionType": "reply",
+            "ActionBody": "newday-return",
+            "ReplyType": "message",
+            "Text": "Назад"
         }
     ]
 }
