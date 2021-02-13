@@ -5,7 +5,7 @@ from .tools import keyboard_consctructor
 GO_TO_MENU_BUTTONS = [("menu", "Меню", 6)]
 
 MENU_BUTTONS = [("newday-search", "Вакансии за день", 6),
-                ("menu", "Фильтр вакансий", 6)]
+                ("filter", "Фильтр вакансий", 6)]
 
 CONTROL_MENU_MORE_BUTTONS = [("menu", "Меню", 3),
                              ("newday-more", "Еще", 3)]
