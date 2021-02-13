@@ -110,7 +110,7 @@ def paginator(post_list: list, page: int, identifier: str):
                 "BgColor": "#A9E2F3",
                 "BgLoop": True,
                 "ActionType": "reply",
-                "ActionBody": f"{identifier}-{item['id']}",
+                "ActionBody": f"detail-{item['id']}-{identifier}",
                 "Text": f"<b>{item['title']}</b>\n{item['salary']}, {item['joining_date']}",
             }
         )
