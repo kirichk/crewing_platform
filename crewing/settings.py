@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '145.239.95.67', 'vps-c42a2a0e.vps.ovh.net', 'topcrew.net', '0907531e1f68.ngrok.io']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'topcrew.net', 'a6774e009f96.ngrok.io']
 
 
 # Application definition
