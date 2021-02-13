@@ -632,18 +632,18 @@ def filter_handler(update: Update, context: CallbackContext):
             context.user_data['FILTER_CONTRACT'] = callback[2]
         if callback[1] == 'crew':
             context.user_data['FILTER_CREW'] = callback[2]
-    if context.user_data['FILTER_DATE'] != '':
+    if 'FILTER_DATE' in context.user_data and context.user_data['FILTER_DATE'] != '':
         date_choise = context.user_data['FILTER_DATE'].strftime("%d/%m/%Y")
         text += f'\nНачальная дата старта: {date_choise}'
-    if context.user_data['FILTER_SALARY'] != '':
+    if 'FILTER_SALARY' in context.user_data and context.user_data['FILTER_SALARY'] != '':
         text += f'\nЗарплата: {SALARY_MATCHES[context.user_data["FILTER_SALARY"]]}'
-    if context.user_data['FILTER_CONTRACT'] != '':
+    if 'FILTER_CONTRACT' in context.user_data and context.user_data['FILTER_CONTRACT'] != '':
         text += f'\nДлительность контракта: {context.user_data["FILTER_CONTRACT"]}'
-    if context.user_data['FILTER_CREW'] != '':
+    if 'FILTER_CREW' in context.user_data and context.user_data['FILTER_CREW'] != '':
         text += f'\nЭкипаж: {context.user_data["FILTER_CREW"]}'
-    if context.user_data['FILTER_TITLE'] != '':
+    if 'FILTER_TITLE' in context.user_data and context.user_data['FILTER_TITLE'] != '':
         text += f'\nДолжность: {context.user_data["FILTER_TITLE"]}'
-    if context.user_data['FILTER_FLEET'] != '':
+    if 'FILTER_FLEET' in context.user_data and context.user_data['FILTER_FLEET'] != '':
         text += f'\nТипы судна: {context.user_data["FILTER_FLEET"]}'
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
