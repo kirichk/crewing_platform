@@ -7,7 +7,8 @@ from viberbot.api.messages.rich_media_message import RichMediaMessage
 from loguru import logger
 from web_hiring.models import Post
 from .resources import keyboards_content as kb
-from .resources.tools import view_definer, model_text_details, model_transcriptor
+from .resources.tools import (view_definer, model_text_details,
+                              model_transcriptor, action_insert)
 
 
 logger.add('logs/info.log', format='{time} {level} {message}',
@@ -45,11 +46,19 @@ def user_message_handler(viber, viber_request):
         else:
             reply_text = 'Новых вакансий пока нет.'
             reply_keyboard = kb.GO_TO_MENU_KEYBOARD
+    elif text[:6] == 'filter':
+        reply_text = 'Выберите параметр по которому отфильтровать вакансии.'
+        reply_keyboard = kb.FILTER_KEYBOARD
     elif text[:6] == 'detail':
         callback_id = text.split('-')[1]
+        back_menu = text.split('-')[2]
         post = Post.objects.get(id=callback_id)
         reply_text = model_text_details(post)
-        reply_keyboard = kb.RETURN_KEYBOARD
+        reply_keyboard = action_insert(kb.RETURN_KEYBOARD, back_menu)
+    elif text == 'title':
+        pass
+    elif text == 'salary':
+        pass
     elif text == 'menu':
         # Setting the possibility to write a comment
         tracking_data['page'] = '0'

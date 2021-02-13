@@ -91,7 +91,7 @@ def keyboard_consctructor(items: list) -> dict:
 
 
 @logger.catch
-def paginator(post_list: list, page: int):
+def paginator(post_list: list, page: int, identifier: str):
     splitted_list_for_carousel = list(divide_chunks(post_list, 42))
     displayed_list = splitted_list_for_carousel[page]
     reply_rich_media = {
@@ -110,7 +110,7 @@ def paginator(post_list: list, page: int):
                 "BgColor": "#A9E2F3",
                 "BgLoop": True,
                 "ActionType": "reply",
-                "ActionBody": f"detail-{item['id']}",
+                "ActionBody": f"{identifier}-{item['id']}",
                 "Text": f"<b>{item['title']}</b>\n{item['salary']}, {item['joining_date']}",
             }
         )
@@ -162,7 +162,7 @@ def view_definer(post_list, tracking_data, callback, identifier):
         tracking_data['page'] = '0'
         reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_MENU_MORE,
                                        identifier)
-    reply_rich_media = paginator(post_list, int(tracking_data['page']))
+    reply_rich_media = paginator(post_list, int(tracking_data['page']), identifier)
     reply_text = 'Выше показаны вакансии за сегодня. Для возвращения в '\
                  'меню воспользуйтесь клавиатурой внизу.'
     return (reply_text, reply_rich_media, reply_keyboard)
