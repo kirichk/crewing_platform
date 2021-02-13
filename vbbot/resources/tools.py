@@ -156,7 +156,7 @@ def view_definer(post_list, tracking_data, callback, identifier):
         if tracking_data['page'] == '0':
             reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_MENU_MORE,
                                            identifier)
-        if max_pages == 1:
+        if max_pages+1 == 1:
             reply_keyboard = kb.GO_TO_MENU_KEYBOARD
     else:
         tracking_data['page'] = '0'
