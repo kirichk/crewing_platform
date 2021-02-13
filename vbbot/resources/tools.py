@@ -1,7 +1,7 @@
 """Additional functions for Viber bot."""
-from . import keyboards_content as kb
+from datetime import datetime
 from loguru import logger
-from datetime import date, datetime, timedelta
+from . import keyboards_content as kb
 
 
 logger.add('logs/info.log', format='{time} {level} {message}',
@@ -61,6 +61,15 @@ def model_text_details(post):
 
 
 @logger.catch
+def action_insert(keyboard, identifier):
+    if identifier == 'filter':
+        for button in keyboard['Buttons']:
+            if 'newday' in button['ActionBody']:
+                button['ActionBody'].replace('newday', 'filter')
+    return keyboard
+
+
+@logger.catch
 def keyboard_consctructor(items: list) -> dict:
     """Pasting infromation from list of items to keyboard menu template."""
     keyboard = {
@@ -68,9 +77,9 @@ def keyboard_consctructor(items: list) -> dict:
         "BgColor": "#FFFFFF",
         "Type": "keyboard",
         "Buttons": [{
-                "Columns": 3,
+                "Columns": item[2],
                 "Rows": 1,
-                "BgColor": "#e6f5ff",
+                "BgColor": "#A9E2F3",
                 "BgLoop": True,
                 "ActionType": "reply",
                 "ActionBody": item[0],
@@ -117,32 +126,43 @@ def divide_chunks(data: list, divider: int):
 
 
 @logger.catch
-def view_definer(post_list, tracking_data, callback):
+def view_definer(post_list, tracking_data, callback, identifier):
     if 'page' in tracking_data and tracking_data['page'] != '':
         max_pages = int((len(post_list) / 42 - 1))
         if callback[1] == 'more':
             if max_pages > int(tracking_data['page']):
                 tracking_data['page'] = str(int(tracking_data['page']) + 1)
-                reply_keyboard = kb.CONTROL_KEYBOARD_ALL
+                reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_ALL,
+                                               identifier)
             if max_pages == int(tracking_data['page']):
                 tracking_data['page'] = str(int(tracking_data['page']) + 1)
-                reply_keyboard = kb.CONTROL_KEYBOARD_MENU_BACK
+                reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_MENU_BACK,
+                                               identifier)
         if callback[1] == 'back':
             if int(tracking_data['page']) != 0:
                 tracking_data['page'] = str(int(tracking_data['page']) - 1)
-                reply_keyboard = kb.CONTROL_KEYBOARD_ALL
+                reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_ALL,
+                                               identifier)
             else:
-                reply_keyboard = kb.CONTROL_KEYBOARD_MENU_MORE
+                reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_MENU_MORE,
+                                               identifier)
         if callback[1] == 'return':
             if max_pages > int(tracking_data['page']):
-                reply_keyboard = kb.CONTROL_KEYBOARD_ALL
+                reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_ALL,
+                                               identifier)
             else:
-                reply_keyboard = kb.CONTROL_KEYBOARD_MENU_BACK
+                reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_MENU_BACK,
+                                               identifier)
         if tracking_data['page'] == '0':
-            reply_keyboard = kb.CONTROL_KEYBOARD_MENU_MORE
+            reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_MENU_MORE,
+                                           identifier)
+        if max_pages == 1:
+            reply_keyboard = kb.GO_TO_MENU_KEYBOARD
     else:
         tracking_data['page'] = '0'
-        reply_keyboard = kb.CONTROL_KEYBOARD_MENU_MORE
+        reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_MENU_MORE,
+                                       identifier)
     reply_rich_media = paginator(post_list, int(tracking_data['page']))
-    reply_text = 'Выше показаны вакансии за сегодня. Для возвращения в меню воспользуйтесь клавиатурой внизу.'
+    reply_text = 'Выше показаны вакансии за сегодня. Для возвращения в '\
+                 'меню воспользуйтесь клавиатурой внизу.'
     return (reply_text, reply_rich_media, reply_keyboard)

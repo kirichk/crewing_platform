@@ -2,210 +2,28 @@
 from .tools import keyboard_consctructor
 
 
-GO_TO_MENU_KEYBOARD = {
-    "DefaultHeight": False,
-    "BgColor": "#FFFFFF",
-    "Type": "keyboard",
-    "Buttons": [
-        {
-            "Columns": 6,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "menu",
-            "ReplyType": "message",
-            "Text": "Меню"
-        }
-    ]
-}
+GO_TO_MENU_BUTTONS = [("menu", "Меню", 6)]
 
-MENU_KEYBOARD = {
-    "DefaultHeight": False,
-    "BgColor": "#FFFFFF",
-    "Type": "keyboard",
-    "Buttons": [
-        {
-            "Columns": 6,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "newday-menu",
-            "ReplyType": "message",
-            "Text": "Вакансии за день"
-        },
-        {
-            "Columns": 6,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "menu",
-            "ReplyType": "message",
-            "Text": "Фильтр вакансий"
-        }
-    ]
-}
+MENU_BUTTONS = [("newday-menu", "Вакансии за день", 6),
+                ("menu", "Фильтр вакансий", 6)]
+
+CONTROL_MENU_MORE_BUTTONS = [("menu", "Меню", 3),
+                             ("newday-more", "Еще", 3)]
+
+CONTROL_MENU_BACK_BUTTONS = [("menu", "Меню", 3),
+                             ("newday-back", "Назад", 3)]
+
+CONTROL_ALL_BUTTONS = [("menu", "Меню", 2),
+                             ("newday-back", "Назад", 2),
+                             ("newday-more", "Еще", 2)]
+
+RETURN_BUTTONS = [("menu", "Меню", 3),
+                  ("newday-return", "Назад", 3)]
 
 
-CONTROL_KEYBOARD_MENU_MORE = {
-    "DefaultHeight": False,
-    "BgColor": "#FFFFFF",
-    "Type": "keyboard",
-    "Buttons": [
-        {
-            "Columns": 3,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "menu",
-            "ReplyType": "message",
-            "Text": "Меню"
-        },
-        {
-            "Columns": 3,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "newday-more",
-            "ReplyType": "message",
-            "Text": "Еще"
-        }
-    ]
-}
-
-
-CONTROL_KEYBOARD_MENU_BACK = {
-    "DefaultHeight": False,
-    "BgColor": "#FFFFFF",
-    "Type": "keyboard",
-    "Buttons": [
-        {
-            "Columns": 3,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "menu",
-            "ReplyType": "message",
-            "Text": "Меню"
-        },
-        {
-            "Columns": 3,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "newday-back",
-            "ReplyType": "message",
-            "Text": "Назад"
-        }
-    ]
-}
-
-
-CONTROL_KEYBOARD_ALL = {
-    "DefaultHeight": False,
-    "BgColor": "#FFFFFF",
-    "Type": "keyboard",
-    "Buttons": [
-        {
-            "Columns": 2,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "menu",
-            "ReplyType": "message",
-            "Text": "Меню"
-        },
-        {
-            "Columns": 2,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "newday-back",
-            "ReplyType": "message",
-            "Text": "Назад"
-        },
-        {
-            "Columns": 2,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "newday-more",
-            "ReplyType": "message",
-            "Text": "Еще"
-        }
-    ]
-}
-
-
-BACK_KEYBOARD = {
-    "DefaultHeight": False,
-    "BgColor": "#FFFFFF",
-    "Type": "keyboard",
-    "Buttons": [
-        {
-            "Columns": 3,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "menu",
-            "ReplyType": "message",
-            "Text": "Меню"
-        },
-        {
-            "Columns": 3,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "newday-back",
-            "ReplyType": "message",
-            "Text": "Назад"
-        }
-    ]
-}
-
-
-RETURN_KEYBOARD = {
-    "DefaultHeight": False,
-    "BgColor": "#FFFFFF",
-    "Type": "keyboard",
-    "Buttons": [
-        {
-            "Columns": 3,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "menu",
-            "ReplyType": "message",
-            "Text": "Меню"
-        },
-        {
-            "Columns": 3,
-            "Rows": 1,
-            "BgColor": "#e6f5ff",
-            "BgLoop": True,
-            "ActionType": "reply",
-            "ActionBody": "newday-return",
-            "ReplyType": "message",
-            "Text": "Назад"
-        }
-    ]
-}
-
-
-# MENU_KEYBOARD = keyboard_consctructor(MENU_NAMES)
-# SETS_ROLLS_KEYBOARD = keyboard_consctructor(SETS_ROLLS_MENU)
-# GUNCANS_SUSHI_KEYBOARD = keyboard_consctructor(GUNCANS_SUSHI_MENU)
-# PIZZA_SNACKS_KEYBOARD = keyboard_consctructor(PIZZA_SNACKS_MENU)
-# OTHER_KEYBOARD = keyboard_consctructor(OTHER_MENU)
+GO_TO_MENU_KEYBOARD = keyboard_consctructor(GO_TO_MENU_BUTTONS)
+MENU_KEYBOARD = keyboard_consctructor(MENU_BUTTONS)
+CONTROL_KEYBOARD_MENU_MORE = keyboard_consctructor(CONTROL_MENU_MORE_BUTTONS)
+CONTROL_KEYBOARD_MENU_BACK = keyboard_consctructor(CONTROL_MENU_BACK_BUTTONS)
+CONTROL_KEYBOARD_ALL = keyboard_consctructor(CONTROL_ALL_BUTTONS)
+RETURN_KEYBOARD = keyboard_consctructor(RETURN_BUTTONS)

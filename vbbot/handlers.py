@@ -1,11 +1,8 @@
-import os
 import json
-from datetime import date, datetime, timedelta
+from datetime import date
 from django.conf import settings
 from django.forms.models import model_to_dict
 from viberbot.api.messages.text_message import TextMessage
-from viberbot.api.messages.contact_message import ContactMessage
-from viberbot.api.messages.location_message import LocationMessage
 from viberbot.api.messages.rich_media_message import RichMediaMessage
 from loguru import logger
 from web_hiring.models import Post
@@ -34,7 +31,7 @@ def user_message_handler(viber, viber_request):
 
     logger.info(f'user_data: {tracking_data}')
     text = viber_request.message.text
-    
+
     if text[:6] == 'newday':
         post_list = model_transcriptor(Post.objects.filter(
                                         publish_date__gte=date.today()))
@@ -43,8 +40,8 @@ def user_message_handler(viber, viber_request):
             reply_text, reply_rich_media, reply_keyboard = view_definer(
                                                             post_list,
                                                             tracking_data,
-                                                            callback
-                                                            )
+                                                            callback,
+                                                            'newday')
         else:
             reply_text = 'Новых вакансий пока нет.'
             reply_keyboard = kb.GO_TO_MENU_KEYBOARD
