@@ -18,7 +18,7 @@ django.setup()
 # Setting up webhook parameters
 auth_token = settings.VIBER_TOKEN
 print(auth_token)
-URL = 'https://a6774e009f96.ngrok.io/vbbot/' + auth_token
+URL = 'https://60caa1ca8453.ngrok.io/vbbot/' + auth_token
 hook = 'https://chatapi.viber.com/pa/set_webhook'
 headers = {'X-Viber-Auth-Token': auth_token}
 body = dict(url=URL,
