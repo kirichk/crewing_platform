@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import date
 from django.conf import settings
 from django.forms.models import model_to_dict
@@ -7,6 +8,7 @@ from viberbot.api.messages.rich_media_message import RichMediaMessage
 from loguru import logger
 from web_hiring.models import Post
 from .resources import keyboards_content as kb
+from .resources import rich_media_content as rm
 from .resources.tools import (view_definer, model_text_details,
                               model_transcriptor, action_insert)
 
@@ -36,7 +38,7 @@ def user_message_handler(viber, viber_request):
     if text[:6] == 'newday':
         post_list = model_transcriptor(Post.objects.filter(
                                         publish_date__gte=date.today()))
-        callback = text.split('-')
+        callback = text.split('_')
         if post_list:
             reply_text, reply_rich_media, reply_keyboard = view_definer(
                                                             post_list,
@@ -47,18 +49,72 @@ def user_message_handler(viber, viber_request):
             reply_text = 'Новых вакансий пока нет.'
             reply_keyboard = kb.GO_TO_MENU_KEYBOARD
     elif text[:6] == 'filter':
-        reply_text = 'Выберите параметр по которому отфильтровать вакансии.'
+        callback = text.split('_')
+        if ('title' in tracking_data and tracking_data['title'] != '') or\
+            ('salary' in tracking_data and tracking_data['salary'] != ''):
+            reply_text = 'Вы выбрали следующие параметры поиска.\n'
+            if 'title' in tracking_data and tracking_data['title'] != '':
+                reply_text += f'\nДолжность: {tracking_data["title"]}'
+            if 'salary' in tracking_data and tracking_data['salary'] != '':
+                reply_text += f'\nЗарплата: {tracking_data["salary"]}'
+        else:
+            reply_text = 'Выберите параметр по которому отфильтровать вакансии.'
+        if len(callback) > 1 and callback[1] == 'title':
+            tracking_data['title'] = callback[2]
+        if len(callback) > 1 and callback[1] == 'salary':
+            tracking_data['salary'] = callback[2]
         reply_keyboard = kb.FILTER_KEYBOARD
     elif text[:6] == 'detail':
-        callback_id = text.split('-')[1]
-        back_menu = text.split('-')[2]
+        callback_id = text.split('_')[1]
+        back_menu = text.split('_')[2]
         post = Post.objects.get(id=callback_id)
         reply_text = model_text_details(post)
         reply_keyboard = action_insert(kb.RETURN_KEYBOARD, back_menu)
     elif text == 'title':
-        pass
+        reply_text = 'Выберите интересующую должность.'
+        reply_keyboard = kb.GO_TO_MENU_KEYBOARD
+        reply_rich_media = rm.TITLE_MEDIA
     elif text == 'salary':
-        pass
+        reply_text = 'Выберите интересующую зарплату.'
+        reply_keyboard = kb.GO_TO_MENU_KEYBOARD
+        reply_rich_media = rm.SALARY_MEDIA
+    elif text == 'reset':
+        tracking_data['title'] = ''
+        tracking_data['salary'] = ''
+        reply_text = 'Выберите параметр по которому отфильтровать вакансии.'
+        reply_keyboard = kb.FILTER_KEYBOARD
+    elif text[:6] == 'search':
+        all_entries = Post.objects.all()
+        callback = text.split('_')
+        if 'title' in tracking_data and tracking_data['title'] != '':
+            all_entries = all_entries.filter(title__exact=tracking_data['title'])
+        post_list = model_transcriptor(all_entries)
+        if post_list == []:
+            reply_text = 'По Вашему фильтру вакансий не найдено.'
+            reply_keyboard = kb.GO_TO_MENU_KEYBOARD
+        else:
+            result = []
+            for post in post_list:
+                if 'salary' not in tracking_data or \
+                tracking_data['salary'] == '' or \
+                tracking_data['salary'] == 'Не важно':
+                    cleaned_sub_salary_start = 0
+                    cleaned_sub_salary_end = 1000000
+                else:
+                    cleaned_sub_salary = re.findall(r'[0-9]+',tracking_data['salary'])
+                    cleaned_sub_salary_start = int(cleaned_sub_salary[0])
+                    cleaned_sub_salary_end = int(cleaned_sub_salary[1])
+                cleaned_salary = int(re.findall(r'[0-9]+', post['salary'])[0])
+                if cleaned_sub_salary_start != '' \
+                   and cleaned_sub_salary_end != '' \
+                   and cleaned_sub_salary_start <= cleaned_salary \
+                   and cleaned_salary <= cleaned_sub_salary_end:
+                    result.append(post)
+            reply_text, reply_rich_media, reply_keyboard = view_definer(
+                                                            result,
+                                                            tracking_data,
+                                                            callback,
+                                                            'search')
     elif text == 'menu':
         # Setting the possibility to write a comment
         tracking_data['page'] = '0'

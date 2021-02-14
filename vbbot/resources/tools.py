@@ -62,10 +62,10 @@ def model_text_details(post):
 
 @logger.catch
 def action_insert(keyboard, identifier):
-    if identifier == 'filter':
+    if identifier == 'search':
         for button in keyboard['Buttons']:
             if 'newday' in button['ActionBody']:
-                button['ActionBody'].replace('newday', 'filter')
+                button['ActionBody'].replace('newday', 'search')
     return keyboard
 
 
@@ -91,6 +91,55 @@ def keyboard_consctructor(items: list) -> dict:
 
 
 @logger.catch
+def rich_media_consctructor(data, identifier):
+    if identifier == 'title':
+        reply_rich_media = {
+            "Type":"rich_media",
+               "ButtonsGroupColumns":6,
+               "ButtonsGroupRows":7,
+               "BgColor":"#FFFFFF",
+               "Buttons":[]
+        }
+        buttons = []
+        for item in data[1:]:
+            buttons.append(
+                {
+                    "Columns": 6,
+                    "Rows": 1,
+                    "BgColor": "#A9E2F3",
+                    "BgLoop": True,
+                    "ActionType": "reply",
+                    "ActionBody": f"filter_title_{item[0]}",
+                    "Text": f"{item[0]}",
+                }
+            )
+        reply_rich_media['Buttons'] += buttons
+    else:
+        reply_rich_media = {
+            "Type":"rich_media",
+               "ButtonsGroupColumns":6,
+               "ButtonsGroupRows":6,
+               "BgColor":"#FFFFFF",
+               "Buttons":[]
+        }
+        buttons = []
+        for key in data:
+            buttons.append(
+                {
+                    "Columns": 6,
+                    "Rows": 1,
+                    "BgColor": "#A9E2F3",
+                    "BgLoop": True,
+                    "ActionType": "reply",
+                    "ActionBody": f"filter_salary_{key}",
+                    "Text": f"{data[key]}",
+                }
+            )
+        reply_rich_media['Buttons'] += buttons
+    return reply_rich_media
+
+
+@logger.catch
 def paginator(post_list: list, page: int, identifier: str):
     splitted_list_for_carousel = list(divide_chunks(post_list, 42))
     displayed_list = splitted_list_for_carousel[page]
@@ -110,7 +159,7 @@ def paginator(post_list: list, page: int, identifier: str):
                 "BgColor": "#A9E2F3",
                 "BgLoop": True,
                 "ActionType": "reply",
-                "ActionBody": f"detail-{item['id']}-{identifier}",
+                "ActionBody": f"detail_{item['id']}_{identifier}",
                 "Text": f"<b>{item['title']}</b>\n{item['salary']}, {item['joining_date']}",
             }
         )
@@ -129,6 +178,8 @@ def divide_chunks(data: list, divider: int):
 def view_definer(post_list, tracking_data, callback, identifier):
     if 'page' in tracking_data and tracking_data['page'] != '':
         max_pages = int((len(post_list) / 42 - 1))
+        logger.info(f'post list items count: {len(post_list)}')
+        logger.info(f'max_pages: {max_pages}')
         if callback[1] == 'more':
             if max_pages > int(tracking_data['page']):
                 tracking_data['page'] = str(int(tracking_data['page']) + 1)
@@ -156,13 +207,13 @@ def view_definer(post_list, tracking_data, callback, identifier):
         if tracking_data['page'] == '0':
             reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_MENU_MORE,
                                            identifier)
-        if max_pages == 0:
+        if len(post_list) <= 42:
             reply_keyboard = kb.GO_TO_MENU_KEYBOARD
     else:
         tracking_data['page'] = '0'
         reply_keyboard = action_insert(kb.CONTROL_KEYBOARD_MENU_MORE,
                                        identifier)
     reply_rich_media = paginator(post_list, int(tracking_data['page']), identifier)
-    reply_text = 'Выше показаны вакансии за сегодня. Для возвращения в '\
+    reply_text = 'Выше показаны вакансии. Для возвращения в '\
                  'меню воспользуйтесь клавиатурой внизу.'
     return (reply_text, reply_rich_media, reply_keyboard)
