@@ -28,8 +28,8 @@ logger.add(
 LOGIN_URL = 'https://ukrcrewing.com.ua/en/login'
 CONTACTS_MAIN_PAGE_URL = 'https://ukrcrewing.com.ua/en/seaman/p1/A?on_page=100'
 
-USERNAME = 'ukrseamen@stream.com.ua' # put correct usename here
-PASSWORD = 'ukrseamen828' # put correct password here
+USERNAME = '' # put correct usename here
+PASSWORD = '' # put correct password here
 
 req_headers = {
     'content-type': 'application/x-www-form-urlencoded'
