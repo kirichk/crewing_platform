@@ -65,7 +65,7 @@ def action_insert(keyboard, identifier):
     if identifier == 'search':
         for button in keyboard['Buttons']:
             if 'newday' in button['ActionBody']:
-                button['ActionBody'].replace('newday', 'search')
+                button['ActionBody'] = button['ActionBody'].replace('newday', 'search')
     return keyboard
 
 
