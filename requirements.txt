@@ -50,6 +50,7 @@ tzlocal==2.1
 urllib3==1.26.2
 viberbot==1.0.12
 vine==5.0.0
+vobject==0.9.6.1
 wcwidth==0.2.5
 Werkzeug==1.0.1
 win32-setctime==1.0.3
