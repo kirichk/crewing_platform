@@ -328,8 +328,11 @@ def searchfilter_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     all_entries = Post.objects.all()
     if context.user_data['FILTER_TITLE'] != 'Пропустить' and context.user_data['FILTER_TITLE'] != '' and context.user_data['FILTER_TITLE'] != 'Выбраны все варианты':
+        titles_selected = context.user_data['FILTER_TITLE'].split(', ')
+        if 'Seamen (AB' in titles_selected:
+            titles_selected = [w.replace('Seamen (AB', 'Seamen (AB, OS') for w in titles_selected]
         all_entries = all_entries.filter(
-                                    title__in=context.user_data['FILTER_TITLE'].split(', '))
+                                    title__in=titles_selected)
     if context.user_data['FILTER_FLEET'] != 'Пропустить' and context.user_data['FILTER_FLEET'] != '' and context.user_data['FILTER_FLEET'] != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     vessel__in=context.user_data['FILTER_FLEET'].split(', '))
