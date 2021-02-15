@@ -37,7 +37,7 @@ def user_message_handler(viber, viber_request):
 
     if text[:6] == 'newday':
         post_list = model_transcriptor(Post.objects.filter(
-                                        publish_date__gte=date.today()))
+                                        publish_date__gte=date.today()))[::-1]
         callback = text.split('_')
         if post_list:
             reply_text, reply_rich_media, reply_keyboard = view_definer(
@@ -88,7 +88,7 @@ def user_message_handler(viber, viber_request):
         callback = text.split('_')
         if 'title' in tracking_data and tracking_data['title'] != '':
             all_entries = all_entries.filter(title__exact=tracking_data['title'])
-        post_list = model_transcriptor(all_entries)
+        post_list = model_transcriptor(all_entries)[::-1]
         if post_list == []:
             reply_text = 'По Вашему фильтру вакансий не найдено.'
             reply_keyboard = kb.GO_TO_MENU_KEYBOARD
