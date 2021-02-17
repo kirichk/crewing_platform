@@ -26,7 +26,7 @@ logger.add(
 )
 
 LOGIN_URL = 'https://ukrcrewing.com.ua/en/login'
-CONTACTS_MAIN_PAGE_URL = 'https://ukrcrewing.com.ua/en/seaman/p1/A?on_page=100'
+CONTACTS_MAIN_PAGE_URL = 'https://ukrcrewing.com.ua/en/seaman/p1/B?on_page=100'
 
 USERNAME = '' # put correct usename here
 PASSWORD = '' # put correct password here
@@ -57,7 +57,7 @@ def vcard_handler(person: dict):
     vcard.name = 'VCARD'
     vcard.useBegin = True
 
-    with open('test.vcf', 'a', newline='') as f:
+    with open('testB.vcf', 'a', newline='') as f:
         f.write(vcard.serialize())
 
 
