@@ -20,6 +20,7 @@ logger.add('logs/info.log', format='{time} {level} {message}',
 @logger.catch
 def user_message_handler(viber, viber_request):
     """Receiving a message from user and sending replies."""
+    logger.info(f'user_data: {viber_request.sender.id}')
     message = viber_request.message
     tracking_data = message.tracking_data
     # Data for Message
