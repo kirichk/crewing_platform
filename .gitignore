@@ -7,3 +7,4 @@ db.sqlite3
 *.save
 *.zip
 logs/
+*.DS_Store
