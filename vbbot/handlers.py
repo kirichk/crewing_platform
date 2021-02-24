@@ -51,6 +51,10 @@ def user_message_handler(viber, viber_request):
             reply_keyboard = kb.GO_TO_MENU_KEYBOARD
     elif text[:6] == 'filter':
         callback = text.split('_')
+        if len(callback) > 1 and callback[1] == 'title':
+            tracking_data['title'] = callback[2]
+        if len(callback) > 1 and callback[1] == 'salary':
+            tracking_data['salary'] = callback[2]
         if ('title' in tracking_data and tracking_data['title'] != '') or\
             ('salary' in tracking_data and tracking_data['salary'] != ''):
             reply_text = 'Вы выбрали следующие параметры поиска.\n'
@@ -60,10 +64,6 @@ def user_message_handler(viber, viber_request):
                 reply_text += f'\nЗарплата: {tracking_data["salary"]}'
         else:
             reply_text = 'Выберите параметр по которому отфильтровать вакансии.'
-        if len(callback) > 1 and callback[1] == 'title':
-            tracking_data['title'] = callback[2]
-        if len(callback) > 1 and callback[1] == 'salary':
-            tracking_data['salary'] = callback[2]
         reply_keyboard = kb.FILTER_KEYBOARD
     elif text[:6] == 'detail':
         callback_id = text.split('_')[1]
@@ -88,7 +88,7 @@ def user_message_handler(viber, viber_request):
         all_entries = Post.objects.all()
         callback = text.split('_')
         if 'title' in tracking_data and tracking_data['title'] != '':
-            all_entries = all_entries.filter(title__exact=tracking_data['title'])
+            all_entries = all_entries.filter(title__in=[tracking_data['title']])
         post_list = model_transcriptor(all_entries)[::-1]
         if post_list == []:
             reply_text = 'По Вашему фильтру вакансий не найдено.'
