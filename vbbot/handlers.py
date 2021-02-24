@@ -80,8 +80,8 @@ def user_message_handler(viber, viber_request):
         reply_keyboard = kb.GO_TO_MENU_KEYBOARD
         reply_rich_media = rm.SALARY_MEDIA
     elif text == 'reset':
-        tracking_data['title'] = ''
-        tracking_data['salary'] = ''
+        garbage_title = tracking_data.pop('title', None)
+        garbage_salary = tracking_data.pop('salary', None)
         reply_text = 'Выберите параметр по которому отфильтровать вакансии.'
         reply_keyboard = kb.FILTER_KEYBOARD
     elif text[:6] == 'search':
