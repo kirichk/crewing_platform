@@ -37,8 +37,9 @@ def user_message_handler(viber, viber_request):
     text = viber_request.message.text
 
     if text[:6] == 'newday':
+        last_hours = datetime.now() - timedelta(hours=24)
         post_list = model_transcriptor(Post.objects.filter(
-                                        publish_date__gte=date.today()))[::-1]
+                                        publish_date__gte=last_hours))[::-1]
         callback = text.split('_')
         if post_list:
             reply_text, reply_rich_media, reply_keyboard = view_definer(
