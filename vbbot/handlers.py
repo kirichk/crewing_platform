@@ -93,7 +93,8 @@ def user_message_handler(viber, viber_request):
             logger.info(f'user_data: {tracking_data["title"]}')
             all_entries = all_entries.filter(title__in=tracking_data['title'].split(', '))
         post_list = model_transcriptor(all_entries)[::-1]
-        logger.info(f'user_data: {post_list}')
+        titles_unique = set([x.title for x in post_list])
+        logger.info(f'user_data: {titles_unique}')
         if post_list == []:
             reply_text = 'По Вашему фильтру вакансий не найдено.'
             reply_keyboard = kb.GO_TO_MENU_KEYBOARD
