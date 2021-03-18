@@ -244,7 +244,7 @@ def vacancy_paginator(vacancies: list, pattern: str,
 
 
 @logger.catch
-def start_buttons_handler(update: Update, context: CallbackCxontext):
+def start_buttons_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
     try:
         request = update.callback_query
