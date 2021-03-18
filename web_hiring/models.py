@@ -23,6 +23,7 @@ class Post(models.Model):
     crew = models.CharField(blank=True, null=True, max_length=200)
     crewer = models.CharField(blank=True, null=True, max_length=200)
     contact = models.CharField(blank=True, null=True, max_length=200)
+    email = models.CharField(blank=True, null=True, max_length=200)
     english = models.CharField(max_length=200, choices=ENGLISH_CHOICES)
     link = models.CharField(blank=True, null=True, max_length=200)
     create_date = models.DateTimeField(default=timezone.now)

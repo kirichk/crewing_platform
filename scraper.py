@@ -39,6 +39,18 @@ def contact_extractor(url):
 
 
 @logger.catch
+def email_extractor(url):
+    soup = BeautifulSoup(requests.get(url).text, "lxml")
+    details = soup.find("div", class_="page-content agency-page-content")
+    for row in details.find_all("div", class_="colmn"):
+        row_content = row.text.split(":")
+        if row_content[0] == "Эл.почта" and len(row_content) > 1:
+            return row_content[1]
+    return "Информация отсутсвует"
+
+
+
+@logger.catch
 def pagination(page):
     """
     Searching for urls of all paginators
@@ -173,6 +185,8 @@ def info_search(vacancies: dict, mode: str):
                     link = row.find("a")
                     contact = contact_extractor("https://ukrcrewing.com.ua"
                                                 + link['href'])
+                    email = email_extractor("https://ukrcrewing.com.ua"
+                                                + link['href'])
             for div in details.find_all("div"):
                 div.decompose()
             for header in details.find_all("h1"):
@@ -204,6 +218,7 @@ def info_search(vacancies: dict, mode: str):
                 crew=crew,
                 crewer=crewer,
                 contact=contact,
+                email=email,
                 english=english,
                 link=vacancy["link"],
                 text=additional_info,

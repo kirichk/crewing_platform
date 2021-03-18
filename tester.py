@@ -25,6 +25,16 @@ def contact_extractor(url):
     return "Информация отсутсвует"
 
 
+def email_extractor(url):
+    soup = BeautifulSoup(requests.get(url).text, "lxml")
+    details = soup.find("div", class_="page-content agency-page-content")
+    for row in details.find_all("div", class_="colmn"):
+        row_content = row.text.split(":")
+        if row_content[0] == "Эл.почта" and len(row_content) > 1:
+            return row_content[1]
+    return "Информация отсутсвует"
+
+
 def vacancy_extractor():
     all_objects = Post.objects.all()
     counter = 0
@@ -41,9 +51,9 @@ def vacancy_extractor():
                 row_content = row.text.split(":")
                 if row_content[0] == "Крюинг":
                     link = row.find("a")
-                    contact = contact_extractor(URL + link['href'])
-                    object.contact = contact
-                    print(f"{object.title} - {object.crewer}: {object.contact}")
+                    email = email_extractor(URL + link['href'])
+                    object.email = contact
+                    print(f"{object.title} - {object.crewer}: {object.email}")
             object.save()
         except AttributeError:
             continue
