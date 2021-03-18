@@ -52,7 +52,7 @@ def vacancy_extractor():
                 if row_content[0] == "Крюинг":
                     link = row.find("a")
                     email = email_extractor(URL + link['href'])
-                    object.email = contact
+                    object.email = email
                     print(f"{object.title} - {object.crewer}: {object.email}")
             object.save()
         except AttributeError:
