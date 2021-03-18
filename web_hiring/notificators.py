@@ -1,6 +1,6 @@
 import re
 from django.conf import settings
-from telegram import Bot
+from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup,
 from datetime import datetime
 from tgbot.models import Profile
 
@@ -71,4 +71,14 @@ def vacancy_notification(form):
                     if cleaned_contract <= cleaned_sub_contract:
                         bot.send_message(p.external_id, main_text)
     main_text = main_text.replace(form['title'], title)
-    bot.send_message(CHANNEL_ID, main_text)
+    inline_buttons = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text='',
+                                url=f'')],
+            [InlineKeyboardButton(text='',
+                                url=f'')],
+        ],
+    )
+    bot.send_message(chat_id=CHANNEL_ID,
+                     text=main_text,
+                     reply_markup=inline_buttons)

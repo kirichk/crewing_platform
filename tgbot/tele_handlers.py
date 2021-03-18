@@ -281,6 +281,10 @@ def start_buttons_handler(update: Update, context: CallbackContext):
             [InlineKeyboardButton(text='Получать уведомления о новых вакансиях ' + u'\U0001F514',
                 callback_data='newsletter_')]
         )
+    inline_keyboard.append(
+        [InlineKeyboardButton(text='Канал с новыми вакансиями ' + u'\U0001F4F0',
+            url='https://t.me/topcrewchannel')]
+    )
     inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
     if request == update.message:
         context.user_data['FILTER_TITLE'] = ''
