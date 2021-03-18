@@ -239,6 +239,7 @@ def info_search(vacancies: dict, mode: str):
                     "crew": crew,
                     "crewer": crewer,
                     "contact": contact,
+                    "email": email,
                     "english": english,
                     "text": additional_info,
                 }
@@ -249,6 +250,7 @@ def info_search(vacancies: dict, mode: str):
             crew = ""
             english = ""
             contact = ""
+            email = ""
         except AttributeError:
             continue
 

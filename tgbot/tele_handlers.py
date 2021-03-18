@@ -71,6 +71,8 @@ def model_text_details(post):
         main_text += f'Крюинг: {str(post.crewer)}\n'
     if post.contact is not None and post.contact != '':
         main_text += f'Контактная информация: {str(post.contact)}\n'
+    if post.email is not None and post.email != '':
+        main_text += f'E-mail: {str(post.email)}\n'
     if post.text != '':
         main_text += f'Дополнительная информация: {str(post.text)}\n'
     return main_text
@@ -242,7 +244,7 @@ def vacancy_paginator(vacancies: list, pattern: str,
 
 
 @logger.catch
-def start_buttons_handler(update: Update, context: CallbackContext):
+def start_buttons_handler(update: Update, context: CallbackCxontext):
     logger.info(f'user_data: {context.user_data}')
     try:
         request = update.callback_query

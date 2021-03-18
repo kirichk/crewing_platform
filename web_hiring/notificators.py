@@ -40,6 +40,8 @@ def vacancy_notification(form):
         main_text += f'Крюинг: {str(form["crewer"])}\n'
     if form['contact'] is not None and form['contact'] != '':
         main_text += f'Контактная информация: {str(form["contact"])}\n'
+    if form['email'] is not None and form['email'] != '':
+        main_text += f'E-mail: {str(form["email"])}\n'
     if form['text'] != '':
         main_text += f'Дополнительная информация: {str(form["text"])}\n'
     for p in Profile.objects.filter(subscription=True):
