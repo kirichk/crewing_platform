@@ -165,6 +165,18 @@ VIBER_TOKEN = config('VIBER_TOKEN')
 START_URL = config('START_URL')
 
 #############################
+new_titles = ['Electric Officer', 'Deck Cadet', '3rd Officer', 'Single Engineer',
+       'Fitter', 'Chief Housekeeper', 'Chief Engineer', 'Motorman 1st class',
+       'OS-Cook', 'Motorman-Turner', 'Ref. Cadet', 'Junior Engineer', 'Master',
+       'Oiler', 'Able Seaman', 'Youth Staff', 'Electrical Engineer', 'AB-Cook',
+       'Deck Fitter', 'Boatswain', 'ETO', 'Engine Fitter', 'Ordinary Seaman',
+       'Fitter-Welder', '4th Engineer', 'Electric Cadet', 'Motorman 2nd class',
+       'Assistant Maitre D', 'Electrician', 'Painter', 'AB-Motorman', 'Gaz Engineer',
+       'Steward', 'Wiper', '3rd Engineer', 'Ref. Engineer', 'Engine Cadet', 'Chief Officer',
+       'Motorman-Oiler', 'Turner', 'AB-Fitter', 'Nurse', 'Watch Engineer', 'Mess Boy', 'OS-Welder',
+       'Motorman-Electrician', 'Chief Cook', 'Technologist', 'Pumpman', 'Oiler-Fitter', 'Oiler-Welder',
+       'Welder', 'AB-Welder', '2nd Officer', 'Doctor', '2nd Engineer', 'Cook', 'Junior Officer']
+
 
 TITLE_CHOICES = [
         ('', 'Выберите должность'),

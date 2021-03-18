@@ -1,6 +1,6 @@
 import json
 import re
-from datetime import date
+from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.forms.models import model_to_dict
 from viberbot.api.messages.text_message import TextMessage
@@ -37,8 +37,9 @@ def user_message_handler(viber, viber_request):
     text = viber_request.message.text
 
     if text[:6] == 'newday':
+        last_hours = datetime.now() - timedelta(hours=24)
         post_list = model_transcriptor(Post.objects.filter(
-                                        publish_date__gte=date.today()))[::-1]
+                                        publish_date__gte=last_hours))[::-1]
         callback = text.split('_')
         if post_list:
             reply_text, reply_rich_media, reply_keyboard = view_definer(
@@ -90,9 +91,10 @@ def user_message_handler(viber, viber_request):
 
         if 'title' in tracking_data and tracking_data['title'] != '':
             logger.info(f'user_data: {tracking_data["title"]}')
-            all_entries = all_entries.filter(title=tracking_data['title'])
+            all_entries = all_entries.filter(title__in=tracking_data['title'].split(', '))
         post_list = model_transcriptor(all_entries)[::-1]
-        logger.info(f'user_data: {post_list}')
+        titles_unique = set([x['title'] for x in post_list])
+        # logger.info(f'user_data: {titles_unique}')
         if post_list == []:
             reply_text = 'По Вашему фильтру вакансий не найдено.'
             reply_keyboard = kb.GO_TO_MENU_KEYBOARD

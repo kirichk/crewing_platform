@@ -459,8 +459,9 @@ def new_handler(update: Update, context: CallbackContext):
 @logger.catch
 def newday_handler(update: Update, context: CallbackContext):
     logger.info(f'user_data: {context.user_data}')
+    last_hours = datetime.now() - timedelta(hours=24)
     post_list = model_transcriptor(Post.objects.filter(
-                                    publish_date__gte=date.today()))
+                                    publish_date__gte=last_hours))
     if post_list == []:
         update.callback_query.edit_message_text(
             text='Новых вакансий пока нет. /menu'
