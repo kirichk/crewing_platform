@@ -1,6 +1,6 @@
 import re
 from django.conf import settings
-from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup,
+from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime
 from tgbot.models import Profile
 
