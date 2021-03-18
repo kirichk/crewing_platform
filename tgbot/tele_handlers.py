@@ -282,7 +282,7 @@ def start_buttons_handler(update: Update, context: CallbackContext):
                 callback_data='newsletter_')]
         )
     inline_keyboard.append(
-        [InlineKeyboardButton(text='Канал с новыми вакансиями ' + u'\U0001F4F0',
+        [InlineKeyboardButton(text='Канал с вакансиями ' + u'\U0001F4F0',
             url='https://t.me/topcrewchannel')]
     )
     inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
