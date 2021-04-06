@@ -9,6 +9,7 @@ from loguru import logger
 from web_hiring.models import Post
 from .resources import keyboards_content as kb
 from .resources import rich_media_content as rm
+from .resources.texts import DOCUMENTS
 from .resources.tools import (view_definer, model_text_details,
                               model_transcriptor, action_insert)
 
@@ -80,6 +81,9 @@ def user_message_handler(viber, viber_request):
         reply_text = 'Выберите интересующую зарплату.'
         reply_keyboard = kb.GO_TO_MENU_KEYBOARD
         reply_rich_media = rm.SALARY_MEDIA
+    elif text == 'documents':
+        reply_text = DOCUMENTS
+        reply_keyboard = kb.GO_TO_MENU_KEYBOARD
     elif text == 'reset':
         garbage_title = tracking_data.pop('title', None)
         garbage_salary = tracking_data.pop('salary', None)
