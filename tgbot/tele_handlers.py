@@ -284,6 +284,10 @@ def start_buttons_handler(update: Update, context: CallbackContext):
                 callback_data='newsletter_')]
         )
     inline_keyboard.append(
+        [InlineKeyboardButton(text='Документы для моряков ' + u'\U0001F9FE',
+            callback_data='documents')]
+    )
+    inline_keyboard.append(
         [InlineKeyboardButton(text='Канал с вакансиями ' + u'\U0001F4F0',
             url='https://t.me/topcrewchannel')]
     )
@@ -457,6 +461,37 @@ def new_handler(update: Update, context: CallbackContext):
     context.user_data[CURRENT_PAGE] = 0
     return ConversationHandler.END
 
+
+@logger.catch
+def documents_handler(update: Update, context: CallbackContext):
+    inline_keyboard = [
+        [
+            InlineKeyboardButton(text='Вернуться в меню',
+                                callback_data='start'),
+        ]
+    ]
+    inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+    text = '''Консультируем и предоставляем информацию по оформлению морских документов.
+
+✅ Старт в море и старт в должности выше
+✅ Услуга Рекрутинг (индивидуальный поиск работы)
+✅ КПК( курсы повышения квалификации)
+✅ Рабочий диплом
+✅ Учебные дипломы
+✅ Сертификаты
+✅ Паспорт моряка
+✅ Курсы английского языка
+✅ Помощь в прохождении морских тестов
+✅ Visa C1/D
+
+Работаем по всем города Украины.
+Telegram: @thunderbreaker
+Viber: +380930388898'''
+    update.callback_query.edit_message_text(
+        text=text,
+        reply_markup=inline_buttons,
+    )
+    return ConversationHandler.END
 
 @logger.catch
 def newday_handler(update: Update, context: CallbackContext):
