@@ -48,7 +48,8 @@ def vacancy_notification(form):
         if (p.title_subscriptions is None or form['title'] in p.title_subscriptions
             or 'Пропустить' in p.title_subscriptions
                 or '' == p.title_subscriptions):
-            cleaned_date = datetime.combine(form["joining_date"], datetime.min.time())
+            new_date = datetime.strptime(form["joining_date"], '%Y-%m-%d')
+            cleaned_date = datetime.combine(new_date, datetime.min.time())
             if p.date_ready is not None and p.date_ready != '':
                 d = datetime.strptime(p.date_ready, '%Y-%m-%d')
             else:
