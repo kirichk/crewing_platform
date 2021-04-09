@@ -23,9 +23,7 @@ bot = Bot(token=settings.TELE_TOKEN)
 USERNAME = 'ukrseamen@stream.com.ua'
 PASSWORD = 'ukrseamen828'
 ADMIN = '389609639'
-# LETTERS = list(string.ascii_uppercase)
-LETTERS = ['A']
-print(LETTERS)
+LETTERS = list(string.ascii_uppercase)
 
 KEYS = ['Name', 'Certificate', 'Expire date', 'Phone', 'Email']
 
@@ -139,15 +137,15 @@ def info_search(profiles, session):
                             info['Email'] = row_content[1]
                     results.append(info)
                     csv_writer([info])
-                    f = open('people.csv','rb')
-                    bot.send_document(chat_id=ADMIN, document=f, filename='people.csv')
                     if len(results) % 100 == 0:
                         f = open('people.csv','rb')
                         bot.send_document(chat_id=ADMIN, document=f, filename='people.csv')
                     logger.info(f'{len(results)} profiles added\n{info}')
         counter += 1
-        if counter % 10 == 0:
-            logger.info(f'Processed {counter} profiles out of {len(profiles)} profiles')
+        if counter % 100 == 0:
+            text = f'Processed {counter} profiles out of {len(profiles)} profiles'
+            bot.send_message(chat_id=ADMIN, text=text)
+            logger.info(text)
     logger.info(f'Finished adding {len(profiles)} profiles')
     return results
 
