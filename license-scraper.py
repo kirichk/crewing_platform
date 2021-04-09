@@ -139,6 +139,7 @@ def info_search(profiles, session):
                             info['Email'] = row_content[1]
                     results.append(info)
                     csv_writer([info])
+                    f = open('people.csv','rb')
                     bot.send_document(chat_id=ADMIN, document=f, filename='people.csv')
                     if len(results) % 100 == 0:
                         f = open('people.csv','rb')
