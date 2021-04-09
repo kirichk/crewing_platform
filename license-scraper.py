@@ -14,11 +14,10 @@ from django.conf import settings
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup
 from tgbot.models import Profile
 
-from django.conf import settings
-from django.utils import timezone
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crewing.settings")
 django.setup()
+
+from django.utils import timezone
 
 bot = Bot(token=settings.TELE_TOKEN)
 
