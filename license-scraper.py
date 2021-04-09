@@ -52,7 +52,7 @@ def csv_creator():
         dict_writer.writeheader()
 
 
-def csv_writer(data: list):
+def csv_writer(data):
     with open('people.csv', 'a', newline='')  as output_file:
         dict_writer = csv.DictWriter(output_file, KEYS)
         dict_writer.writerows(data)
