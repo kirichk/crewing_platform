@@ -122,25 +122,28 @@ def info_search(profiles, session):
         soup.find_all("a", string="Elsie")
         details = soup.find("div", class_="page-content seaman-page-content")
         info['Name'] = details.h1.text
-        for item in details.find_all("tr"):
-            if "basic safety" in str(item).lower():
-                data = [x.text for x in item.find_all_next('td')]
-                cleaned_date = datetime.strptime(data[3], '%d.%m.%Y')
-                if datetime.now() + timedelta(days=200) > cleaned_date:
-                    info['Certificate'] = data[0]
-                    info['Expire date'] = data[3]
-                    for row in details.find_all("div", class_="colmn3"):
-                        row_content = row.text.split(":")
-                        if row_content[0] == "Personal mobile number":
-                            info['Phone'] = row_content[1]
-                        if row_content[0] == "E-Mail":
-                            info['Email'] = row_content[1]
-                    results.append(info)
-                    csv_writer([info])
-                    if len(results) % 100 == 0:
-                        f = open('people.csv','rb')
-                        bot.send_document(chat_id=ADMIN, document=f, filename='people.csv')
-                    logger.info(f'{len(results)} profiles added\n{info}')
+        try:
+            for item in details.find_all("tr"):
+                if "basic safety" in str(item).lower():
+                    data = [x.text for x in item.find_all_next('td')]
+                    cleaned_date = datetime.strptime(data[3], '%d.%m.%Y')
+                    if datetime.now() + timedelta(days=200) > cleaned_date:
+                        info['Certificate'] = data[0]
+                        info['Expire date'] = data[3]
+                        for row in details.find_all("div", class_="colmn3"):
+                            row_content = row.text.split(":")
+                            if row_content[0] == "Personal mobile number":
+                                info['Phone'] = row_content[1]
+                            if row_content[0] == "E-Mail":
+                                info['Email'] = row_content[1]
+                        results.append(info)
+                        csv_writer([info])
+                        if len(results) % 100 == 0:
+                            f = open('people.csv','rb')
+                            bot.send_document(chat_id=ADMIN, document=f, filename='people.csv')
+                        logger.info(f'{len(results)} profiles added\n{info}')
+        except:
+            print('Error')
         counter += 1
         if counter % 100 == 0:
             text = f'Processed {counter} profiles out of {len(profiles)} profiles'
