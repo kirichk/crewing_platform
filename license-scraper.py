@@ -59,7 +59,7 @@ def csv_writer(data):
 
 
 @logger.catch
-def pagination(session: requests.Session):
+def pagination(session):
     """
     Searching for urls of all paginators
     """
@@ -81,7 +81,7 @@ def pagination(session: requests.Session):
 
 
 @logger.catch
-def profiles_search(pages: list, session: requests.Session):
+def profiles_search(pages, session):
     """
     Searching for vacancies on each page from the list
     """
@@ -101,7 +101,7 @@ def profiles_search(pages: list, session: requests.Session):
 
 
 @logger.catch
-def duplicates_checker(source: list, new: str):
+def duplicates_checker(source, new):
     """
     Checking for duplicates in existing list of contacts
     """
@@ -112,7 +112,7 @@ def duplicates_checker(source: list, new: str):
 
 
 @logger.catch
-def info_search(profiles: list, session: requests.Session):
+def info_search(profiles, session):
     """
     Scraping all the information from collected contacts pages
     """
