@@ -12,7 +12,6 @@ from loguru import logger
 
 from django.conf import settings
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup
-from tgbot.models import Profile
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crewing.settings")
 django.setup()
