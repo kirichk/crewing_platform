@@ -73,7 +73,10 @@ def vacancy_notification(form):
                         r'[0-9]+', form['voyage_duration'])[0])
                 if cleaned_salary >= cleaned_sub_salary:
                     if cleaned_contract <= cleaned_sub_contract:
-                        bot.send_message(p.external_id, main_text)
+                        try:
+                            bot.send_message(p.external_id, main_text)
+                        except:
+                            pass
     main_text = main_text.replace(form['title'], title)
     bot.send_message(chat_id=CHANNEL_ID,
                      text=main_text)
