@@ -18,6 +18,6 @@ app.conf.beat_schedule = {
     },
     'search_for_new_posts': {
         'task': 'web_hiring.tasks.find_new_posts',
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(minute='*/10'),
     },
 }
