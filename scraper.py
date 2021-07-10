@@ -30,7 +30,7 @@ logger.add(
 )
 
 START_URL = settings.START_URL
-START_PAGE = requests.get(START_URL)
+START_PAGE = requests.get(START_URL, proxies=proxies)
 
 
 def try_connection(url):
