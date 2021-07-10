@@ -15,6 +15,12 @@ django.setup()
 from web_hiring.models import Post
 from web_hiring.notificators import vacancy_notification
 
+
+proxies = {
+    "https": "https://0YkwQu:Vnpw9b@181.177.84.94:9441"
+}
+
+
 logger.add(
     "logs/info.log",
     format="{time} {level} {message}",
@@ -29,7 +35,7 @@ START_PAGE = requests.get(START_URL)
 
 @logger.catch
 def contact_extractor(url):
-    soup = BeautifulSoup(requests.get(url).text, "lxml")
+    soup = BeautifulSoup(requests.get(url, proxies=proxies).text, "lxml")
     details = soup.find("div", class_="page-content agency-page-content")
     for row in details.find_all("div", class_="colmn"):
         row_content = row.text.split(":")
@@ -40,7 +46,7 @@ def contact_extractor(url):
 
 @logger.catch
 def email_extractor(url):
-    soup = BeautifulSoup(requests.get(url).text, "lxml")
+    soup = BeautifulSoup(requests.get(url, proxies=proxies).text, "lxml")
     details = soup.find("div", class_="page-content agency-page-content")
     for row in details.find_all("div", class_="colmn"):
         row_content = row.text.split(":")
@@ -107,7 +113,7 @@ def check_new(url):
     Checking first page if there are new vacancies that should be added
     """
     result = []
-    page = requests.get(url)
+    page = requests.get(url, proxies=proxies)
     soup = BeautifulSoup(page.text, "lxml")
     table = soup.find("table", class_="nwrap")
     page_dict = []
@@ -133,6 +139,7 @@ def check_new(url):
                     info.append(column.text)
             final = {"link": "https://ukrcrewing.com.ua" + info[0]}
             final.update(dict(zip(columns, info[1:])))
+            print(final)
             page_dict.append(final)
         result.extend(page_dict)
     except AttributeError:
@@ -264,3 +271,6 @@ if __name__ == "__main__":
     print("Finished")
     print("Started information extraction")
     vacancies_information = info_search(vacancies_list, "base")
+    # START_URL = 'https://ukrcrewing.com.ua/vacancy/p1?v_sort=1&v_sort_dir=1'
+    # vacancies_list = check_new(START_URL)
+    # info_search(vacancies_list, 'parsing')
