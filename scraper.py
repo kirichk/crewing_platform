@@ -33,9 +33,25 @@ START_URL = settings.START_URL
 START_PAGE = requests.get(START_URL)
 
 
+def try_connection(url):
+    page = ''
+    while page == '':
+        try:
+            page = requests.get(url, proxies=proxies)
+            break
+        except:
+            print("Connection refused by the server..")
+            print("Let me sleep for 5 seconds")
+            print("ZZzzzz...")
+            sleep(5)
+            print("Was a nice sleep, now let me continue...")
+            continue
+    return page
+
 @logger.catch
 def contact_extractor(url):
-    soup = BeautifulSoup(requests.get(url, proxies=proxies).text, "lxml")
+    page = try_connection(url)
+    soup = BeautifulSoup(page.text, "lxml")
     details = soup.find("div", class_="page-content agency-page-content")
     for row in details.find_all("div", class_="colmn"):
         row_content = row.text.split(":")
@@ -46,7 +62,8 @@ def contact_extractor(url):
 
 @logger.catch
 def email_extractor(url):
-    soup = BeautifulSoup(requests.get(url, proxies=proxies).text, "lxml")
+    page = try_connection(url)
+    soup = BeautifulSoup(page.text, "lxml")
     details = soup.find("div", class_="page-content agency-page-content")
     for row in details.find_all("div", class_="colmn"):
         row_content = row.text.split(":")
@@ -81,7 +98,8 @@ def vacancies_search(pages: list):
     """
     result = []
     for page in pages:
-        soup = BeautifulSoup(requests.get(page).text, "lxml")
+        raw_page = try_connection(page)
+        soup = BeautifulSoup(raw_page.text, "lxml")
         table = soup.find("table", class_="nwrap")
         page_dict = []
         for rows in table.find_all("tr")[1:]:
@@ -113,7 +131,7 @@ def check_new(url):
     Checking first page if there are new vacancies that should be added
     """
     result = []
-    page = requests.get(url, proxies=proxies)
+    page = try_connection(url)
     soup = BeautifulSoup(page.text, "lxml")
     table = soup.find("table", class_="nwrap")
     page_dict = []
@@ -172,7 +190,8 @@ def info_search(vacancies: dict, mode: str):
 
     for vacancy in vacancies:
         sleep(0.5)
-        soup = BeautifulSoup(requests.get(vacancy["link"]).text, "lxml")
+        page = try_connection(vacancy["link"])
+        soup = BeautifulSoup(page.text, "lxml")
         details = soup.find("div", class_="vacancy-full-content")
         try:
             for row in details.find_all("div", class_="colmn"):
