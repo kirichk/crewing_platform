@@ -8,6 +8,8 @@ from bs4 import BeautifulSoup
 from django.conf import settings
 from django.utils import timezone
 from loguru import logger
+from random import randint
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crewing.settings")
 django.setup()
@@ -17,7 +19,7 @@ from web_hiring.notificators import vacancy_notification
 
 
 proxies = {
-    "https": "https://0YkwQu:Vnpw9b@181.177.84.94:9441"
+    "https": "https://EyL8pN:hKHfH2@212.81.38.141:9012"
 }
 
 
@@ -98,6 +100,8 @@ def vacancies_search(pages: list):
     """
     result = []
     for page in pages:
+        logger.info(f'Processing - {page}')
+        sleep(randint(2, 5))
         raw_page = try_connection(page)
         soup = BeautifulSoup(raw_page.text, "lxml")
         table = soup.find("table", class_="nwrap")
@@ -130,6 +134,7 @@ def check_new(url):
     """
     Checking first page if there are new vacancies that should be added
     """
+    sleep(randint(60, 120))
     result = []
     page = try_connection(url)
     soup = BeautifulSoup(page.text, "lxml")
@@ -187,9 +192,12 @@ def info_search(vacancies: dict, mode: str):
     """
     sailing_area = dwt = crew = english = crewer = contact = ""
     years_constructed = None
-
+    counter = 0
     for vacancy in vacancies:
-        sleep(0.5)
+        if counter % 5 == 0:
+            logger.info(f'{counter} profiles added')
+        counter += 1
+        sleep(randint(5, 10))
         page = try_connection(vacancy["link"])
         soup = BeautifulSoup(page.text, "lxml")
         details = soup.find("div", class_="vacancy-full-content")
