@@ -80,15 +80,15 @@ def pagination(page):
     """
     Searching for urls of all paginators
     """
-    soup = BeautifulSoup(page.text, "lxml")
+    # soup = BeautifulSoup(page.text, "lxml")
     pages_list = []
-    text_div = soup.find("div", class_="small").text
-    vacancies_count = int(re.findall(r"\d+", text_div)[0])
-    if vacancies_count % 30 == 0:
-        pages_count = vacancies_count / 30
-    else:
-        pages_count = vacancies_count // 30 + 1
-    for num in range(1, pages_count + 1):
+    # text_div = soup.find("div", class_="small").text
+    # vacancies_count = int(re.findall(r"\d+", text_div)[0])
+    # if vacancies_count % 30 == 0:
+    #     pages_count = vacancies_count / 30
+    # else:
+    #     pages_count = vacancies_count // 30 + 1
+    for num in range(1, 23):
         pages_list.append(START_URL.replace("p1", f"p{num}"))
     return pages_list
 
