@@ -9,7 +9,7 @@ sys.path.append('..')
 
 
 START_URL = settings.START_URL
-START_PAGE = requests.get(START_URL)
+# START_PAGE = requests.get(START_URL)
 
 
 @app.task
@@ -44,13 +44,13 @@ def find_new_posts():
         scraper.info_search(new_vacancies, 'update')
 
 
-@app.task
-def scrape_all():
-    print("Started pagination extraction")
-    list_of_pages = scraper.pagination(START_PAGE)
-    print("Finished")
-    print("Started extraction vacancy links from pages")
-    vacancies_list = scraper.vacancies_search(list_of_pages)
-    print("Finished")
-    print("Started information extraction")
-    vacancies_information = scraper.info_search(vacancies_list, "base")
+# @app.task
+# def scrape_all():
+#     print("Started pagination extraction")
+#     list_of_pages = scraper.pagination(START_PAGE)
+#     print("Finished")
+#     print("Started extraction vacancy links from pages")
+#     vacancies_list = scraper.vacancies_search(list_of_pages)
+#     print("Finished")
+#     print("Started information extraction")
+#     vacancies_information = scraper.info_search(vacancies_list, "base")
