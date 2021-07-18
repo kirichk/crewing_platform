@@ -4,6 +4,7 @@ from time import sleep
 
 import django
 import requests
+import random
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.utils import timezone
@@ -18,9 +19,11 @@ from web_hiring.models import Post
 from web_hiring.notificators import vacancy_notification
 
 
-proxies = {
-    "https": "https://EyL8pN:hKHfH2@212.81.38.141:9012"
-}
+urls = [
+        "https://5WP66o:CZay9X@91.233.61.70:8000",
+        "https://5WP66o:CZay9X@91.233.61.11:8000",
+        "https://5WP66o:CZay9X@91.233.61.6:8000",
+]
 
 
 logger.add(
@@ -32,13 +35,18 @@ logger.add(
 )
 
 START_URL = settings.START_URL
-START_PAGE = requests.get(START_URL, proxies=proxies)
 
 
 def try_connection(url):
     page = ''
     while page == '':
         try:
+            picked_proxy = random.choice(urls)
+            proxies = {
+                "https": picked_proxy
+            }
+            print(picked_proxy)
+            logger.info(picked_proxy)
             page = requests.get(url, proxies=proxies)
             break
         except:
@@ -76,19 +84,20 @@ def email_extractor(url):
 
 
 @logger.catch
-def pagination(page):
+def pagination():
     """
     Searching for urls of all paginators
     """
     # soup = BeautifulSoup(page.text, "lxml")
     pages_list = []
+    # page = try_connection(START_URL)
     # text_div = soup.find("div", class_="small").text
     # vacancies_count = int(re.findall(r"\d+", text_div)[0])
     # if vacancies_count % 30 == 0:
     #     pages_count = vacancies_count / 30
     # else:
     #     pages_count = vacancies_count // 30 + 1
-    for num in range(1, 23):
+    for num in range(1, 73):
         pages_list.append(START_URL.replace("p1", f"p{num}"))
     return pages_list
 
@@ -290,8 +299,10 @@ def info_search(vacancies: dict, mode: str):
 
 
 if __name__ == "__main__":
+    picked_proxy = random.choice(urls)
+    logger.info(picked_proxy)
     print("Started pagination extraction")
-    list_of_pages = pagination(START_PAGE)
+    list_of_pages = pagination()
     print("Finished")
     print("Started extraction vacancy links from pages")
     vacancies_list = vacancies_search(list_of_pages)
