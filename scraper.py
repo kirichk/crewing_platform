@@ -44,7 +44,7 @@ def try_connection(url):
                 "https": picked_proxy
             }
             print(picked_proxy)
-            logger.info(picked_proxy)
+            # logger.info(picked_proxy)
             page = requests.get(url, proxies=proxies)
             break
         except:
