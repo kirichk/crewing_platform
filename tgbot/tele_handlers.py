@@ -2,10 +2,10 @@ import os
 import re
 from datetime import date, datetime, timedelta
 from telegram import (InlineKeyboardButton, InlineKeyboardMarkup, Update,
-                        ReplyKeyboardMarkup, KeyboardButton)
+                      ReplyKeyboardMarkup, KeyboardButton)
 from telegram.ext import (CallbackContext, CallbackQueryHandler, Updater,
-                        MessageHandler, CommandHandler, ConversationHandler,
-                        Filters)
+                          MessageHandler, CommandHandler, ConversationHandler,
+                          Filters)
 from telegram.utils.request import Request
 from telegram_bot_pagination import InlineKeyboardPaginator
 from django.conf import settings
@@ -18,12 +18,13 @@ from loguru import logger
 
 
 logger.add('logs/info.log', format='{time} {level} {message}',
-            level='INFO', rotation="1 MB", compression='zip')
+           level='INFO', rotation="1 MB", compression='zip')
 # PHONE, SALARY_RANGE = range(2)
 PAGE_SPLIT = 8
 CURRENT_PAGE = 0
 CALENDAR, CALENDAR_SELECTOR, EDIT, FILTER, EMAIL_CONFIRM = range(5)
 # FILTER_TITLE = FILTER_FLEET = FILTER_SALARY = FILTER_CONTRACT = FILTER_CREW = FILTER_DATE = NEXT_STAGE_CALLBACK = CURRENT_STAGE = ''
+
 
 @logger.catch
 def model_transcriptor(model):
@@ -35,12 +36,12 @@ def model_transcriptor(model):
     for item in model:
         result.append(
             {
-                'id':item.id,
-                'title':item.title,
-                'salary':item.salary,
-                'voyage_duration':item.voyage_duration,
-                'crew':item.crew,
-                'joining_date':item.joining_date.strftime('%d.%m.%Y')
+                'id': item.id,
+                'title': item.title,
+                'salary': item.salary,
+                'voyage_duration': item.voyage_duration,
+                'crew': item.crew,
+                'joining_date': item.joining_date.strftime('%d.%m.%Y')
             }
         )
     return result
@@ -113,17 +114,17 @@ def show_item_list(update, data, callback, callback_specific):
     else:
         list_even = data[1::2]
         list_non_even = data[2:-1:2]
-    list_non_even.append(('Пропустить','Выбраны все варианты'))
+    list_non_even.append(('Пропустить', 'Выбраны все варианты'))
     if callback == 'fleet':
-        inline_keyboard=[
+        inline_keyboard = [
                 [
-                InlineKeyboardButton(
-                    text=i[0],
-                    callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
-                InlineKeyboardButton(
-                    text=list_non_even[list_even.index(i)][0],
-                    callback_data=f'choice{callback}_{callback_specific}_' \
-                                    + list_non_even[list_even.index(i)][1])
+                    InlineKeyboardButton(
+                        text=i[0],
+                        callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
+                    InlineKeyboardButton(
+                        text=list_non_even[list_even.index(i)][0],
+                        callback_data=f'choice{callback}_{callback_specific}_'
+                        + list_non_even[list_even.index(i)][1])
                 ] for i in list_even]
         inline_keyboard.append(
                 [
@@ -135,16 +136,16 @@ def show_item_list(update, data, callback, callback_specific):
     else:
         inline_buttons = InlineKeyboardMarkup(
                 inline_keyboard=[
-                [
-                InlineKeyboardButton(
-                    text=i[0],
-                    callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
-                InlineKeyboardButton(
-                    text=list_non_even[list_even.index(i)][0],
-                    callback_data=f'choice{callback}_{callback_specific}_' \
-                                    + list_non_even[list_even.index(i)][1])
-                ] for i in list_even
-            ],
+                    [
+                        InlineKeyboardButton(
+                            text=i[0],
+                            callback_data=f'choice{callback}_{callback_specific}_' + i[1]),
+                        InlineKeyboardButton(
+                            text=list_non_even[list_even.index(i)][0],
+                            callback_data=f'choice{callback}_{callback_specific}_'
+                            + list_non_even[list_even.index(i)][1])
+                        ] for i in list_even
+                    ],
         )
     update.callback_query.edit_message_text(
         text='Выберите интересующий Вас вариант.',
@@ -160,24 +161,24 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
         inline_keyboard=[
             [
                 InlineKeyboardButton(text='Добавить',
-                                    callback_data=f'{callback_data}_add_'),
+                                     callback_data=f'{callback_data}_add_'),
                 InlineKeyboardButton(text='Удалить',
-                                    callback_data=f'{callback_data}_remove_')
+                                     callback_data=f'{callback_data}_remove_')
             ],
             [
                 InlineKeyboardButton(text=f'Подтвердить',
-                                    callback_data=f'{callback_next}'),
+                                     callback_data=f'{callback_next}'),
             ]
         ],
     )
     if callback[1] == 'remove':
-        subscriptions = data.replace(callback[2],'')
+        subscriptions = data.replace(callback[2], '')
         data = subsription_cleaner(subscriptions)
         if 'Выбраны все варианты' in data:
             data = 'Выбраны все варианты'
         update.callback_query.edit_message_text(
-            text=f'Вы удалили {callback[2]}\n{text}:\n\n'\
-                    f'{data}\n\nХотите добавить еще, удалить выбранные или продолжить?',
+            text=f'Вы удалили {callback[2]}\n{text}:\n\n'
+            f'{data}\n\nХотите добавить еще, удалить выбранные или продолжить?',
             reply_markup=inline_buttons,
         )
     else:
@@ -191,9 +192,9 @@ def item_selection_handler(update, data, callback_data, callback_next, text):
         if 'Выбраны все варианты' in data:
             data = 'Выбраны все варианты'
         update.callback_query.edit_message_text(
-            text=f'{text}:\n\n'\
-                    f'{data}\n\nХотите добавить еще, '\
-                        f'удалить выбранные или продолжить?',
+            text=f'{text}:\n\n'
+            f'{data}\n\nХотите добавить еще, '
+            f'удалить выбранные или продолжить?',
             reply_markup=inline_buttons,
         )
     return data
@@ -229,10 +230,10 @@ def vacancy_paginator(vacancies: list, pattern: str,
         # To change markup and avoid BadRequest error from telegram
         if context.user_data[CURRENT_PAGE] == page:
             paginator.add_after(InlineKeyboardButton('Вернуться ',
-                                                    callback_data='start'))
+                                                     callback_data='start'))
         else:
             paginator.add_after(InlineKeyboardButton('Вернуться',
-                                                    callback_data='start'))
+                                                     callback_data='start'))
         update.callback_query.edit_message_text(
             text=text,
             reply_markup=paginator.markup,
@@ -245,7 +246,7 @@ def vacancy_paginator(vacancies: list, pattern: str,
 
 @logger.catch
 def start_buttons_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     try:
         request = update.callback_query
         user_id = request.from_user.id
@@ -255,41 +256,41 @@ def start_buttons_handler(update: Update, context: CallbackContext):
     inline_keyboard = [
         [
             InlineKeyboardButton(text='Все новые вакансии ' + u'\U0001F50E',
-                                callback_data='new')
-        ],[
+                                 callback_data='new')
+        ], [
             InlineKeyboardButton(text='Настроить фильтр вакансий ' + u'\U0001F504',
-                                callback_data='filter_'),
-        ],[
+                                 callback_data='filter_'),
+        ], [
             InlineKeyboardButton(text='Заполнить анкету ' + u'\U0001F6E5',
-                                callback_data='profile'),
+                                 callback_data='profile'),
         ],
     ]
 
     if not Profile.objects.filter(external_id=user_id).exists():
         inline_keyboard.insert(2,
-            [InlineKeyboardButton(text='Вакансии согласно вашей анкете ' + u'\U0001F477',
-                callback_data='profile')]
-        )
+                               [InlineKeyboardButton(text='Вакансии согласно вашей анкете ' + u'\U0001F477',
+                                                     callback_data='profile')]
+                               )
         inline_keyboard.insert(3,
-            [InlineKeyboardButton(text='Получать уведомления о новых вакансиях ' + u'\U0001F514',
-                callback_data='newsletter_all')]
-        )
+                               [InlineKeyboardButton(text='Получать уведомления о новых вакансиях ' + u'\U0001F514',
+                                                     callback_data='newsletter_all')]
+                               )
     else:
         inline_keyboard.insert(2,
-            [InlineKeyboardButton(text='Вакансии согласно вашей анкете ' + u'\U0001F477',
-                callback_data='searchsubscription#1')]
-        )
+                               [InlineKeyboardButton(text='Вакансии согласно вашей анкете ' + u'\U0001F477',
+                                                     callback_data='searchsubscription#1')]
+                               )
         inline_keyboard.insert(3,
-            [InlineKeyboardButton(text='Получать уведомления о новых вакансиях ' + u'\U0001F514',
-                callback_data='newsletter_')]
-        )
+                               [InlineKeyboardButton(text='Получать уведомления о новых вакансиях ' + u'\U0001F514',
+                                                     callback_data='newsletter_')]
+                               )
     inline_keyboard.append(
         [InlineKeyboardButton(text='Документы для моряков ' + u'\U0001F9FE',
-            callback_data='documents')]
+                              callback_data='documents')]
     )
     inline_keyboard.append(
         [InlineKeyboardButton(text='Канал с вакансиями ' + u'\U0001F4F0',
-            url='https://t.me/topcrewchannel')]
+                              url='https://t.me/topcrewchannel')]
     )
     inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
     if request == update.message:
@@ -300,16 +301,16 @@ def start_buttons_handler(update: Update, context: CallbackContext):
         context.user_data['FILTER_CONTRACT'] = ''
         context.user_data['FILTER_CREW'] = ''
         update.message.reply_text(
-            text='Вы находитесь в главном меню. Чтобы вернуться сюда в любой '\
-                'момент нажмите или выберите команду /menu. Выберите действие '\
-                'чтобы продолжить.',
+            text='Вы находитесь в главном меню. Чтобы вернуться сюда в любой '
+            'момент нажмите или выберите команду /menu. Выберите действие '
+            'чтобы продолжить.',
             reply_markup=inline_buttons,
         )
     else:
         update.callback_query.edit_message_text(
-            text='Вы находитесь в главном меню. Чтобы вернуться сюда в любой '\
-                'момент нажмите или выберите команду /menu. Выберите дейсвтие '\
-                'чтобы продолжить.',
+            text='Вы находитесь в главном меню. Чтобы вернуться сюда в любой '
+            'момент нажмите или выберите команду /menu. Выберите дейсвтие '
+            'чтобы продолжить.',
             reply_markup=inline_buttons,
         )
     context.user_data[CURRENT_PAGE] = 0
@@ -318,7 +319,7 @@ def start_buttons_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def detail_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     callback = update.callback_query.data.split('_')
     post = Post.objects.get(id=callback[-1])
     text = model_text_details(post)
@@ -335,12 +336,13 @@ def detail_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def searchfilter_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     all_entries = Post.objects.all()
     if context.user_data['FILTER_TITLE'] != 'Пропустить' and context.user_data['FILTER_TITLE'] != '' and context.user_data['FILTER_TITLE'] != 'Выбраны все варианты':
         titles_selected = context.user_data['FILTER_TITLE'].split(', ')
         if 'Seamen (AB' in titles_selected:
-            titles_selected = [w.replace('Seamen (AB', 'Seamen (AB, OS)') for w in titles_selected]
+            titles_selected = [w.replace(
+                'Seamen (AB', 'Seamen (AB, OS)') for w in titles_selected]
         all_entries = all_entries.filter(
                                     title__in=titles_selected)
     if context.user_data['FILTER_FLEET'] != 'Пропустить' and context.user_data['FILTER_FLEET'] != '' and context.user_data['FILTER_FLEET'] != 'Выбраны все варианты':
@@ -362,42 +364,45 @@ def searchfilter_handler(update: Update, context: CallbackContext):
                 cleaned_sub_salary_start = 0
                 cleaned_sub_salary_end = 1000000
             else:
-                cleaned_sub_salary = re.findall(r'[0-9]+',context.user_data['FILTER_SALARY'])
+                cleaned_sub_salary = re.findall(
+                    r'[0-9]+', context.user_data['FILTER_SALARY'])
                 cleaned_sub_salary_start = int(cleaned_sub_salary[0])
                 cleaned_sub_salary_end = int(cleaned_sub_salary[1])
             if context.user_data['FILTER_CONTRACT'] == '' or context.user_data['FILTER_CONTRACT'] == 'Не важно':
                 cleaned_sub_contract = 12
             else:
-                cleaned_sub_contract = int(re.findall(r'[0-9]+', context.user_data['FILTER_CONTRACT'])[0])
+                cleaned_sub_contract = int(re.findall(
+                    r'[0-9]+', context.user_data['FILTER_CONTRACT'])[0])
             cleaned_salary = int(re.findall(r'[0-9]+', post['salary'])[0])
             if post['voyage_duration'] is None:
                 cleaned_contract = 6
             else:
-                cleaned_contract = int(re.findall(r'[0-9]+', post['voyage_duration'])[0])
+                cleaned_contract = int(re.findall(
+                    r'[0-9]+', post['voyage_duration'])[0])
             if cleaned_sub_salary_start != '' \
                and cleaned_sub_salary_end != '' \
                and cleaned_sub_salary_start <= cleaned_salary \
                and cleaned_salary <= cleaned_sub_salary_end:
                 if cleaned_contract <= cleaned_sub_contract:
-                        result.append(post)
+                    result.append(post)
         page = int(update.callback_query.data.split('#')[1])
         vacancy_paginator(vacancies=result,
-                        pattern='searchfilter',
-                        page=page,
-                        text='Перечень вакансий по указаному фильтру.',
-                        update=update,
-                        context=context)
+                          pattern='searchfilter',
+                          page=page,
+                          text='Перечень вакансий по указаному фильтру.',
+                          update=update,
+                          context=context)
 
 
 @logger.catch
 def searchsubscription_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     p = Profile.objects.get(external_id=update.callback_query.from_user.id)
     all_entries = Post.objects.all()
-    if p.title_subscriptions != 'Пропустить' and p.title_subscriptions != '' and  p.title_subscriptions != 'Выбраны все варианты':
+    if p.title_subscriptions != 'Пропустить' and p.title_subscriptions != '' and p.title_subscriptions != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     title__in=p.title_subscriptions.split(', '))
-    if p.fleet_subscriptions != 'Пропустить' and p.fleet_subscriptions != '' and  p.fleet_subscriptions != 'Выбраны все варианты':
+    if p.fleet_subscriptions != 'Пропустить' and p.fleet_subscriptions != '' and p.fleet_subscriptions != 'Выбраны все варианты':
         all_entries = all_entries.filter(
                                     vessel__in=p.fleet_subscriptions.split(', '))
     if p.date_ready != '' and p.date_ready is not None:
@@ -416,18 +421,21 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
                 cleaned_sub_salary_start = 0
                 cleaned_sub_salary_end = 1000000
             else:
-                cleaned_sub_salary = re.findall(r'[0-9]+',p.salary_subscription)
+                cleaned_sub_salary = re.findall(
+                    r'[0-9]+', p.salary_subscription)
                 cleaned_sub_salary_start = int(cleaned_sub_salary[0])
                 cleaned_sub_salary_end = int(cleaned_sub_salary[1])
             if p.contract_subscription == '' or p.contract_subscription == 'Не важно' or p.contract_subscription is None:
                 cleaned_sub_contract = 12
             else:
-                cleaned_sub_contract = int(re.findall(r'[0-9]+', p.contract_subscription)[0])
+                cleaned_sub_contract = int(re.findall(
+                    r'[0-9]+', p.contract_subscription)[0])
             cleaned_salary = int(re.findall(r'[0-9]+', post['salary'])[0])
             if post['voyage_duration'] is None:
                 cleaned_contract = 6
             else:
-                cleaned_contract = int(re.findall(r'[0-9]+', post['voyage_duration'])[0])
+                cleaned_contract = int(re.findall(
+                    r'[0-9]+', post['voyage_duration'])[0])
             if cleaned_sub_salary_start != '' \
                and cleaned_sub_salary_end != '' \
                and cleaned_sub_salary_start <= cleaned_salary \
@@ -436,21 +444,22 @@ def searchsubscription_handler(update: Update, context: CallbackContext):
                     result.append(post)
         page = int(update.callback_query.data.split('#')[1])
         vacancy_paginator(vacancies=result,
-                        pattern='searchsubscription',
-                        page=page,
-                        text='Перечень вакансий по Вашему профилю.',
-                        update=update,
-                        context=context)
+                          pattern='searchsubscription',
+                          page=page,
+                          text='Перечень вакансий по Вашему профилю.',
+                          update=update,
+                          context=context)
 
 
 @logger.catch
 def new_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(text='За день', callback_data='newday#1'),
-                InlineKeyboardButton(text='За неделю', callback_data='newweek#1'),
+                InlineKeyboardButton(
+                    text='За неделю', callback_data='newweek#1'),
             ]
         ],
     )
@@ -467,7 +476,7 @@ def documents_handler(update: Update, context: CallbackContext):
     inline_keyboard = [
         [
             InlineKeyboardButton(text='Вернуться в меню',
-                                callback_data='start'),
+                                 callback_data='start'),
         ]
     ]
     inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
@@ -493,9 +502,10 @@ Viber: +380930388898'''
     )
     return ConversationHandler.END
 
+
 @logger.catch
 def newday_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     last_hours = datetime.now() - timedelta(hours=24)
     post_list = model_transcriptor(Post.objects.filter(
                                     publish_date__gte=last_hours))
@@ -507,16 +517,16 @@ def newday_handler(update: Update, context: CallbackContext):
     else:
         page = int(update.callback_query.data.split('#')[1])
         vacancy_paginator(vacancies=post_list,
-                        pattern='newday',
-                        page=page,
-                        text='Перечень новых вакансий за день.',
-                        update=update,
-                        context=context)
+                          pattern='newday',
+                          page=page,
+                          text='Перечень новых вакансий за день.',
+                          update=update,
+                          context=context)
 
 
 @logger.catch
 def newweek_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     week_ago_date = date.today() - timedelta(days=7)
     post_list = model_transcriptor(Post.objects.filter(
                                     publish_date__gte=week_ago_date))
@@ -528,16 +538,16 @@ def newweek_handler(update: Update, context: CallbackContext):
     else:
         page = int(update.callback_query.data.split('#')[1])
         vacancy_paginator(vacancies=post_list,
-                        pattern='newweek',
-                        page=page,
-                        text='Перечень новых вакансий за неделю.',
-                        update=update,
-                        context=context)
+                          pattern='newweek',
+                          page=page,
+                          text='Перечень новых вакансий за неделю.',
+                          update=update,
+                          context=context)
 
 
 @logger.catch
 def newsletter_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     callback = update.callback_query.data.split('_')
     p = Profile.objects.get_or_create(
         external_id=update.callback_query.from_user.id,
@@ -547,11 +557,11 @@ def newsletter_handler(update: Update, context: CallbackContext):
         inline_keyboard = [
             [
                 InlineKeyboardButton(text='Отписаться',
-                                    callback_data='newsletter_unsub'),
+                                     callback_data='newsletter_unsub'),
             ],
             [
                 InlineKeyboardButton(text='Вернуться в меню',
-                                    callback_data='start'),
+                                     callback_data='start'),
             ]
         ]
         inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
@@ -576,11 +586,11 @@ def newsletter_handler(update: Update, context: CallbackContext):
         inline_keyboard = [
             [
                 InlineKeyboardButton(text='Подписаться',
-                                    callback_data='newsletter_confirm'),
+                                     callback_data='newsletter_confirm'),
             ],
             [
                 InlineKeyboardButton(text='Вернуться в меню',
-                                    callback_data='start'),
+                                     callback_data='start'),
             ]
         ]
         inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
@@ -588,14 +598,14 @@ def newsletter_handler(update: Update, context: CallbackContext):
     if callback[1] == 'confirm':
         p.subscription = True
         p.save()
-        inline_keyboard=[
+        inline_keyboard = [
             [
                 InlineKeyboardButton(text='Отписаться',
-                                    callback_data='newsletter_unsub'),
+                                     callback_data='newsletter_unsub'),
             ],
             [
                 InlineKeyboardButton(text='Вернуться в меню',
-                                    callback_data='start'),
+                                     callback_data='start'),
             ]
         ]
         text = 'Вы подписались на рассылку:\n\n'
@@ -618,14 +628,14 @@ def newsletter_handler(update: Update, context: CallbackContext):
     elif callback[1] == 'unsub':
         p.subscription = False
         p.save()
-        inline_keyboard=[
+        inline_keyboard = [
             [
                 InlineKeyboardButton(text='Подписаться',
-                                    callback_data='newsletter_confirm'),
+                                     callback_data='newsletter_confirm'),
             ],
             [
                 InlineKeyboardButton(text='Вернуться в меню',
-                                    callback_data='start'),
+                                     callback_data='start'),
             ]
         ]
         text = 'Вы отписались от рассылки.'
@@ -634,9 +644,9 @@ def newsletter_handler(update: Update, context: CallbackContext):
                 'приходить все вакансии. Хотите подтвердить или перейти к '\
                 'заполнению профиля?'
         inline_keyboard.insert(0,
-            [InlineKeyboardButton(text='Мой профиль',
-                callback_data='profile')]
-        )
+                               [InlineKeyboardButton(text='Мой профиль',
+                                                     callback_data='profile')]
+                               )
     else:
         p.save()
     inline_buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
@@ -649,7 +659,7 @@ def newsletter_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def filter_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     callback = update.callback_query.data.split('_')
     if callback[0] == 'profile':
         profile_handler(update, context)
@@ -657,7 +667,8 @@ def filter_handler(update: Update, context: CallbackContext):
     text = ''
     message = ''
     if ';' in update.callback_query.data:
-        selected,date = telegramcalendar.process_calendar_selection(update, context)
+        selected, date = telegramcalendar.process_calendar_selection(
+            update, context)
         if selected:
             context.user_data['FILTER_DATE'] = date
         else:
@@ -694,28 +705,28 @@ def filter_handler(update: Update, context: CallbackContext):
         inline_keyboard=[
             [
                 InlineKeyboardButton(text='Должность',
-                                    callback_data='title_add_'),
+                                     callback_data='title_add_'),
                 InlineKeyboardButton(text='Зарплата',
-                                    callback_data='salary_filter'),
-            ],[
+                                     callback_data='salary_filter'),
+            ], [
                 InlineKeyboardButton(text='Типы судна',
-                                    callback_data='fleet_add_'),
+                                     callback_data='fleet_add_'),
                 InlineKeyboardButton(text='Длительность контракта',
-                                    callback_data='contract_filter'),
-            ],[
+                                     callback_data='contract_filter'),
+            ], [
                 InlineKeyboardButton(text='Экипаж',
-                                    callback_data='crew_filter'),
+                                     callback_data='crew_filter'),
                 InlineKeyboardButton(text='Дата готовности',
-                                    callback_data='date_filter'),
-            ],[
+                                     callback_data='date_filter'),
+            ], [
                 InlineKeyboardButton(text='Поиск',
-                                    callback_data='searchfilter#1'),
-            ],[
+                                     callback_data='searchfilter#1'),
+            ], [
                 InlineKeyboardButton(text='Сбросить',
-                                    callback_data='filter_clear'),
-            ],[
+                                     callback_data='filter_clear'),
+            ], [
                 InlineKeyboardButton(text='Вернуться',
-                                    callback_data='start'),
+                                     callback_data='start'),
             ],
         ],
     )
@@ -733,26 +744,26 @@ def filter_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def profile_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     inline_keyboard = [
         [InlineKeyboardButton(text='Главное меню', callback_data='start')],
     ]
     if not Profile.objects.filter(
             external_id=update.callback_query.from_user.id).exists():
         inline_keyboard.insert(0,
-            [InlineKeyboardButton(text='Заполнить личный профиль',
-                callback_data='title_add_')]
-        )
+                               [InlineKeyboardButton(text='Заполнить личный профиль',
+                                                     callback_data='title_add_')]
+                               )
         context.user_data['NEXT_STAGE_CALLBACK'] = 'salary_reg'
     else:
         inline_keyboard.insert(0,
-            [InlineKeyboardButton(text='Изменить профиль',
-                                    callback_data='profileedit_')]
-        )
+                               [InlineKeyboardButton(text='Изменить профиль',
+                                                     callback_data='profileedit_')]
+                               )
         inline_keyboard.insert(1,
-            [InlineKeyboardButton(text='Удалить профиль',
-                                    callback_data='profiledelete')]
-        )
+                               [InlineKeyboardButton(text='Удалить профиль',
+                                                     callback_data='profiledelete')]
+                               )
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=inline_keyboard
     )
@@ -765,15 +776,17 @@ def profile_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def profile_edit_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     p = Profile.objects.get(external_id=update.callback_query.from_user.id)
     callback = update.callback_query.data.split('_')
     text = ''
     if ';' in update.callback_query.data:
-        selected,date = telegramcalendar.process_calendar_selection(update, context)
+        selected, date = telegramcalendar.process_calendar_selection(
+            update, context)
         if selected:
             date_choise = date.strftime("%d/%m/%Y")
-            p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+            p = Profile.objects.get(
+                external_id=update.callback_query.from_user.id)
             text = f'Вы подтвердили дату {date_choise}\n\n'
             p.date_ready = date
         else:
@@ -791,25 +804,25 @@ def profile_edit_handler(update: Update, context: CallbackContext):
         inline_keyboard=[
             [
                 InlineKeyboardButton(text='Должность',
-                                    callback_data='choicetitle_add_')
-            ],[
+                                     callback_data='choicetitle_add_')
+            ], [
                 InlineKeyboardButton(text='Зарплата',
-                                    callback_data='salary_edit'),
+                                     callback_data='salary_edit'),
                 InlineKeyboardButton(text='Типы судна',
-                                    callback_data='choicefleet_add_')
-            ],[
+                                     callback_data='choicefleet_add_')
+            ], [
                 InlineKeyboardButton(text='Длительность контракта',
-                                    callback_data='contract_edit'),
+                                     callback_data='contract_edit'),
                 InlineKeyboardButton(text='Экипаж',
-                                    callback_data='crew_edit'),
-            ],[
+                                     callback_data='crew_edit'),
+            ], [
                 InlineKeyboardButton(text='Дата готовности',
-                                    callback_data='date_edit'),
+                                     callback_data='date_edit'),
                 InlineKeyboardButton(text='Email',
-                                    callback_data='email'),
-            ],[
+                                     callback_data='email'),
+            ], [
                 InlineKeyboardButton(text='Вернуться',
-                                    callback_data='profile'),
+                                     callback_data='profile'),
             ],
         ],
     )
@@ -823,14 +836,14 @@ def profile_edit_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def profile_delete_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     p = Profile.objects.get(external_id=update.callback_query.from_user.id)
     p.delete()
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(text='Вернуться в меню',
-                                    callback_data='start'),
+                                     callback_data='start'),
             ],
         ],
     )
@@ -845,7 +858,7 @@ def profile_delete_handler(update: Update, context: CallbackContext):
 def title_handler(update: Update, context: CallbackContext):
     """ Начало взаимодействия по клику на inline-кнопку
     """
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     callback = update.callback_query.data.split('_')
     show_item_list(update, settings.TITLE_CHOICES, callback[0], callback[1])
     p = Profile.objects.get_or_create(
@@ -858,23 +871,25 @@ def title_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def title_choose_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     if context.user_data['NEXT_STAGE_CALLBACK'] == 'filter_':
         updated_subs = item_selection_handler(
                             update=update,
                             data=context.user_data['FILTER_TITLE'],
                             callback_data='title',
                             callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
-                            text='Вы выбрали '\
+                            text='Вы выбрали '
                                 'следующие должности в фильтре')
         context.user_data['FILTER_TITLE'] = updated_subs
     else:
         titles = ''
-        p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
+        p = Profile.objects.get_or_create(
+            external_id=update.callback_query.from_user.id)[0]
         try:
             titles = p.title_subscriptions
         except AttributeError:
-            p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+            p = Profile.objects.get(
+                external_id=update.callback_query.from_user.id)
             titles = p.title_subscriptions
         finally:
             updated_subs = item_selection_handler(
@@ -882,7 +897,7 @@ def title_choose_handler(update: Update, context: CallbackContext):
                                 data=titles,
                                 callback_data='title',
                                 callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
-                                text='Сейчас Вы подписаны на '\
+                                text='Сейчас Вы подписаны на '
                                     'следующие должности')
             p.title_subscriptions = updated_subs
             p.save()
@@ -891,7 +906,7 @@ def title_choose_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def salary_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     text = ''
     if update.callback_query.data.split('_')[1] == 'reg':
         callback = 'fleet_add_'
@@ -910,20 +925,20 @@ def salary_handler(update: Update, context: CallbackContext):
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-            InlineKeyboardButton(text='до 1000$',
-                                callback_data=callback+'0-1000$'),
-            InlineKeyboardButton(text='1000-3000$',
-                                callback_data=callback+'1000-3000$')
-            ],[
-            InlineKeyboardButton(text='3000-5000$',
-                                callback_data=callback+'3000-5000$'),
-            InlineKeyboardButton(text='5000-10000$',
-                                callback_data=callback+'5000-10000$')
-            ],[
-            InlineKeyboardButton(text='10000$+',
-                                callback_data=callback+'10000-1000000$'),
-            InlineKeyboardButton(text='Не важно',
-                                callback_data=callback+'Не важно')
+                InlineKeyboardButton(text='до 1000$',
+                                     callback_data=callback+'0-1000$'),
+                InlineKeyboardButton(text='1000-3000$',
+                                     callback_data=callback+'1000-3000$')
+            ], [
+                InlineKeyboardButton(text='3000-5000$',
+                                     callback_data=callback+'3000-5000$'),
+                InlineKeyboardButton(text='5000-10000$',
+                                     callback_data=callback+'5000-10000$')
+            ], [
+                InlineKeyboardButton(text='10000$+',
+                                     callback_data=callback+'10000-1000000$'),
+                InlineKeyboardButton(text='Не важно',
+                                     callback_data=callback+'Не важно')
             ],
         ],
     )
@@ -947,20 +962,20 @@ def fleet_handler(update: Update, context: CallbackContext):
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-            InlineKeyboardButton(text=data[1][0],
-                                callback_data='vessel_' + callback + '_' + data[1][0]),
-            InlineKeyboardButton(text=data[2][0],
-                                callback_data='vessel_' + callback + '_' + data[2][0])
-            ],[
-            InlineKeyboardButton(text=data[3][0],
-                                callback_data='choice' + callback_spl[0] + '_' +callback_spl[1] + '_Fishing Vessel'),
-            InlineKeyboardButton(text=data[4][0],
-                                callback_data='vessel_' + callback + '_' + data[4][0])
-            ],[
-            InlineKeyboardButton(text=data[5][0],
-                                callback_data='vessel_' + callback + '_' + data[5][0]),
-            InlineKeyboardButton(text='Пропустить',
-                                callback_data='choice' + callback_spl[0] + '_' +callback_spl[1] + '_Выбраны все варианты')
+                InlineKeyboardButton(text=data[1][0],
+                                     callback_data='vessel_' + callback + '_' + data[1][0]),
+                InlineKeyboardButton(text=data[2][0],
+                                     callback_data='vessel_' + callback + '_' + data[2][0])
+            ], [
+                InlineKeyboardButton(text=data[3][0],
+                                     callback_data='choice' + callback_spl[0] + '_' + callback_spl[1] + '_Fishing Vessel'),
+                InlineKeyboardButton(text=data[4][0],
+                                     callback_data='vessel_' + callback + '_' + data[4][0])
+            ], [
+                InlineKeyboardButton(text=data[5][0],
+                                     callback_data='vessel_' + callback + '_' + data[5][0]),
+                InlineKeyboardButton(text='Пропустить',
+                                     callback_data='choice' + callback_spl[0] + '_' + callback_spl[1] + '_Выбраны все варианты')
             ],
         ],
     )
@@ -975,30 +990,33 @@ def fleet_handler(update: Update, context: CallbackContext):
 def vessel_handler(update: Update, context: CallbackContext):
     """ Начало взаимодействия по клику на inline-кнопку
     """
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     callback = update.callback_query.data.split('_')
-    show_item_list(update, settings.VESSEL_BASE[callback[4]], callback[1], callback[2])
+    show_item_list(
+        update, settings.VESSEL_BASE[callback[4]], callback[1], callback[2])
     return ConversationHandler.END
 
 
 @logger.catch
 def fleet_choose_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     if context.user_data['NEXT_STAGE_CALLBACK'] == 'filter_':
         updated_subs = item_selection_handler(
                             update=update,
                             data=context.user_data['FILTER_FLEET'],
                             callback_data='fleet',
                             callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
-                            text='Вы выбрали '\
+                            text='Вы выбрали '
                                 'следующие типы судна в фильтре')
         context.user_data['FILTER_FLEET'] = updated_subs
     else:
-        p = Profile.objects.get_or_create(external_id=update.callback_query.from_user.id)[0]
+        p = Profile.objects.get_or_create(
+            external_id=update.callback_query.from_user.id)[0]
         try:
             fleets = p.fleet_subscriptions
         except AttributeError:
-            p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+            p = Profile.objects.get(
+                external_id=update.callback_query.from_user.id)
             fleets = p.fleet_subscriptions
         finally:
             updated_subs = item_selection_handler(
@@ -1006,7 +1024,7 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
                             data=fleets,
                             callback_data='fleet',
                             callback_next=context.user_data['NEXT_STAGE_CALLBACK'],
-                            text='Сейчас Вы подписаны на '\
+                            text='Сейчас Вы подписаны на '
                                 'следующие типы судна')
             p.fleet_subscriptions = updated_subs
             p.save()
@@ -1015,7 +1033,7 @@ def fleet_choose_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def contract_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     callback_data = update.callback_query.data.split('_')
     text = ''
     if callback_data[1] == 'reg':
@@ -1034,18 +1052,18 @@ def contract_handler(update: Update, context: CallbackContext):
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-            InlineKeyboardButton(text='до 2',
-                                 callback_data=callback+'до 2'),
-            InlineKeyboardButton(text='до 4',
-                                 callback_data=callback+'до 4')
-            ],[
-            InlineKeyboardButton(text='до 6',
-                                 callback_data=callback+'до 6'),
-            InlineKeyboardButton(text='до 8',
-                                 callback_data=callback+'до 8')
-            ],[
-            InlineKeyboardButton(text='Не важно',
-                                 callback_data=callback+'Не важно')
+                InlineKeyboardButton(text='до 2',
+                                     callback_data=callback+'до 2'),
+                InlineKeyboardButton(text='до 4',
+                                     callback_data=callback+'до 4')
+            ], [
+                InlineKeyboardButton(text='до 6',
+                                     callback_data=callback+'до 6'),
+                InlineKeyboardButton(text='до 8',
+                                     callback_data=callback+'до 8')
+            ], [
+                InlineKeyboardButton(text='Не важно',
+                                     callback_data=callback+'Не важно')
             ]
         ],
     )
@@ -1058,7 +1076,7 @@ def contract_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def crew_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     callback_data = update.callback_query.data.split('_')
     text = ''
     if callback_data[1] == 'reg':
@@ -1080,13 +1098,13 @@ def crew_handler(update: Update, context: CallbackContext):
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-            InlineKeyboardButton(text='Микс',
-                                callback_data=callback+'Микс'),
-            InlineKeyboardButton(text='Без знания англ.',
-                                callback_data=callback+'Без знания англ')
-            ],[
-            InlineKeyboardButton(text='Не важно',
-                                callback_data=callback+'Не важно')
+                InlineKeyboardButton(text='Микс',
+                                     callback_data=callback+'Микс'),
+                InlineKeyboardButton(text='Без знания англ.',
+                                     callback_data=callback+'Без знания англ')
+            ], [
+                InlineKeyboardButton(text='Не важно',
+                                     callback_data=callback+'Не важно')
             ]
         ],
     )
@@ -1099,16 +1117,17 @@ def crew_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def date_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     if not hasattr(update, 'callback_query'):
         context.user_data['NEXT_STAGE_CALLBACK'] = ''
         start_buttons_handler(update, context)
     else:
         callback_data = update.callback_query.data.split('_')
         update.callback_query.edit_message_text("Выберите дату Вашей готовности",
-                            reply_markup=telegramcalendar.create_calendar())
+                                                reply_markup=telegramcalendar.create_calendar())
         if callback_data[1] == 'reg':
-            p = Profile.objects.get(external_id=update.callback_query.from_user.id)
+            p = Profile.objects.get(
+                external_id=update.callback_query.from_user.id)
             p.crew_subscription = callback_data[2]
             p.save()
             return CALENDAR
@@ -1120,8 +1139,9 @@ def date_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def email_question_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
-    selected,date = telegramcalendar.process_calendar_selection(update, context)
+    logger.info(f'user_data: {update}')
+    selected, date = telegramcalendar.process_calendar_selection(
+        update, context)
     context.user_data['NEXT_STAGE_CALLBACK'] = 'reg'
     if selected:
         date_choise = date.strftime("%d/%m/%Y")
@@ -1131,16 +1151,16 @@ def email_question_handler(update: Update, context: CallbackContext):
         inline_buttons = InlineKeyboardMarkup(
             inline_keyboard=[
                 [
-                InlineKeyboardButton(text='Да',
-                                    callback_data='email'),
-                InlineKeyboardButton(text='Нет',
-                                    callback_data='success_registration')
+                    InlineKeyboardButton(text='Да',
+                                         callback_data='email'),
+                    InlineKeyboardButton(text='Нет',
+                                         callback_data='success_registration')
                 ]
             ],
         )
         update.callback_query.edit_message_text(
-            text=f'Вы выбрали {date.strftime("%d/%m/%Y")}\n\n'\
-                    f'Предоставить адрес электронной почты?',
+            text=f'Вы выбрали {date.strftime("%d/%m/%Y")}\n\n'
+            f'Предоставить адрес электронной почты?',
             reply_markup=inline_buttons,
         )
         return ConversationHandler.END
@@ -1150,7 +1170,7 @@ def email_question_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def email_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     update.callback_query.edit_message_text(
         text='Введите Ваш email пожалуйста.'
     )
@@ -1159,7 +1179,7 @@ def email_handler(update: Update, context: CallbackContext):
 
 @logger.catch
 def email_confirmer_handler(update: Update, context: CallbackContext):
-    logger.info(f'user_data: {context.user_data}')
+    logger.info(f'user_data: {update}')
     p = Profile.objects.get(external_id=update.message.from_user.id)
     p.email = update.message.text
     p.save()
@@ -1170,10 +1190,10 @@ def email_confirmer_handler(update: Update, context: CallbackContext):
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-            InlineKeyboardButton(text='Подтвердить',
-                                callback_data=callback),
-            InlineKeyboardButton(text='Изменить',
-                                callback_data='email')
+                InlineKeyboardButton(text='Подтвердить',
+                                     callback_data=callback),
+                InlineKeyboardButton(text='Изменить',
+                                     callback_data='email')
             ]
         ],
     )
@@ -1189,8 +1209,8 @@ def success_handler(update: Update, context: CallbackContext):
     inline_buttons = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-            InlineKeyboardButton(text='Вернуться в меню',
-                                callback_data='start')
+                InlineKeyboardButton(text='Вернуться в меню',
+                                     callback_data='start')
             ]
         ],
     )
