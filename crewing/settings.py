@@ -16,7 +16,7 @@ from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -27,7 +27,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['127.0.0.1', '145.239.95.67', 'localhost', 'topcrew.net', '3f26df69649f.ngrok.io']
+ALLOWED_HOSTS = ['127.0.0.1', '145.239.95.67',
+                 'localhost', 'topcrew.net', '3f26df69649f.ngrok.io']
 
 
 # Application definition
@@ -67,7 +68,7 @@ ROOT_URLCONF = 'crewing.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,],
+        'DIRS': [TEMPLATE_DIR, ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -156,7 +157,9 @@ LOGOUT_REDIRECT_URL = '/'
 #############################
 
 TELE_TOKEN = config('TELE_TOKEN')
-CHANNEL_ID = config('CHANNEL_ID')
+CHANNEL_ID_MAIN = config('CHANNEL_ID_MAIN')
+CHANNEL_ID_HIGH_LEVEL = config('CHANNEL_ID_HIGH_LEVEL')
+CHANNEL_ID_LOW_LEVEL = config('CHANNEL_ID_LOW_LEVEL')
 
 #############################
 
@@ -168,16 +171,20 @@ START_URL = config('START_URL')
 
 #############################
 new_titles = ['Electric Officer', 'Deck Cadet', '3rd Officer', 'Single Engineer',
-       'Fitter', 'Chief Housekeeper', 'Chief Engineer', 'Motorman 1st class',
-       'OS-Cook', 'Motorman-Turner', 'Ref. Cadet', 'Junior Engineer', 'Master',
-       'Oiler', 'Able Seaman', 'Youth Staff', 'Electrical Engineer', 'AB-Cook',
-       'Deck Fitter', 'Boatswain', 'ETO', 'Engine Fitter', 'Ordinary Seaman',
-       'Fitter-Welder', '4th Engineer', 'Electric Cadet', 'Motorman 2nd class',
-       'Assistant Maitre D', 'Electrician', 'Painter', 'AB-Motorman', 'Gaz Engineer',
-       'Steward', 'Wiper', '3rd Engineer', 'Ref. Engineer', 'Engine Cadet', 'Chief Officer',
-       'Motorman-Oiler', 'Turner', 'AB-Fitter', 'Nurse', 'Watch Engineer', 'Mess Boy', 'OS-Welder',
-       'Motorman-Electrician', 'Chief Cook', 'Technologist', 'Pumpman', 'Oiler-Fitter', 'Oiler-Welder',
-       'Welder', 'AB-Welder', '2nd Officer', 'Doctor', '2nd Engineer', 'Cook', 'Junior Officer']
+              'Fitter', 'Chief Housekeeper', 'Chief Engineer', 'Motorman 1st class',
+              'OS-Cook', 'Motorman-Turner', 'Ref. Cadet', 'Junior Engineer', 'Master',
+              'Oiler', 'Able Seaman', 'Youth Staff', 'Electrical Engineer', 'AB-Cook',
+              'Deck Fitter', 'Boatswain', 'ETO', 'Engine Fitter', 'Ordinary Seaman',
+              'Fitter-Welder', '4th Engineer', 'Electric Cadet', 'Motorman 2nd class',
+              'Assistant Maitre D', 'Electrician', 'Painter', 'AB-Motorman', 'Gaz Engineer',
+              'Steward', 'Wiper', '3rd Engineer', 'Ref. Engineer', 'Engine Cadet', 'Chief Officer',
+              'Motorman-Oiler', 'Turner', 'AB-Fitter', 'Nurse', 'Watch Engineer', 'Mess Boy', 'OS-Welder',
+              'Motorman-Electrician', 'Chief Cook', 'Technologist', 'Pumpman', 'Oiler-Fitter', 'Oiler-Welder',
+              'Welder', 'AB-Welder', '2nd Officer', 'Doctor', '2nd Engineer', 'Cook', 'Junior Officer']
+
+
+HIGH_LEVEL_SQUAD = ['Master', 'Chief Engineer', '2nd Officer', '3rd Officer',
+                    'Chief Engineer', '2nd Engineer', '3rd и 4th Engineer']
 
 
 TITLE_CHOICES = [
@@ -213,7 +220,7 @@ FLEET_CHOICES = [
         ('Tanker fleet', 'Tanker fleet')
         ]
 VESSEL_CHOICES = [
-        ('','Выберите тип судна'),
+        ('', 'Выберите тип судна'),
         ('Accommodation Barge', 'Accommodation Barge'),
         ('Anchor Handling Tug', 'Anchor Handling Tug'),
         ('Anchor Handling Tug Supply', 'Anchor Handling Tug Supply'),
@@ -235,7 +242,8 @@ VESSEL_CHOICES = [
         ('DSV - Diving Support Vessel', 'DSV - Diving Support Vessel'),
         ('Ferry', 'Ferry'),
         ('Fishing Vessel', 'Fishing Vessel'),
-        ('FPSO (Floating Production Storage and Offloading)', 'FPSO (Floating Production Storage and Offloading)'),
+        ('FPSO (Floating Production Storage and Offloading)',
+         'FPSO (Floating Production Storage and Offloading)'),
         ('Gas Tanker', 'Gas Tanker'),
         ('General Cargo', 'General Cargo'),
         ('Heavy Lift Vessel', 'Heavy Lift Vessel'),
@@ -252,7 +260,8 @@ VESSEL_CHOICES = [
         ('Passenger / Ro-Ro Vessel', 'Passenger / Ro-Ro Vessel'),
         ('Passenger Vessel', 'Passenger Vessel'),
         ('Pollution Control Vessel', 'Pollution Control Vessel'),
-        ('PSV (Platform Supply/Support Vessel)', 'PSV (Platform Supply/Support Vessel)'),
+        ('PSV (Platform Supply/Support Vessel)',
+         'PSV (Platform Supply/Support Vessel)'),
         ('Reefer', 'Reefer'),
         ('Research vessel', 'Research vessel'),
         ('Ro-Ro', 'Ro-Ro'),
@@ -261,8 +270,10 @@ VESSEL_CHOICES = [
         ('Tanker Crude', 'Tanker Crude'),
         ('Tug Boat', 'Tug Boat'),
         ('Utility Boat', 'Utility Boat'),
-        ('VLCC (Very Large Crude Oil Carrier)', 'VLCC (Very Large Crude Oil Carrier)'),
-        ('VSP Tug (Voith Schneider Propeller Tug)', 'VSP Tug (Voith Schneider Propeller Tug)'),
+        ('VLCC (Very Large Crude Oil Carrier)',
+         'VLCC (Very Large Crude Oil Carrier)'),
+        ('VSP Tug (Voith Schneider Propeller Tug)',
+         'VSP Tug (Voith Schneider Propeller Tug)'),
 ]
 ENGLISH_CHOICES = [
         ('', 'Выберите уровень английского'),
@@ -271,14 +282,14 @@ ENGLISH_CHOICES = [
         ('Хороший', 'Хороший'),
         ('Продвинутый', 'Продвинутый')
         ]
-SALARY_MATCHES = {'0-1000$':'0-1000$',
-                  '1000-3000$':'1000-3000$',
-                  '3000-5000$':'3000-5000$',
-                  '5000-10000$':'5000-10000$',
-                  '10000-1000000$':'10000$+',
-                  'Не важно':'Не важно'}
+SALARY_MATCHES = {'0-1000$': '0-1000$',
+                  '1000-3000$': '1000-3000$',
+                  '3000-5000$': '3000-5000$',
+                  '5000-10000$': '5000-10000$',
+                  '10000-1000000$': '10000$+',
+                  'Не важно': 'Не важно'}
 VESSEL_BASE = {
-    'Merchant fleet' : [
+    'Merchant fleet': [
         ('Bulk Carrier', 'Bulk Carrier'),
         ('Bulk Carrier', 'Bulk Carrier'),
         ('Car Carrier', 'Car Carrier'),
@@ -294,7 +305,7 @@ VESSEL_BASE = {
         ('Ro-Ro', 'Ro-Ro'),
         ('Self Unloading Bulk Carrier', 'Self Unloading Bulk Carrier')
     ],
-    'Offshore fleet' : [
+    'Offshore fleet': [
         ('Accommodation Barge', 'Accommodation Barge'),
         ('Accommodation Barge', 'Accommodation Barge'),
         ('Anchor Handling Tug', 'Anchor Handling Tug'),
@@ -303,16 +314,17 @@ VESSEL_BASE = {
         ('Crew Boat', 'Crew Boat'),
         ('Dredger', 'Dredger'),
         ('OSV (Offshore Supply Vessel)', 'OSV (Offshore Supply Vessel)'),
-        ('PSV (Platform Supply/Support Vessel)', 'PSV (Platform Supply/Support Vessel)'),
+        ('PSV (Platform Supply/Support Vessel)',
+         'PSV (Platform Supply/Support Vessel)'),
         ('Research vessel', 'Research vessel'),
         ('Supply Vessel', 'Supply Vessel'),
         ('Tug Boat', 'Tug Boat'),
     ],
-    'Fishing fleet' : [
+    'Fishing fleet': [
         ('Fishing Vessel', 'Fishing Vessel'),
         ('Fishing Vessel', 'Fishing Vessel'),
     ],
-    'Passenger fleet' : [
+    'Passenger fleet': [
         ('Cruise Vessel', 'Cruise Vessel'),
         ('Cruise Vessel', 'Cruise Vessel'),
         ('Ferry', 'Ferry'),
@@ -320,7 +332,7 @@ VESSEL_BASE = {
         ('Passenger / Ro-Ro Vessel', 'Passenger / Ro-Ro Vessel'),
         ('Passenger Vessel', 'Passenger Vessel'),
     ],
-    'Tanker fleet' : [
+    'Tanker fleet': [
         ('Bunkering Vessel', 'Bunkering Vessel'),
         ('Chemical Tanker', 'Chemical Tanker'),
         ('Crude Oil Tanker', 'Crude Oil Tanker'),
@@ -331,6 +343,7 @@ VESSEL_BASE = {
         ('Oil Product Tanker', 'Oil Product Tanker'),
         ('Oil Tanker', 'Oil Tanker'),
         ('Tanker Crude', 'Tanker Crude'),
-        ('VLCC (Very Large Crude Oil Carrier)', 'VLCC (Very Large Crude Oil Carrier)'),
+        ('VLCC (Very Large Crude Oil Carrier)',
+         'VLCC (Very Large Crude Oil Carrier)'),
     ]
 }

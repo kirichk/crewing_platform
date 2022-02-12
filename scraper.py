@@ -1,3 +1,5 @@
+from web_hiring.notificators import vacancy_notification
+from web_hiring.models import Post
 import os
 import re
 from time import sleep
@@ -15,14 +17,10 @@ from random import randint
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crewing.settings")
 django.setup()
 
-from web_hiring.models import Post
-from web_hiring.notificators import vacancy_notification
-
 
 urls = [
-        "https://5WP66o:CZay9X@91.233.61.70:8000",
-        "https://5WP66o:CZay9X@91.233.61.11:8000",
-        "https://5WP66o:CZay9X@91.233.61.6:8000",
+        "https://7Ck234:xSMWx7@104.227.102.174:9511",
+        "https://YYMYaj:3pojLH@212.102.152.51:8000",
 ]
 
 
@@ -58,6 +56,7 @@ def try_connection(url):
             continue
     return page
 
+
 @logger.catch
 def contact_extractor(url):
     page = try_connection(url)
@@ -80,7 +79,6 @@ def email_extractor(url):
         if row_content[0] == "Эл.почта" and len(row_content) > 1:
             return row_content[1]
     return "Информация отсутсвует"
-
 
 
 @logger.catch
@@ -229,7 +227,7 @@ def info_search(vacancies: dict, mode: str):
                     contact = contact_extractor("https://ukrcrewing.com.ua"
                                                 + link['href'])
                     email = email_extractor("https://ukrcrewing.com.ua"
-                                                + link['href'])
+                                            + link['href'])
             for div in details.find_all("div"):
                 div.decompose()
             for header in details.find_all("h1"):

@@ -6,7 +6,10 @@ from tgbot.models import Profile
 
 
 bot = Bot(token=settings.TELE_TOKEN)
-CHANNEL_ID = settings.CHANNEL_ID
+CHANNEL_ID_HIGH_LEVEL = settings.CHANNEL_ID_HIGH_LEVEL
+CHANNEL_ID_LOW_LEVEL = settings.CHANNEL_ID_LOW_LEVEL
+CHANNEL_ID_MAIN = settings.CHANNEL_ID_MAIN
+HIGH_LEVEL_SQUAD = settings.HIGH_LEVEL_SQUAD
 
 
 def vacancy_notification(form):
@@ -78,5 +81,11 @@ def vacancy_notification(form):
                         except:
                             pass
     main_text = main_text.replace(form['title'], title)
-    bot.send_message(chat_id=CHANNEL_ID,
+    if form["title"] in HIGH_LEVEL_SQUAD:
+        bot.send_message(chat_id=CHANNEL_ID_HIGH_LEVEL,
+                         text=main_text)
+    else:
+        bot.send_message(chat_id=CHANNEL_ID_LOW_LEVEL,
+                         text=main_text)
+    bot.send_message(chat_id=CHANNEL_ID_MAIN,
                      text=main_text)
