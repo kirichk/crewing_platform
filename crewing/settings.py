@@ -184,7 +184,8 @@ new_titles = ['Electric Officer', 'Deck Cadet', '3rd Officer', 'Single Engineer'
 
 
 HIGH_LEVEL_SQUAD = ['Master', 'Chief Engineer', '2nd Officer', '3rd Officer',
-                    'Chief Engineer', '2nd Engineer', '3rd и 4th Engineer']
+                    '2nd Engineer', '3rd и 4th Engineer',
+                    '3rd Engineer', '4th Engineer', 'Chief Officer']
 
 
 TITLE_CHOICES = [
