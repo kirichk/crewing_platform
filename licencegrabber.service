@@ -1,0 +1,15 @@
+[Unit]
+Description=Licence Bot
+After=network.target
+
+[Service]
+User=root
+Group=root
+
+WorkingDirectory=/home/debian/crewing_platform/
+Environment="PYTHONPATH=/home/debian/crewing_platform/"
+ExecStart=/home/debian/crewing_platform/env/bin/python /home/debian/crewing_platform/license-scraper.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

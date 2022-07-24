@@ -3,5 +3,9 @@ migrations/
 env/
 .env
 db.sqlite3
+*.db
 *.log
 *.save
+*.zip
+logs/
+*.DS_Store

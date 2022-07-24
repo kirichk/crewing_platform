@@ -1,22 +1,31 @@
+from web_hiring.notificators import vacancy_notification
+from web_hiring.models import Post
 import os
 import re
 from time import sleep
 
 import django
 import requests
+import random
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.utils import timezone
 from loguru import logger
+from random import randint
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crewing.settings")
 django.setup()
 
-from web_hiring.models import Post
-from web_hiring.notificators import vacancy_notification
+
+urls = [
+        "https://7Ck234:xSMWx7@104.227.102.174:9511",
+        "https://YYMYaj:3pojLH@212.102.152.51:8000",
+]
+
 
 logger.add(
-    "info.log",
+    "logs/info.log",
     format="{time} {level} {message}",
     level="INFO",
     rotation="1 MB",
@@ -24,12 +33,34 @@ logger.add(
 )
 
 START_URL = settings.START_URL
-START_PAGE = requests.get(START_URL)
+
+
+def try_connection(url):
+    page = ''
+    while page == '':
+        try:
+            picked_proxy = random.choice(urls)
+            proxies = {
+                "https": picked_proxy
+            }
+            print(picked_proxy)
+            # logger.info(picked_proxy)
+            page = requests.get(url, proxies=proxies)
+            break
+        except:
+            print("Connection refused by the server..")
+            print("Let me sleep for 5 seconds")
+            print("ZZzzzz...")
+            sleep(5)
+            print("Was a nice sleep, now let me continue...")
+            continue
+    return page
 
 
 @logger.catch
 def contact_extractor(url):
-    soup = BeautifulSoup(requests.get(url).text, "lxml")
+    page = try_connection(url)
+    soup = BeautifulSoup(page.text, "lxml")
     details = soup.find("div", class_="page-content agency-page-content")
     for row in details.find_all("div", class_="colmn"):
         row_content = row.text.split(":")
@@ -39,19 +70,32 @@ def contact_extractor(url):
 
 
 @logger.catch
-def pagination(page):
+def email_extractor(url):
+    page = try_connection(url)
+    soup = BeautifulSoup(page.text, "lxml")
+    details = soup.find("div", class_="page-content agency-page-content")
+    for row in details.find_all("div", class_="colmn"):
+        row_content = row.text.split(":")
+        if row_content[0] == "Эл.почта" and len(row_content) > 1:
+            return row_content[1]
+    return "Информация отсутсвует"
+
+
+@logger.catch
+def pagination():
     """
     Searching for urls of all paginators
     """
-    soup = BeautifulSoup(page.text, "lxml")
+    # soup = BeautifulSoup(page.text, "lxml")
     pages_list = []
-    text_div = soup.find("div", class_="small").text
-    vacancies_count = int(re.findall(r"\d+", text_div)[0])
-    if vacancies_count % 30 == 0:
-        pages_count = vacancies_count / 30
-    else:
-        pages_count = vacancies_count // 30 + 1
-    for num in range(1, pages_count + 1):
+    # page = try_connection(START_URL)
+    # text_div = soup.find("div", class_="small").text
+    # vacancies_count = int(re.findall(r"\d+", text_div)[0])
+    # if vacancies_count % 30 == 0:
+    #     pages_count = vacancies_count / 30
+    # else:
+    #     pages_count = vacancies_count // 30 + 1
+    for num in range(1, 73):
         pages_list.append(START_URL.replace("p1", f"p{num}"))
     return pages_list
 
@@ -63,7 +107,10 @@ def vacancies_search(pages: list):
     """
     result = []
     for page in pages:
-        soup = BeautifulSoup(requests.get(page).text, "lxml")
+        logger.info(f'Processing - {page}')
+        sleep(randint(2, 5))
+        raw_page = try_connection(page)
+        soup = BeautifulSoup(raw_page.text, "lxml")
         table = soup.find("table", class_="nwrap")
         page_dict = []
         for rows in table.find_all("tr")[1:]:
@@ -94,8 +141,9 @@ def check_new(url):
     """
     Checking first page if there are new vacancies that should be added
     """
+    sleep(randint(60, 120))
     result = []
-    page = requests.get(url)
+    page = try_connection(url)
     soup = BeautifulSoup(page.text, "lxml")
     table = soup.find("table", class_="nwrap")
     page_dict = []
@@ -121,6 +169,7 @@ def check_new(url):
                     info.append(column.text)
             final = {"link": "https://ukrcrewing.com.ua" + info[0]}
             final.update(dict(zip(columns, info[1:])))
+            print(final)
             page_dict.append(final)
         result.extend(page_dict)
     except AttributeError:
@@ -150,10 +199,14 @@ def info_search(vacancies: dict, mode: str):
     """
     sailing_area = dwt = crew = english = crewer = contact = ""
     years_constructed = None
-
+    counter = 0
     for vacancy in vacancies:
-        sleep(0.5)
-        soup = BeautifulSoup(requests.get(vacancy["link"]).text, "lxml")
+        if counter % 5 == 0:
+            logger.info(f'{counter} profiles added')
+        counter += 1
+        sleep(randint(5, 10))
+        page = try_connection(vacancy["link"])
+        soup = BeautifulSoup(page.text, "lxml")
         details = soup.find("div", class_="vacancy-full-content")
         try:
             for row in details.find_all("div", class_="colmn"):
@@ -173,6 +226,8 @@ def info_search(vacancies: dict, mode: str):
                     link = row.find("a")
                     contact = contact_extractor("https://ukrcrewing.com.ua"
                                                 + link['href'])
+                    email = email_extractor("https://ukrcrewing.com.ua"
+                                            + link['href'])
             for div in details.find_all("div"):
                 div.decompose()
             for header in details.find_all("h1"):
@@ -204,6 +259,7 @@ def info_search(vacancies: dict, mode: str):
                 crew=crew,
                 crewer=crewer,
                 contact=contact,
+                email=email,
                 english=english,
                 link=vacancy["link"],
                 text=additional_info,
@@ -224,6 +280,7 @@ def info_search(vacancies: dict, mode: str):
                     "crew": crew,
                     "crewer": crewer,
                     "contact": contact,
+                    "email": email,
                     "english": english,
                     "text": additional_info,
                 }
@@ -234,16 +291,22 @@ def info_search(vacancies: dict, mode: str):
             crew = ""
             english = ""
             contact = ""
+            email = ""
         except AttributeError:
             continue
 
 
 if __name__ == "__main__":
+    picked_proxy = random.choice(urls)
+    logger.info(picked_proxy)
     print("Started pagination extraction")
-    list_of_pages = pagination(START_PAGE)
+    list_of_pages = pagination()
     print("Finished")
     print("Started extraction vacancy links from pages")
     vacancies_list = vacancies_search(list_of_pages)
     print("Finished")
     print("Started information extraction")
     vacancies_information = info_search(vacancies_list, "base")
+    # START_URL = 'https://ukrcrewing.com.ua/vacancy/p1?v_sort=1&v_sort_dir=1'
+    # vacancies_list = check_new(START_URL)
+    # info_search(vacancies_list, 'parsing')
